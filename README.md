@@ -1,16 +1,18 @@
-# QA Test Management Portal
+﻿# QA Test Management Portal
 
 A portfolio-ready QA operations web app built with Next.js, TypeScript, Tailwind CSS, and Supabase.
 
-This project is designed to feel like a lightweight internal QA tool rather than a student demo. It focuses on realistic testing workflow concepts you can speak about in interviews:
+This project is evolving into a hybrid website QA platform where manual QA workflow and automated website analysis live side by side.
 
-- project and release tracking
-- test case management
-- test execution and result capture
-- defect lifecycle management
-- evidence handling
-- release-readiness reporting
-- lightweight website smoke testing
+## What it does now
+
+- tracks QA-oriented workspace pages for projects, defects, test cases, runs, and reports
+- provides a public smoke-test scanner page
+- runs a real browser-backed single-page scan with Playwright
+- runs axe-core accessibility checks
+- captures screenshot and raw evidence artifacts
+- stores scan runs, findings, evidence, and project summaries in local JSON persistence
+- surfaces saved scans under `/smoke-test`, `/projects`, and `/projects/[projectId]`
 
 ## Why this project works well in interviews
 
@@ -22,31 +24,31 @@ It gives you a concrete way to talk about:
 - structured QA documentation
 - business-style software design
 - using AI as a delivery accelerator while keeping the product practical
+- local-first automation using free tooling instead of paid APIs
 
 ## Tech stack
 
 - Next.js App Router
 - TypeScript
 - Tailwind CSS
-- Supabase Auth, Postgres, and Storage
+- Supabase Auth, Postgres, and Storage foundation
+- Playwright
+- axe-core
+- rule-based QA heuristics
+- optional Ollama integration later
 
-## Milestone 1 status
+## Milestone A status
 
-Milestone 1 sets up the production-style foundation:
+Milestone A introduces the first real automated scan slice:
 
-- app router scaffold
-- public home page
-- auth page scaffold
-- protected workspace layout scaffold
-- realistic dashboard and module placeholder pages
-- Supabase client and middleware helpers
-- SQL schema
-- storage setup SQL
-- seed data script
-- website smoke test prototype
-- local setup guidance
-
-Auth wiring, CRUD, uploads, and live reporting are intentionally phased into later milestones.
+- public smoke-test scanner page
+- Playwright page load and screenshot capture
+- page title, final URL, response timing, and element counts
+- axe-core accessibility findings
+- simplified local audit scores for performance, SEO, accessibility, and best practices
+- source-labeled automated findings with confidence scores
+- local persistence for projects, scans, findings, evidence, and activity logs
+- project list/detail views that surface saved automated scan data
 
 ## Local setup
 
@@ -54,37 +56,32 @@ Auth wiring, CRUD, uploads, and live reporting are intentionally phased into lat
 
 ```bash
 npm install
+npx playwright install chromium
 ```
 
 If PowerShell blocks `npm`, use:
 
 ```powershell
 npm.cmd install
+npx.cmd playwright install chromium
 ```
 
 ### 2. Create your environment file
 
-Copy `.env.example` to `.env.local` and fill in your Supabase values:
+Copy `.env.example` to `.env.local` and fill in values you want to use:
 
 ```env
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=qwen2.5-coder:7b
 ```
 
-### 3. Create a Supabase project
+Supabase is optional for the current Milestone A slice. The app can still run with local persistence only.
 
-1. Create a new project
-2. Open the SQL editor
-3. Run `supabase/schema.sql`
-4. Run `supabase/storage.sql`
-5. Create at least one `admin` and one `qa_analyst` user profile
-6. Run `supabase/seed.sql`
-
-Note: `seed.sql` expects at least one `admin` profile and one `qa_analyst` profile to exist first.
-
-### 4. Start the app
+### 3. Start the app
 
 ```bash
 npm run dev
@@ -105,30 +102,69 @@ Then open `http://localhost:3000`.
 - `/test-runs`
 - `/defects`
 - `/reports`
-- `/smoke-test` - enter a website and run a basic smoke test
+- `/smoke-test` - run a real local browser-backed website scan
 
 ## Smoke test feature in this milestone
 
-The smoke test page gives you a practical demo-friendly feature right away.
+The smoke test page now performs a real automated analysis slice.
 
-What it checks:
+What it currently does:
 
-- URL is valid
-- website responds
-- response status code
-- HTML title is present
-- HTTPS usage
-- visibility of a key security header
+- accepts loose URLs like `example.com` or `localhost:3000`
+- opens the page in Playwright Chromium
+- captures final URL and page title
+- captures a full-page screenshot
+- counts links, forms, buttons, inputs, and images
+- runs axe-core accessibility checks
+- generates practical rule-based findings
+- saves evidence and scan history locally
+- shows saved results in the UI
 
-This is intentionally lightweight. It is not full browser automation yet, but it is a useful QA-style health check you can expand later.
+## Free-host deployment before the next milestone
+
+This app is not suitable for GitHub Pages because it needs a Node server and Playwright. A free Docker-capable host is the right fit.
+
+### Recommended host: Render
+
+This repo now includes:
+
+- `Dockerfile`
+- `render.yaml`
+
+### Deploy steps on Render
+
+1. Push this repo to GitHub
+2. Log in to Render
+3. Create a new Web Service from your GitHub repo
+4. Render should detect `render.yaml`, or you can point it at the included `Dockerfile`
+5. Set these env vars in Render:
+
+```env
+NEXT_PUBLIC_APP_URL=https://your-render-url.onrender.com
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
+
+6. Deploy
+
+### Important note about persistence on a free host
+
+The current Milestone A slice stores scan data in:
+
+- `data/qa-platform.json`
+- `public/generated/scans/...`
+
+On a free cloud host this storage is usually ephemeral, which means scans may reset after restarts or redeploys.
+
+That is acceptable for trying the product before the next milestone, but the next persistence upgrade should move scan artifacts into Supabase tables and storage.
 
 ## Suggested next milestone
 
-Milestone 2 should implement:
+Milestone B should implement:
 
-- real Supabase sign up and sign in
-- session-aware protected routes
-- sign out
-- profile creation on signup
-- role-based page access and header state
-- optional storage of smoke test history in the database
+- project-level scan orchestration
+- scan mode selection: single page, multi-page, full site
+- internal link crawling with safety caps
+- discovered pages storage
+- per-project scan coverage metrics
