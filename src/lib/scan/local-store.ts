@@ -1,4 +1,5 @@
 ﻿import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 import type {
@@ -26,7 +27,8 @@ type LocalDatabase = {
   activityLogs: ActivityLogRecord[];
 };
 
-const dbPath = path.join(process.cwd(), "data", "qa-platform.json");
+const isVercelRuntime = Boolean(process.env.VERCEL);
+const dbPath = isVercelRuntime ? path.join(os.tmpdir(), "qa-platform.json") : path.join(process.cwd(), "data", "qa-platform.json");
 
 const emptyDb: LocalDatabase = {
   projects: [],
@@ -253,4 +255,3 @@ export async function getProjectScanHistory(projectId: string): Promise<RecentSc
       };
     });
 }
-

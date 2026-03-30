@@ -1,6 +1,7 @@
 ﻿import path from "node:path";
 import { promises as fs } from "node:fs";
 import { createRequire } from "node:module";
+import os from "node:os";
 
 import { chromium } from "playwright";
 
@@ -9,6 +10,7 @@ import { clampScore, createId, ensureDirPath, nowIso, publicFileUrl, safeFileSte
 
 const require = createRequire(import.meta.url);
 const axeScriptPath = require.resolve("axe-core/axe.min.js");
+const isVercelRuntime = Boolean(process.env.VERCEL);
 
 type RawFinding = {
   category: FindingCategory;
@@ -105,7 +107,21 @@ function pushFinding(target: RawFinding[], finding: RawFinding) {
 }
 
 async function saveArtifacts(scanId: string, finalUrl: string, screenshot: Buffer, axeResults: unknown, rawScan: unknown) {
-  const outputDir = ensureDirPath("public", "generated", "scans", scanId);
+  if (isVercelRuntime) {
+    const rawScanJson = JSON.stringify(rawScan, null, 2);
+    const axeJson = JSON.stringify(axeResults, null, 2);
+
+    return {
+      screenshotPath: `data:image/png;base64,${screenshot.toString("base64")}`,
+      screenshotFileSize: screenshot.byteLength,
+      rawScanPath: `data:application/json;base64,${Buffer.from(rawScanJson, "utf8").toString("base64")}`,
+      rawScanFileSize: Buffer.byteLength(rawScanJson, "utf8"),
+      axePath: `data:application/json;base64,${Buffer.from(axeJson, "utf8").toString("base64")}`,
+      axeFileSize: Buffer.byteLength(axeJson, "utf8")
+    };
+  }
+
+  const outputDir = path.join(isVercelRuntime ? os.tmpdir() : ensureDirPath("public", "generated", "scans"), scanId);
   await fs.mkdir(outputDir, { recursive: true });
 
   const stem = safeFileStem(new URL(finalUrl).hostname);
