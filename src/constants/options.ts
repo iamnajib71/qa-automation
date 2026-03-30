@@ -1,0 +1,10 @@
+export const roleOptions = ["admin", "qa_analyst", "viewer"] as const;
+export const projectStatusOptions = ["active", "on_hold", "completed", "archived"] as const;
+export const releaseStatusOptions = ["planning", "in_testing", "uat", "ready", "released", "delayed"] as const;
+export const testCaseStatusOptions = ["draft", "ready", "archived"] as const;
+export const testCaseTypeOptions = ["functional", "regression", "smoke", "integration", "uat", "api"] as const;
+export const priorityOptions = ["low", "medium", "high", "critical"] as const;
+export const testRunStatusOptions = ["not_started", "in_progress", "completed", "blocked"] as const;
+export const executionResultOptions = ["not_run", "passed", "failed", "blocked"] as const;
+export const defectStatusOptions = ["open", "in_progress", "retest", "closed"] as const;
+export const severityOptions = ["low", "medium", "high", "critical"] as const;

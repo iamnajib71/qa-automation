@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 225 25% 97%;
+  --foreground: 222 22% 18%;
+  --muted: 220 21% 95%;
+  --muted-foreground: 220 12% 42%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 22% 18%;
+  --border: 220 18% 88%;
+  --input: 220 18% 88%;
+  --primary: 215 64% 27%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 204 50% 94%;
+  --accent: 38 92% 92%;
+  --success: 143 63% 28%;
+  --warning: 36 88% 38%;
+  --danger: 0 72% 44%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(204, 223, 246, 0.65), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 241, 214, 0.72), transparent 22%),
+    linear-gradient(180deg, #f7f9fc 0%, #edf2f7 100%);
+  color: hsl(var(--foreground));
+  font-family: "Segoe UI", "IBM Plex Sans", "Helvetica Neue", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-grid {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
