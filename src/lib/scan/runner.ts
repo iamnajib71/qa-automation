@@ -1,15 +1,13 @@
 ﻿import path from "node:path";
 import { promises as fs } from "node:fs";
-import { createRequire } from "node:module";
 import os from "node:os";
 
+import axe from "axe-core";
 import { chromium } from "playwright";
 
 import type { ArtifactSource, FindingRecord, FindingCategory, Severity } from "@/lib/scan/types";
 import { clampScore, createId, ensureDirPath, nowIso, publicFileUrl, safeFileStem } from "@/lib/scan/utils";
 
-const require = createRequire(import.meta.url);
-const axeScriptPath = require.resolve("axe-core/axe.min.js");
 const isVercelRuntime = Boolean(process.env.VERCEL);
 
 type RawFinding = {
@@ -491,7 +489,8 @@ export async function runWebsiteScan(targetUrl: string): Promise<WebsiteScanResu
         } satisfies PageSummary;
       });
 
-      await page.addScriptTag({ path: axeScriptPath });
+      // Inject from the exported source string: a resolved file path becomes a webpack module id once bundled.
+      await page.addScriptTag({ content: axe.source });
       const axeResults = await page.evaluate(async () => {
         const axe = (window as typeof window & { axe: { run: () => Promise<unknown> } }).axe;
         return axe.run();
@@ -577,7 +576,11 @@ export async function runWebsiteScan(targetUrl: string): Promise<WebsiteScanResu
       await browser.close();
     }
   } catch (error) {
-    return runHttpFallbackScan(targetUrl, error instanceof Error ? error.message : "Playwright launch failed.");
+    // Name plus first stack frame keeps the fallback diagnosable even when message is empty.
+    const reason = error instanceof Error
+      ? [`${error.name}: ${error.message}`, error.stack?.split("\n")[1]?.trim()].filter(Boolean).join(" ")
+      : "Playwright launch failed.";
+    return runHttpFallbackScan(targetUrl, reason);
   }
 }
 
