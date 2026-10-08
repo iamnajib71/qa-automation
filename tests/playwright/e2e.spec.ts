@@ -28,9 +28,9 @@ test("E2E-02 defect create, reload, retest, close and delete", async ({ page, re
 test("E2E-03 validation prevents a blank defect", async ({ page }) => { await page.goto("/defects"); await page.getByRole("button",{name:"Create defect"}).click(); await expect(page.getByRole("main").getByRole("alert")).toContainText("Enter a title"); });
 test("E2E-04 scanner rejects invalid URL", async ({ page }) => { await page.goto("/smoke-test"); await page.getByLabel("Website URL").fill("http://["); await page.getByRole("button",{name:"Run smoke test",exact:true}).click(); await expect(page.getByText(/valid HTTP/)).toBeVisible(); });
 for (const [index,route] of ["/","/defects","/smoke-test"].entries()) {
-  test(`A11Y-0${index+1} WCAG 2.1 AA ${route}`, async ({ page }, info) => {
+  test(`A11Y-0${index+1} full axe rules (including WCAG 2.1 AA) ${route}`, async ({ page }, info) => {
     await page.goto(route); if(route==="/defects") await expect(page.getByRole("heading",{name:"Saved defects"})).toBeVisible();
-    const results = await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
+    const results = await new AxeBuilder({page}).analyze();
     await info.attach("axe-results",{body:JSON.stringify(results,null,2),contentType:"application/json"}); expect(results.violations).toEqual([]);
   });
 }

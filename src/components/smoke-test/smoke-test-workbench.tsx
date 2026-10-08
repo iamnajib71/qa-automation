@@ -306,12 +306,12 @@ export function SmokeTestWorkbench() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_26%),linear-gradient(180deg,_#f8fafc_0%,_#e2e8f0_100%)] px-4 py-8 lg:px-6 lg:py-10">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.18),_transparent_26%),linear-gradient(180deg,_#f8fafc_0%,_#e2e8f0_100%)] px-4 py-8 lg:px-6 lg:py-10">
       <div className="mx-auto max-w-6xl space-y-8">
         <PageHeader
-          eyebrow="Milestone A"
-          title="AI-assisted website QA scanner"
-          description="Paste a website URL and run a real local scan. The platform now loads the page in Playwright, captures a screenshot, runs axe-core accessibility checks, generates rule-based findings, and saves the result as a project-backed scan artifact."
+          eyebrow="Browser automation"
+          title="Website smoke-test scanner"
+          description="Scan this portal in Chromium, capture a screenshot, run accessibility checks and save findings with evidence. This local portfolio scans its own origin only. Scores are rule-based heuristics."
           breadcrumb={["Public Tools", "Smoke Test"]}
           action={<StatusBadge label="Free local tooling" tone="info" />}
         />
@@ -327,7 +327,7 @@ export function SmokeTestWorkbench() {
                   id="websiteUrl"
                   value={websiteUrl}
                   onChange={(event) => setWebsiteUrl(event.target.value)}
-                  placeholder="example.com, https://example.com, or localhost:3001"
+                  placeholder="Use this portal's origin"
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-primary focus:bg-white"
                 />
               </div>
@@ -398,7 +398,7 @@ export function SmokeTestWorkbench() {
           </Card>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
