@@ -1,6 +1,6 @@
-﻿FROM node:20-bookworm-slim
+FROM node:22-bookworm-slim
 
-ENV NODE_ENV=production
+ENV CYPRESS_INSTALL_BINARY=0
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV HOSTNAME=0.0.0.0
@@ -13,6 +13,8 @@ RUN npx playwright install --with-deps chromium
 
 COPY . .
 RUN npm run build
+RUN npm prune --omit=dev
+ENV NODE_ENV=production
 
 EXPOSE 3000
 
