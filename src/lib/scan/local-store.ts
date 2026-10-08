@@ -16,7 +16,10 @@ import type {
 } from "@/lib/scan/types";
 import { createId, nowIso, projectKeyFromUrl, projectNameFromUrl } from "@/lib/scan/utils";
 
+import type { Defect } from "@/lib/defects/schema";
+
 type LocalDatabase = {
+  defects: Defect[];
   projects: ProjectRecord[];
   projectUrls: ProjectUrlRecord[];
   pages: PageRecord[];
@@ -28,9 +31,10 @@ type LocalDatabase = {
 };
 
 const isVercelRuntime = Boolean(process.env.VERCEL);
-const dbPath = isVercelRuntime ? path.join(os.tmpdir(), "qa-platform.json") : path.join(process.cwd(), "data", "qa-platform.json");
+const dbPath = process.env.QA_DATA_FILE ?? (isVercelRuntime ? path.join(os.tmpdir(), "qa-platform.json") : path.join(process.cwd(), "data", "qa-platform.json"));
 
 const emptyDb: LocalDatabase = {
+  defects: [],
   projects: [],
   projectUrls: [],
   pages: [],
@@ -53,16 +57,18 @@ async function ensureDb() {
 async function readDb() {
   await ensureDb();
   const content = await fs.readFile(dbPath, "utf8");
-  return JSON.parse(content) as LocalDatabase;
+  return { ...emptyDb, ...JSON.parse(content) } as LocalDatabase;
 }
 
 async function writeDb(data: LocalDatabase) {
   await ensureDb();
-  await fs.writeFile(dbPath, JSON.stringify(data, null, 2), "utf8");
+  const temporary = `${dbPath}.tmp`;
+  await fs.writeFile(temporary, JSON.stringify(data, null, 2), "utf8");
+  await fs.rename(temporary, dbPath);
 }
 
 export async function ensureProject(baseUrl: string) {
-  const db = await readDb();
+  return mutateDatabase(async (db) => {
   const now = nowIso();
   const existingProjectUrl = db.projectUrls.find((item) => item.baseUrl === baseUrl);
 
@@ -111,13 +117,13 @@ export async function ensureProject(baseUrl: string) {
 
   db.projects.unshift(project);
   db.projectUrls.unshift(projectUrl);
-  await writeDb(db);
 
   return { db, project, projectUrl };
+  });
 }
 
 export async function saveScan(scan: ScanPersistence) {
-  const db = await readDb();
+  return mutateDatabase(async (db) => {
 
   const projectIndex = db.projects.findIndex((item) => item.id === scan.project.id);
   if (projectIndex >= 0) {
@@ -145,12 +151,11 @@ export async function saveScan(scan: ScanPersistence) {
   db.findings.unshift(...scan.findings);
   db.evidence.unshift(...scan.evidence);
   db.activityLogs.unshift(scan.activityLog);
-
-  await writeDb(db);
+  });
 }
 
 export async function upsertPage(projectId: string, projectUrlId: string, normalizedUrl: string, title: string | null, statusCode: number | null) {
-  const db = await readDb();
+  return mutateDatabase(async (db) => {
   const now = nowIso();
   const existingPage = db.pages.find((item) => item.projectId === projectId && item.normalizedUrl === normalizedUrl);
 
@@ -161,7 +166,6 @@ export async function upsertPage(projectId: string, projectUrlId: string, normal
     existingPage.lastHttpStatus = statusCode;
     existingPage.lastScannedAt = now;
     existingPage.updatedAt = now;
-    await writeDb(db);
     return existingPage;
   }
 
@@ -179,8 +183,8 @@ export async function upsertPage(projectId: string, projectUrlId: string, normal
   };
 
   db.pages.unshift(page);
-  await writeDb(db);
   return page;
+  });
 }
 
 export async function listRecentScans(limit = 5): Promise<RecentScanSummary[]> {
@@ -258,4 +262,22 @@ export async function getProjectScanHistory(projectId: string): Promise<RecentSc
 
 export async function getProject(projectId: string) {
   return (await readDb()).projects.find((project) => project.id === projectId) ?? null;
+}
+
+// One process, one writer: all scanner and defect mutations share the same queue.
+// Atomic rename keeps readers from observing a partially written JSON document.
+const globalStore = globalThis as typeof globalThis & { qaStoreQueue?: Promise<unknown> };
+export async function mutateDatabase<T>(update: (db: LocalDatabase) => T | Promise<T>): Promise<T> {
+  const operation = (globalStore.qaStoreQueue ?? Promise.resolve()).then(async () => {
+    const db = await readDb();
+    const result = await update(db);
+    await writeDb(db);
+    return result;
+  });
+  globalStore.qaStoreQueue = operation.catch(() => undefined);
+  return operation;
+}
+export async function readDatabase() {
+  await globalStore.qaStoreQueue;
+  return readDb();
 }
