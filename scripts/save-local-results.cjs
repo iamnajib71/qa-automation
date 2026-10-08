@@ -20,6 +20,6 @@ save('playwright-summary.json',{recordedAt,stats:playwright.stats,tests:browserT
 save('cypress-summary.json',{recordedAt,specs:cypress.map(report=>({stats:report.stats,results:report.results}))});
 const totals={unit:unit.numPassedTests,newmanRequests:newman.run.stats.requests.total,newmanAssertions:newman.run.stats.assertions.total,playwrightAPI:browserTests.filter(t=>t.project==='api'&&t.status==='expected').length,playwrightE2E:browserTests.filter(t=>t.project==='e2e'&&t.status==='expected').length,cypress:cypress.reduce((sum,r)=>sum+r.stats.passes,0)};
 const failures=unit.numFailedTests+newman.run.failures.length+playwright.stats.unexpected+cypress.reduce((sum,r)=>sum+r.stats.failures,0);
-save('local-summary.json',{recordedAt,environment:{os:process.platform,node:process.version,baseURL:'http://127.0.0.1:4173',data:'synthetic'},totals,failures,reports:['reports/unit/results.json','reports/newman/results.json','reports/playwright-results.json'].map(file=>({file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')}))});
+save('local-summary.json',{recordedAt,environment:{os:process.platform,node:process.version,baseURL:'http://127.0.0.1:43187',data:'synthetic'},totals,failures,reports:['reports/unit/results.json','reports/newman/results.json','reports/playwright-results.json'].map(file=>({file,sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')}))});
 console.log(totals, {failures});
 if(failures)process.exitCode=1;

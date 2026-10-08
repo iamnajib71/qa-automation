@@ -6,9 +6,9 @@ const { pathToFileURL }=require('node:url');
  fs.mkdirSync('docs/img',{recursive:true});
  const browser=await chromium.launch();
  const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});
- await page.goto('http://127.0.0.1:4173');await page.screenshot({path:'docs/img/portal.png',fullPage:true});
- await page.goto('http://127.0.0.1:4173/defects');await page.getByRole('heading',{name:'Saved defects'}).waitFor();await page.screenshot({path:'docs/img/defects.png',fullPage:true});
- await page.goto('http://127.0.0.1:4173/smoke-test');
+ await page.goto('http://127.0.0.1:43187');await page.screenshot({path:'docs/img/portal.png',fullPage:true});
+ await page.goto('http://127.0.0.1:43187/defects');await page.getByRole('heading',{name:'Saved defects'}).waitFor();await page.screenshot({path:'docs/img/defects.png',fullPage:true});
+ await page.goto('http://127.0.0.1:43187/smoke-test');
  await page.getByRole('button').filter({hasText:'Website QA'}).first().click();
  await page.getByText('Full-page screenshot',{exact:true}).waitFor();await page.screenshot({path:'docs/img/scanner.png',fullPage:true});
  for(const [name,file] of [['playwright-report','reports/playwright/index.html'],['cypress-report','reports/cypress/index.html'],['newman-report','reports/newman/index.html']]){

@@ -50,7 +50,7 @@ flowchart LR
 
 ## Quick start — Windows PowerShell
 
-Tested with Node 22 and Windows. No secrets, external services or environment file are required. Port 4173 is used because port 3000 is reserved on the reference Windows machine.
+Tested with Node 22 and Windows. No secrets, external services or environment file are required. Port 43187 is used because port 3000 is reserved on the reference Windows machine.
 
 \`\`\`powershell
 git clone https://github.com/iamnajib71/qa-automation.git
@@ -62,7 +62,7 @@ npm.cmd run build
 npm.cmd run serve:test
 \`\`\`
 
-Open **http://127.0.0.1:4173**. Create a fictional defect at /defects; at /smoke-test scan **http://127.0.0.1:4173**. Reload to inspect saved data. Use Ctrl+C to stop the server before suites that start their own server. On Ubuntu, use npm/npx and install Chromium with \`npx playwright install --with-deps chromium\`.
+Open **http://127.0.0.1:43187**. Create a fictional defect at /defects; at /smoke-test scan **http://127.0.0.1:43187**. Reload to inspect saved data. Use Ctrl+C to stop the server before suites that start their own server. On Ubuntu, use npm/npx and install Chromium with \`npx playwright install --with-deps chromium\`.
 
 ### One command per suite
 
