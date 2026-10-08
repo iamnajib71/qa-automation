@@ -317,11 +317,11 @@ async function saveArtifacts(scanId: string, finalUrl: string, screenshot: Buffe
   const axeStat = await fs.stat(axePath);
 
   return {
-    screenshotPath: publicFileUrl("generated", "scans", scanId, screenshotFileName),
+    screenshotPath: publicFileUrl("api", "evidence", scanId, screenshotFileName),
     screenshotFileSize: screenshotStat.size,
-    rawScanPath: publicFileUrl("generated", "scans", scanId, rawScanFileName),
+    rawScanPath: publicFileUrl("api", "evidence", scanId, rawScanFileName),
     rawScanFileSize: rawScanStat.size,
-    axePath: publicFileUrl("generated", "scans", scanId, axeFileName),
+    axePath: publicFileUrl("api", "evidence", scanId, axeFileName),
     axeFileSize: axeStat.size
   };
 }
