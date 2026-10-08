@@ -19,8 +19,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  let body: unknown;
   try {
-    const body = await request.json();
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
+  }
+  try {
     const parsed = requestSchema.safeParse(body);
 
     if (!parsed.success) {
