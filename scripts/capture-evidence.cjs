@@ -7,7 +7,12 @@ const { pathToFileURL }=require('node:url');
  const browser=await chromium.launch();
  const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});
  await page.goto('http://127.0.0.1:43187');await page.screenshot({path:'docs/img/portal.png',fullPage:true});
- await page.goto('http://127.0.0.1:43187/defects');await page.getByRole('heading',{name:'Saved defects'}).waitFor();await page.screenshot({path:'docs/img/defects.png',fullPage:true});
+ const created=await fetch('http://127.0.0.1:43187/api/defects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'Synthetic checkout button issue',description:'Fictional screenshot fixture for demonstrating defect triage.',severity:'high',priority:'high',status:'retest'})});
+ if(created.status!==201)throw new Error('Unable to create synthetic screenshot fixture.');
+ const defect=(await created.json()).defect;
+ try {
+  await page.goto('http://127.0.0.1:43187/defects');await page.getByRole('heading',{name:defect.title,exact:true}).waitFor();await page.screenshot({path:'docs/img/defects.png',fullPage:true});
+ } finally { await fetch(`http://127.0.0.1:43187/api/defects/${defect.id}`,{method:'DELETE'}); }
  await page.goto('http://127.0.0.1:43187/smoke-test');
  await page.getByRole('button').filter({hasText:'Website QA'}).first().click();
  await page.getByText('Full-page screenshot',{exact:true}).waitFor();await page.screenshot({path:'docs/img/scanner.png',fullPage:true});
