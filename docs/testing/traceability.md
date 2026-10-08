@@ -18,6 +18,6 @@ API-01 through API-21 are deliberately mirrored in the exported Postman collecti
 
 | Defect | Requirement | Permanent regression | Fix |
 |---|---|---|---|
-| [BUG-001](bug-reports/BUG-001.md) | R-02 | API-17 in both API suites | [c8a949f](https://github.com/iamnajib71/qa-automation/commit/c8a949f) |
-| [BUG-002](bug-reports/BUG-002.md) | R-02 | API-18 in both API suites; E2E-04; CY-05 | [b728802](https://github.com/iamnajib71/qa-automation/commit/b728802) |
-| [BUG-003](bug-reports/BUG-003.md) | R-02 | API-21 in both API suites | [6d924d9](https://github.com/iamnajib71/qa-automation/commit/6d924d9) |
+| [BUG-001](bug-reports/BUG-001.md) | R-02 | API-17 in both API suites | [5da31c0](https://github.com/iamnajib71/qa-automation/commit/5da31c0) |
+| [BUG-002](bug-reports/BUG-002.md) | R-02 | API-18 in both API suites; E2E-04; CY-05 | [5916274](https://github.com/iamnajib71/qa-automation/commit/5916274) |
+| [BUG-003](bug-reports/BUG-003.md) | R-02 | API-21 in both API suites | [3ef9ad4](https://github.com/iamnajib71/qa-automation/commit/3ef9ad4) |
