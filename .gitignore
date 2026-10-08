@@ -11,3 +11,15 @@ dist
 *.tsbuildinfo
 data/*.json
 public/generated/scans
+
+reports/
+test-results/
+cypress/videos/
+cypress/screenshots/
+CLAUDE.md
+AGENTS.md
+.env.*
+!.env.example
+
+.tools/
+.verification/

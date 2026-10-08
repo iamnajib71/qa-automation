@@ -1,0 +1,619 @@
+{
+  "info": {
+    "name": "QA Portal REST and scanner regression",
+    "description": "Synthetic data only. Run sequentially; creates then deletes its own defect. The scan targets the local portal and requires Chromium.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:4173"
+    }
+  ],
+  "item": [
+    {
+      "name": "API-01 list defects",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/defects"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-01 HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('list schema',()=>pm.response.to.have.jsonSchema({\"type\":\"object\",\"required\":[\"defects\"],\"properties\":{\"defects\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"required\":[\"id\",\"title\",\"description\",\"severity\",\"priority\",\"status\",\"createdAt\",\"updatedAt\"],\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[0-9a-f-]{36}$\"},\"title\":{\"type\":\"string\",\"minLength\":3,\"maxLength\":120},\"description\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":2000},\"severity\":{\"enum\":[\"low\",\"medium\",\"high\",\"critical\"]},\"priority\":{\"enum\":[\"low\",\"medium\",\"high\"]},\"status\":{\"enum\":[\"open\",\"in_progress\",\"retest\",\"closed\"]},\"createdAt\":{\"type\":\"string\",\"format\":\"date-time\"},\"updatedAt\":{\"type\":\"string\",\"format\":\"date-time\"}}}}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-02 create defect",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\":\"Synthetic Newman API defect\",\"description\":\"Fictional automated test data.\",\"severity\":\"high\",\"priority\":\"high\",\"status\":\"open\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-02 HTTP 201',()=>pm.response.to.have.status(201));",
+              "pm.test('record schema',()=>pm.response.to.have.jsonSchema({\"type\":\"object\",\"required\":[\"defect\"],\"properties\":{\"defect\":{\"type\":\"object\",\"required\":[\"id\",\"title\",\"description\",\"severity\",\"priority\",\"status\",\"createdAt\",\"updatedAt\"],\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[0-9a-f-]{36}$\"},\"title\":{\"type\":\"string\",\"minLength\":3,\"maxLength\":120},\"description\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":2000},\"severity\":{\"enum\":[\"low\",\"medium\",\"high\",\"critical\"]},\"priority\":{\"enum\":[\"low\",\"medium\",\"high\"]},\"status\":{\"enum\":[\"open\",\"in_progress\",\"retest\",\"closed\"]},\"createdAt\":{\"type\":\"string\",\"format\":\"date-time\"},\"updatedAt\":{\"type\":\"string\",\"format\":\"date-time\"}}}}}));",
+              "const d=pm.response.json().defect; pm.collectionVariables.set('defectId',d.id); pm.test('created fields and Location',()=>{pm.expect(d.title).to.equal('Synthetic Newman API defect');pm.expect(pm.response.headers.get('Location')).to.equal('/api/defects/'+d.id);});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-03 read defect",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/defects/{{defectId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-03 HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('record schema',()=>pm.response.to.have.jsonSchema({\"type\":\"object\",\"required\":[\"defect\"],\"properties\":{\"defect\":{\"type\":\"object\",\"required\":[\"id\",\"title\",\"description\",\"severity\",\"priority\",\"status\",\"createdAt\",\"updatedAt\"],\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[0-9a-f-]{36}$\"},\"title\":{\"type\":\"string\",\"minLength\":3,\"maxLength\":120},\"description\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":2000},\"severity\":{\"enum\":[\"low\",\"medium\",\"high\",\"critical\"]},\"priority\":{\"enum\":[\"low\",\"medium\",\"high\"]},\"status\":{\"enum\":[\"open\",\"in_progress\",\"retest\",\"closed\"]},\"createdAt\":{\"type\":\"string\",\"format\":\"date-time\"},\"updatedAt\":{\"type\":\"string\",\"format\":\"date-time\"}}}}}));",
+              "pm.test('persisted title',()=>pm.expect(pm.response.json().defect.title).to.equal('Synthetic Newman API defect'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-04 patch defect",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects/{{defectId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"status\":\"retest\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-04 HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('record schema',()=>pm.response.to.have.jsonSchema({\"type\":\"object\",\"required\":[\"defect\"],\"properties\":{\"defect\":{\"type\":\"object\",\"required\":[\"id\",\"title\",\"description\",\"severity\",\"priority\",\"status\",\"createdAt\",\"updatedAt\"],\"additionalProperties\":false,\"properties\":{\"id\":{\"type\":\"string\",\"pattern\":\"^[0-9a-f-]{36}$\"},\"title\":{\"type\":\"string\",\"minLength\":3,\"maxLength\":120},\"description\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":2000},\"severity\":{\"enum\":[\"low\",\"medium\",\"high\",\"critical\"]},\"priority\":{\"enum\":[\"low\",\"medium\",\"high\"]},\"status\":{\"enum\":[\"open\",\"in_progress\",\"retest\",\"closed\"]},\"createdAt\":{\"type\":\"string\",\"format\":\"date-time\"},\"updatedAt\":{\"type\":\"string\",\"format\":\"date-time\"}}}}}));",
+              "pm.test('retest preserves title',()=>{pm.expect(pm.response.json().defect.status).to.equal('retest');pm.expect(pm.response.json().defect.title).to.equal('Synthetic Newman API defect');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-05 invalid title",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\":\" \",\"description\":\"Fictional automated test data.\",\"severity\":\"high\",\"priority\":\"high\",\"status\":\"open\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-05 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-05 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-06 invalid severity",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\":\"Synthetic Newman API defect\",\"description\":\"Fictional automated test data.\",\"severity\":\"urgent\",\"priority\":\"high\",\"status\":\"open\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-06 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-06 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-07 unexpected field",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\":\"Synthetic Newman API defect\",\"description\":\"Fictional automated test data.\",\"severity\":\"high\",\"priority\":\"high\",\"status\":\"open\",\"owner\":\"unexpected\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-07 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-07 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-08 empty patch",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects/{{defectId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-08 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-08 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-09 invalid patch",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects/{{defectId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"status\":\"invalid\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-09 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-09 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-10 malformed defect JSON",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\":",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-10 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-10 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-11 missing GET",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/defects/00000000-0000-4000-8000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-11 HTTP 404',()=>pm.response.to.have.status(404));",
+              "pm.test('API-11 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-12 missing PATCH",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/defects/00000000-0000-4000-8000-000000000000",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"status\":\"closed\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-12 HTTP 404',()=>pm.response.to.have.status(404));",
+              "pm.test('API-12 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-13 missing DELETE",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/defects/00000000-0000-4000-8000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-13 HTTP 404',()=>pm.response.to.have.status(404));",
+              "pm.test('API-13 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-14 delete defect",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/defects/{{defectId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-14 HTTP 204',()=>pm.response.to.have.status(204));",
+              "pm.test('empty deletion body',()=>pm.expect(pm.response.text()).to.equal(''));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-15 deleted record",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/defects/{{defectId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-15 HTTP 404',()=>pm.response.to.have.status(404));",
+              "pm.test('API-15 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-16 scan history",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/smoke-test?limit=2"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-16 HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('scan history schema and limit',()=>{pm.response.to.have.jsonSchema({type:'object',required:['scans'],properties:{scans:{type:'array'}}});pm.expect(pm.response.json().scans.length).to.be.at.most(2);});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-17 BUG-001 malformed scanner JSON",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/smoke-test",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"websiteUrl\":",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-17 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-17 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-18 BUG-002 invalid URL",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/smoke-test",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"websiteUrl\":\"http://[\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-18 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-18 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-19 missing URL",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/smoke-test",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-19 HTTP 400',()=>pm.response.to.have.status(400));",
+              "pm.test('API-19 error schema',()=>pm.response.to.have.jsonSchema({type:'object',required:['error'],properties:{error:{type:'string'}}}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-20 real browser scan",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/smoke-test",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"websiteUrl\":\"{{baseUrl}}\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-20 HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('browser scan schema and real evidence',()=>{const d=pm.response.json();pm.expect(d.scanRun.status).to.equal('completed');pm.expect(d.pageScan.httpStatus).to.equal(200);pm.expect(d.pageScan.metrics.browserFallbackReason).to.equal(undefined);pm.expect(d.evidence.map(e=>e.kind)).to.eql(['screenshot','raw_scan','axe_results']);pm.expect(d.evidence.every(e=>e.fileSize>0)).to.equal(true);pm.response.to.have.jsonSchema({type:'object',required:['project','scanRun','pageScan','findings','evidence'],properties:{evidence:{type:'array',minItems:3,items:{type:'object',required:['filePath','kind','fileSize']}}}});});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-21 BUG-003 nonexistent project",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/projects/00000000-0000-4000-8000-000000000000"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('API-21 HTTP 404',()=>pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

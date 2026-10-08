@@ -1,0 +1,104 @@
+name: CI
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+  CYPRESS_INSTALL_BINARY: '0'
+  QA_DATA_FILE: ${{ github.workspace }}/data/ci.json
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npm run lint
+  typecheck:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+  unit:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npm test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: unit-results, path: reports/unit, retention-days: 30 }
+  api:
+    needs: unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:api
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: newman-reports, path: reports/newman, retention-days: 30 }
+  playwright:
+    needs: api
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-reports
+          path: |
+            reports/playwright
+            reports/playwright-results.json
+            test-results
+          retention-days: 30
+  cypress:
+    needs: playwright
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx cypress install
+        env: { CYPRESS_INSTALL_BINARY: '' }
+      - run: npm run build
+      - run: npm run test:cypress
+      - run: npm run report:cypress
+        if: always()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-reports
+          path: |
+            reports/cypress
+            cypress/screenshots
+            cypress/videos
+          retention-days: 30

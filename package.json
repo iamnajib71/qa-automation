@@ -1,36 +1,62 @@
 {
-    "name": "qa-test-management-portal",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "eslint .",
-        "typecheck": "tsc --noEmit"
-    },
-    "dependencies": {
-        "@supabase/ssr": "^0.5.2",
-        "@supabase/supabase-js": "^2.49.4",
-        "axe-core": "^4.11.1",
-        "clsx": "^2.1.1",
-        "lucide-react": "^0.511.0",
-        "next": "^15.0.0",
-        "playwright": "^1.58.2",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0",
-        "tailwind-merge": "^2.5.5",
-        "zod": "^3.24.1"
-    },
-    "devDependencies": {
-        "@types/node": "^22.10.2",
-        "@types/react": "^19.0.2",
-        "@types/react-dom": "^19.0.2",
-        "autoprefixer": "^10.4.20",
-        "eslint": "^9.17.0",
-        "eslint-config-next": "^15.0.0",
-        "postcss": "^8.4.49",
-        "tailwindcss": "^3.4.16",
-        "typescript": "^5.7.2"
-    }
+  "name": "qa-test-management-portal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 4173",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:api": "start-server-and-test serve:test http://127.0.0.1:4173 test:api:run",
+    "test:api:run": "node scripts/run-newman.cjs",
+    "test:request": "playwright test --project=api",
+    "test:e2e": "playwright test",
+    "test:cypress": "start-server-and-test serve:test http://127.0.0.1:4173 test:cypress:run",
+    "test:cypress:run": "node scripts/run-cypress.cjs",
+    "report:cypress": "node scripts/cypress-report.cjs",
+    "serve:test": "next start --hostname 127.0.0.1 --port 4173",
+    "test:perf": "k6 run --summary-export docs/results/k6-summary.json tests/performance/smoke.js",
+    "test:all": "npm run lint && npm run typecheck && npm test && npm run build && npm run test:api && npm run test:e2e && npm run test:cypress && npm run report:cypress"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.49.4",
+    "axe-core": "^4.11.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.511.0",
+    "next": "^15.0.0",
+    "playwright": "^1.58.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^2.5.5",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/eslintrc": "^3.3.7",
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "autoprefixer": "^10.4.20",
+    "cypress": "^16.1.1",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.0.0",
+    "mochawesome": "^8.1.1",
+    "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2",
+    "newman": "^6.2.2",
+    "newman-reporter-htmlextra": "^1.23.1",
+    "postcss": "^8.4.49",
+    "start-server-and-test": "^3.0.13",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.2",
+    "vitest": "^5.0.3"
+  },
+  "overrides": {
+    "handlebars": "^4.7.10"
+  }
 }
