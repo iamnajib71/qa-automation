@@ -1,14 +1,10 @@
 ﻿import { NextResponse } from "next/server";
-import { z } from "zod";
+import { smokeTestSchema } from "@/lib/validators/smoke-test";
 
 import { executeSinglePageScan, getRecentSinglePageScans } from "@/lib/scan/service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const requestSchema = z.object({
-  websiteUrl: z.string().min(1, "Enter a website URL.")
-});
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -26,7 +22,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
   try {
-    const parsed = requestSchema.safeParse(body);
+    const parsed = smokeTestSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid request." }, { status: 400 });

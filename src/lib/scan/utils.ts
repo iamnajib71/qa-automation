@@ -24,8 +24,12 @@ export function normalizeTargetUrl(value: string) {
   }
 
   const shouldUseHttp = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/i.test(trimmed);
+  if (/^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) && !/^https?:\/\//i.test(trimmed)) {
+    throw new Error("Only HTTP and HTTPS URLs are supported.");
+  }
   const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `${shouldUseHttp ? "http" : "https"}://${trimmed}`;
   const parsed = new URL(withProtocol);
+  if (parsed.username || parsed.password || !parsed.hostname) throw new Error("Enter a URL without credentials.");
   return parsed.toString();
 }
 
