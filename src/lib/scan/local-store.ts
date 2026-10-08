@@ -255,3 +255,7 @@ export async function getProjectScanHistory(projectId: string): Promise<RecentSc
       };
     });
 }
+
+export async function getProject(projectId: string) {
+  return (await readDb()).projects.find((project) => project.id === projectId) ?? null;
+}

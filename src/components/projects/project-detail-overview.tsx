@@ -3,7 +3,8 @@
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { getProjectScanHistory } from "@/lib/scan/local-store";
+import { getProject, getProjectScanHistory } from "@/lib/scan/local-store";
+import { notFound } from "next/navigation";
 
 function readinessTone(readiness: "good" | "watch" | "at_risk") {
   switch (readiness) {
@@ -21,6 +22,7 @@ type ProjectDetailOverviewProps = {
 };
 
 export async function ProjectDetailOverview({ projectId }: ProjectDetailOverviewProps) {
+  if (!(await getProject(projectId))) notFound();
   const scans = await getProjectScanHistory(projectId);
   const latest = scans[0] ?? null;
 
