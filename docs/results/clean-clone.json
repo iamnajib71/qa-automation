@@ -1,87 +1,87 @@
 {
-  "source": "H:\\My Projects - IT\\qa-portal",
+  "failures": 0.0,
+  "revision": "57cf52248a8eeb1c3fcfe7639febdf9c758437a8",
+  "startedWithoutDependenciesBuildDataOrEnv": true,
   "commands": [
     {
-      "durationSeconds": 1.4977517,
-      "command": "git -c safe.directory=H:/My Projects - IT/qa-portal -c safe.directory=H:/My Projects - IT/qa-portal/.git clone --no-hardlinks H:\\My Projects - IT\\qa-portal C:\\Users\\Nazmul\\AppData\\Local\\Temp\\qa-automation-verify-67acef9b91a94ae089b69f5336556eb0",
-      "exitCode": 0
-    },
-    {
-      "durationSeconds": 28.2666413,
-      "command": "npm.cmd ci",
-      "exitCode": 0
-    },
-    {
-      "durationSeconds": 2.7036075,
-      "command": "npx.cmd playwright install chromium",
-      "exitCode": 0
-    },
-    {
-      "durationSeconds": 7.2504086,
-      "command": "npm.cmd test",
-      "exitCode": 0
-    },
-    {
-      "durationSeconds": 40.1309851,
-      "command": "npm.cmd run build",
-      "exitCode": 0
-    },
-    {
+      "durationSeconds": 1.2317068,
       "exitCode": 0,
-      "command": "npm.cmd run serve:test + real HTTP/browser demo verification"
+      "command": "git clone --no-hardlinks https://github.com/iamnajib71/qa-automation.git C:\\Users\\Nazmul\\AppData\\Local\\Temp\\qa-automation-verify-6db0df95a8f246abb3e78ba0fe1d7da4"
     },
     {
-      "durationSeconds": 23.7832062,
-      "command": "npm.cmd run lint",
+      "durationSeconds": 32.8562372,
+      "exitCode": 0,
+      "command": "npm.cmd ci"
+    },
+    {
+      "durationSeconds": 3.0128937,
+      "exitCode": 0,
+      "command": "npx.cmd playwright install chromium"
+    },
+    {
+      "durationSeconds": 9.5299643,
+      "exitCode": 0,
+      "command": "npm.cmd test"
+    },
+    {
+      "durationSeconds": 45.0556296,
+      "exitCode": 0,
+      "command": "npm.cmd run build"
+    },
+    {
+      "command": "npm.cmd run serve:test + real HTTP/browser demo verification",
       "exitCode": 0
     },
     {
-      "durationSeconds": 4.6246474,
-      "command": "npm.cmd run typecheck",
-      "exitCode": 0
+      "durationSeconds": 29.2436673,
+      "exitCode": 0,
+      "command": "npm.cmd run lint"
     },
     {
-      "durationSeconds": 21.5182382,
-      "command": "npm.cmd run test:api",
-      "exitCode": 0
+      "durationSeconds": 7.1011317,
+      "exitCode": 0,
+      "command": "npm.cmd run typecheck"
     },
     {
-      "durationSeconds": 13.3805872,
-      "command": "npm.cmd run test:e2e",
-      "exitCode": 0
+      "durationSeconds": 24.9508782,
+      "exitCode": 0,
+      "command": "npm.cmd run test:api"
     },
     {
-      "durationSeconds": 36.1638243,
-      "command": "npm.cmd run test:cypress",
-      "exitCode": 0
+      "durationSeconds": 15.4352782,
+      "exitCode": 0,
+      "command": "npm.cmd run test:e2e"
+    },
+    {
+      "durationSeconds": 61.3829203,
+      "exitCode": 0,
+      "command": "npm.cmd run test:cypress"
     }
   ],
-  "totals": {
-    "playwright": 29,
-    "cypress": 6.0,
-    "newmanRequests": 21,
-    "newmanAssertions": 44,
-    "unit": 32
-  },
-  "recordedAt": "2026-10-08T15:28:48.3645359Z",
-  "revision": "b8553aec77d4a93bd658f21e7a7399a6db9f3692",
-  "failures": 0.0,
-  "environment": {
-    "cloneDirectory": "C:\\Users\\Nazmul\\AppData\\Local\\Temp\\qa-automation-verify-67acef9b91a94ae089b69f5336556eb0",
-    "os": "Windows",
-    "node": "v22.22.0"
-  },
-  "startedWithoutDependenciesBuildDataOrEnv": true,
+  "recordedAt": "2026-10-08T15:43:10.3112554Z",
   "demo": {
     "targetStatus": 200,
+    "browserFallback": false,
+    "defectsPageStatus": 200,
+    "scanStatus": "completed",
+    "homeStatus": 200,
     "evidenceStatuses": [
       200,
       200,
       200
-    ],
-    "scanStatus": "completed",
-    "homeStatus": 200,
-    "defectsPageStatus": 200,
-    "browserFallback": false
+    ]
+  },
+  "source": "https://github.com/iamnajib71/qa-automation.git",
+  "environment": {
+    "os": "Windows",
+    "node": "v22.22.0",
+    "cloneDirectory": "C:\\Users\\Nazmul\\AppData\\Local\\Temp\\qa-automation-verify-6db0df95a8f246abb3e78ba0fe1d7da4"
+  },
+  "totals": {
+    "newmanRequests": 21,
+    "unit": 32,
+    "cypress": 6.0,
+    "playwright": 29,
+    "newmanAssertions": 44
   }
 }

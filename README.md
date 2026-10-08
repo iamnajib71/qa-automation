@@ -77,15 +77,15 @@ On PowerShell, use `npm.cmd` if script execution policy blocks `npm`. Install th
 
 ## Results and evidence
 
-[Executed Windows run](docs/results/local-summary.json) (CI publication pending). Counts below are read from that run's reports; requests and assertions are explicitly distinguished. Fixtures are synthetic; scan metrics are measured from this real portal. No coverage percentage is claimed.
+[GitHub CI run](https://github.com/iamnajib71/qa-automation/actions/runs/37802529519) · [saved counts](docs/results/ci-summary.json). Counts below are read from that run's reports; requests and assertions are explicitly distinguished. Fixtures are synthetic; scan metrics are measured from this real portal. No coverage percentage is claimed.
 
 | Suite | Passed | Failed | Evidence |
 |---|---:|---:|---|
-| Vitest unit | 32 tests | 0 | [Unit JSON](docs/results/unit-results.json) |
-| Newman API | 21 requests / 44 assertions | 0 | [API execution summary](docs/results/newman-summary.json) |
-| Playwright request | 22 tests | 0 | [Playwright summary](docs/results/playwright-summary.json) |
-| Playwright E2E + accessibility | 7 tests | 0 | [Playwright summary](docs/results/playwright-summary.json) |
-| Cypress | 6 tests across six specs | 0 | [Cypress summary](docs/results/cypress-summary.json) |
+| Vitest unit | 32 tests | 0 | [CI counts](docs/results/ci-summary.json) |
+| Newman API | 21 requests / 44 assertions | 0 | [CI counts](docs/results/ci-summary.json) |
+| Playwright request | 22 tests | 0 | [CI counts](docs/results/ci-summary.json) |
+| Playwright E2E + accessibility | 7 tests | 0 | [CI counts](docs/results/ci-summary.json) |
+| Cypress | 6 tests across six specs | 0 | [CI counts](docs/results/ci-summary.json) |
 | k6 (local only) | 74 requests / 148 checks; p95 11.81 ms | 0% HTTP errors; 0 failed checks | [Local summary](docs/results/k6-summary.json), [raw output](docs/results/k6-output.txt) |
 
 [Windows execution snapshot](docs/results/local-summary.json) · [clean-clone verification](docs/results/clean-clone.json) · [BUG-001](docs/testing/bug-reports/BUG-001.md) · [BUG-002](docs/testing/bug-reports/BUG-002.md) · [BUG-003](docs/testing/bug-reports/BUG-003.md).
