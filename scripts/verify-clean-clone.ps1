@@ -14,7 +14,14 @@ function Invoke-QaStep([string[]]$Command) {
   $qaSteps.Add(@{ command = $Command -join ' '; exitCode = $qaExit; durationSeconds = ((Get-Date) - $qaStarted).TotalSeconds })
   if ($qaExit -ne 0) { throw "Failed: $($Command -join ' ')" }
 }
-Invoke-QaStep @('git', 'clone', '--no-hardlinks', $SourceRepository, $qaClone)
+$qaCloneCommand = @('git')
+if (Test-Path -LiteralPath $SourceRepository) {
+  # This explicitly selected workspace can be owned by the sandbox account.
+  # Scope the trust exception to this clone command and its source only.
+  $qaTrustedSource = (Resolve-Path -LiteralPath $SourceRepository).Path.Replace('\', '/')
+  $qaCloneCommand += @('-c', "safe.directory=$qaTrustedSource", '-c', "safe.directory=$qaTrustedSource/.git")
+}
+Invoke-QaStep ($qaCloneCommand + @('clone', '--no-hardlinks', $SourceRepository, $qaClone))
 Push-Location -LiteralPath $qaClone
 try {
   $qaRevision = (& git rev-parse HEAD).Trim()
@@ -39,7 +46,7 @@ try {
     $qaDemo = @{ homeStatus = $qaHome.StatusCode; defectsPageStatus = $qaDefectsPage.StatusCode; scanStatus = $qaScan.scanRun.status; targetStatus = $qaScan.pageScan.httpStatus; browserFallback = [bool]$qaScan.pageScan.metrics.browserFallbackReason; evidenceStatuses = $qaEvidenceStatuses }
     $qaSteps.Add(@{ command = 'npm.cmd run serve:test + real HTTP/browser demo verification'; exitCode = 0 })
   } finally {
-    if ($qaServer -and !(Get-Process -Id $qaServer.Id -ErrorAction SilentlyContinue).HasExited) {
+    if ($qaServer -and (Get-Process -Id $qaServer.Id -ErrorAction SilentlyContinue)) {
       & taskkill.exe /PID $qaServer.Id /T /F | Out-Null
     }
   }
