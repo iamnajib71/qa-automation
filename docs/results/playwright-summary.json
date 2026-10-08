@@ -1,0 +1,332 @@
+{
+  "recordedAt": "2026-10-08T15:16:11.560Z",
+  "stats": {
+    "startTime": "2026-10-08T15:14:13.159Z",
+    "duration": 13595.318,
+    "expected": 29,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "api.spec.ts / API-22 concurrent creates do not lose JSON records",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 138
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-01 list schema",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 55
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-02 create schema and Location",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 31
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-03 read persisted record",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 19
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-04 patch status preserves title",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 18
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-05 invalid create returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 15
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-06 invalid create returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 12
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-07 invalid create returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 10
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-08 invalid patch returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 12
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-09 invalid patch returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 16
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-10 malformed defect JSON",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 12
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-11 missing defect get returns 404",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 11
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-12 missing defect patch returns 404",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 12
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-13 missing defect delete returns 404",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 11
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-14 delete returns empty 204",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 37
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-15 deleted record returns 404",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 10
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-16 scan history schema",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 11
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-17 BUG-001 malformed scanner JSON returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-18 BUG-002 invalid URL returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 10
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-19 missing scanner URL returns 400",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-20 real browser scan returns evidence",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1286
+        }
+      ]
+    },
+    {
+      "title": "api.spec.ts / REST contract and scanner regression / API-21 BUG-003 unknown project returns 404",
+      "project": "api",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 89
+        }
+      ]
+    },
+    {
+      "title": "e2e.spec.ts / E2E-01 real scanner, saved history, project and downloadable evidence",
+      "project": "e2e",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2176
+        }
+      ]
+    },
+    {
+      "title": "e2e.spec.ts / E2E-02 defect create, reload, retest, close and delete",
+      "project": "e2e",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1264
+        }
+      ]
+    },
+    {
+      "title": "e2e.spec.ts / E2E-03 validation prevents a blank defect",
+      "project": "e2e",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 448
+        }
+      ]
+    },
+    {
+      "title": "e2e.spec.ts / E2E-04 scanner rejects invalid URL",
+      "project": "e2e",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 503
+        }
+      ]
+    },
+    {
+      "title": "e2e.spec.ts / A11Y-01 full axe rules (including WCAG 2.1 AA) /",
+      "project": "e2e",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 857
+        }
+      ]
+    },
+    {
+      "title": "e2e.spec.ts / A11Y-02 full axe rules (including WCAG 2.1 AA) /defects",
+      "project": "e2e",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 966
+        }
+      ]
+    },
+    {
+      "title": "e2e.spec.ts / A11Y-03 full axe rules (including WCAG 2.1 AA) /smoke-test",
+      "project": "e2e",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 776
+        }
+      ]
+    }
+  ]
+}

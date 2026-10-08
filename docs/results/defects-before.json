@@ -1,0 +1,35 @@
+{
+  "commit": "5f1610f",
+  "recordedAt": "2026-10-08T10:47:46.098Z",
+  "evidence": [
+    {
+      "id": "BUG-001",
+      "method": "POST",
+      "url": "/api/smoke-test",
+      "requestBody": "{\"websiteUrl\":",
+      "status": 500,
+      "body": "{\"error\":\"Unexpected end of JSON input\"}",
+      "expectedStatus": 400
+    },
+    {
+      "id": "BUG-002",
+      "method": "POST",
+      "url": "/api/smoke-test",
+      "requestBody": "{\"websiteUrl\":\"http://[\"}",
+      "status": 500,
+      "body": "{\"error\":\"Invalid URL\"}",
+      "expectedStatus": 400
+    },
+    {
+      "id": "BUG-003",
+      "method": "GET",
+      "url": "/projects/00000000-0000-4000-8000-000000000000",
+      "status": 200,
+      "body": {
+        "showsMissingProjectAsExisting": true,
+        "showsNotScanned": true
+      },
+      "expectedStatus": 404
+    }
+  ]
+}

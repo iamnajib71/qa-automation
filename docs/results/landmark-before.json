@@ -1,0 +1,51 @@
+{
+  "recordedAt": "2026-10-08T15:14:21.964Z",
+  "finding": {
+    "id": "0305a30f-4c5f-40bb-90e3-9250e758dbdb",
+    "projectId": "7113d9fd-c776-4c63-93f8-e2bae9602d7e",
+    "pageId": "5dfd4854-f479-4492-b1f4-f054661a93ad",
+    "scanRunId": "b528834d-6109-4d5e-8e4a-7b46671bc3fa",
+    "pageScanId": "84bb8521-8a49-40a3-95bd-7b9cdce8b7c1",
+    "category": "accessibility",
+    "title": "Accessibility issue: All page content should be contained by landmarks",
+    "description": "Ensure all page content is contained by landmarks Fix any of the following:\n  Some page content is not contained by landmarks",
+    "severity": "medium",
+    "confidenceScore": 0.94,
+    "source": "automated-rule",
+    "recommendedAction": "Review the impacted elements and the guidance at https://dequeuniversity.com/rules/axe/4.13/region?application=axeAPI.",
+    "status": "automated_finding",
+    "metadata": {
+      "ruleId": "region",
+      "impact": "moderate",
+      "nodeTargets": [
+        ".fixed"
+      ]
+    },
+    "createdAt": "2026-10-08T15:10:31.172Z",
+    "updatedAt": "2026-10-08T15:10:31.172Z"
+  },
+  "scan": {
+    "id": "b528834d-6109-4d5e-8e4a-7b46671bc3fa",
+    "projectId": "7113d9fd-c776-4c63-93f8-e2bae9602d7e",
+    "projectUrlId": "bba5dcb5-9b3a-45ed-aeb9-c33564af6331",
+    "mode": "single_page",
+    "status": "completed",
+    "source": "automated-rule",
+    "startedAt": "2026-10-08T15:10:30.002Z",
+    "completedAt": "2026-10-08T15:10:31.132Z",
+    "baseUrl": "http://127.0.0.1:43187/",
+    "summary": {
+      "pageCount": 1,
+      "findingCount": 1,
+      "accessibilityIssueCount": 1,
+      "performanceScore": 100,
+      "accessibilityScore": 92,
+      "seoScore": 100,
+      "bestPracticesScore": 80,
+      "releaseReadiness": "good"
+    },
+    "errorMessage": null,
+    "createdAt": "2026-10-08T15:10:31.172Z",
+    "updatedAt": "2026-10-08T15:10:31.172Z"
+  }
+}

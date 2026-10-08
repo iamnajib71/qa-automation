@@ -1,0 +1,38 @@
+{
+  "commit": "ee5705d24794b11a6b3da62e3ceec894921aa262",
+  "recordedAt": "2026-10-08T15:07:48.170Z",
+  "evidence": [
+    {
+      "id": "BUG-001",
+      "method": "POST",
+      "url": "/api/smoke-test",
+      "requestBody": "{\"websiteUrl\":",
+      "status": 400,
+      "body": "{\"error\":\"Request body must be valid JSON.\"}",
+      "expectedStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "BUG-002",
+      "method": "POST",
+      "url": "/api/smoke-test",
+      "requestBody": "{\"websiteUrl\":\"http://[\"}",
+      "status": 400,
+      "body": "{\"error\":\"Enter a valid HTTP or HTTPS URL without credentials.\"}",
+      "expectedStatus": 400,
+      "passed": true
+    },
+    {
+      "id": "BUG-003",
+      "method": "GET",
+      "url": "/projects/00000000-0000-4000-8000-000000000000",
+      "status": 404,
+      "body": {
+        "showsMissingProjectAsExisting": false,
+        "showsNotScanned": false
+      },
+      "expectedStatus": 404,
+      "passed": true
+    }
+  ]
+}

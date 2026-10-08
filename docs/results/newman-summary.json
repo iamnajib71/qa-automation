@@ -1,0 +1,355 @@
+{
+  "recordedAt": "2026-10-08T15:16:11.560Z",
+  "stats": {
+    "iterations": {
+      "total": 1,
+      "pending": 0,
+      "failed": 0
+    },
+    "items": {
+      "total": 21,
+      "pending": 0,
+      "failed": 0
+    },
+    "scripts": {
+      "total": 21,
+      "pending": 0,
+      "failed": 0
+    },
+    "prerequests": {
+      "total": 21,
+      "pending": 0,
+      "failed": 0
+    },
+    "requests": {
+      "total": 21,
+      "pending": 0,
+      "failed": 0
+    },
+    "tests": {
+      "total": 21,
+      "pending": 0,
+      "failed": 0
+    },
+    "assertions": {
+      "total": 44,
+      "pending": 0,
+      "failed": 0
+    },
+    "testScripts": {
+      "total": 21,
+      "pending": 0,
+      "failed": 0
+    },
+    "prerequestScripts": {
+      "total": 0,
+      "pending": 0,
+      "failed": 0
+    }
+  },
+  "failures": [],
+  "executions": [
+    {
+      "name": "API-01 list defects",
+      "status": 200,
+      "assertions": [
+        {
+          "assertion": "API-01 HTTP 200",
+          "skipped": false
+        },
+        {
+          "assertion": "list schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-02 create defect",
+      "status": 201,
+      "assertions": [
+        {
+          "assertion": "API-02 HTTP 201",
+          "skipped": false
+        },
+        {
+          "assertion": "record schema",
+          "skipped": false
+        },
+        {
+          "assertion": "created fields and Location",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-03 read defect",
+      "status": 200,
+      "assertions": [
+        {
+          "assertion": "API-03 HTTP 200",
+          "skipped": false
+        },
+        {
+          "assertion": "record schema",
+          "skipped": false
+        },
+        {
+          "assertion": "persisted title",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-04 patch defect",
+      "status": 200,
+      "assertions": [
+        {
+          "assertion": "API-04 HTTP 200",
+          "skipped": false
+        },
+        {
+          "assertion": "record schema",
+          "skipped": false
+        },
+        {
+          "assertion": "retest preserves title",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-05 invalid title",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-05 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-05 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-06 invalid severity",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-06 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-06 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-07 unexpected field",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-07 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-07 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-08 empty patch",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-08 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-08 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-09 invalid patch",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-09 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-09 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-10 malformed defect JSON",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-10 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-10 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-11 missing GET",
+      "status": 404,
+      "assertions": [
+        {
+          "assertion": "API-11 HTTP 404",
+          "skipped": false
+        },
+        {
+          "assertion": "API-11 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-12 missing PATCH",
+      "status": 404,
+      "assertions": [
+        {
+          "assertion": "API-12 HTTP 404",
+          "skipped": false
+        },
+        {
+          "assertion": "API-12 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-13 missing DELETE",
+      "status": 404,
+      "assertions": [
+        {
+          "assertion": "API-13 HTTP 404",
+          "skipped": false
+        },
+        {
+          "assertion": "API-13 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-14 delete defect",
+      "status": 204,
+      "assertions": [
+        {
+          "assertion": "API-14 HTTP 204",
+          "skipped": false
+        },
+        {
+          "assertion": "empty deletion body",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-15 deleted record",
+      "status": 404,
+      "assertions": [
+        {
+          "assertion": "API-15 HTTP 404",
+          "skipped": false
+        },
+        {
+          "assertion": "API-15 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-16 scan history",
+      "status": 200,
+      "assertions": [
+        {
+          "assertion": "API-16 HTTP 200",
+          "skipped": false
+        },
+        {
+          "assertion": "scan history schema and limit",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-17 BUG-001 malformed scanner JSON",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-17 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-17 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-18 BUG-002 invalid URL",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-18 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-18 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-19 missing URL",
+      "status": 400,
+      "assertions": [
+        {
+          "assertion": "API-19 HTTP 400",
+          "skipped": false
+        },
+        {
+          "assertion": "API-19 error schema",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-20 real browser scan",
+      "status": 200,
+      "assertions": [
+        {
+          "assertion": "API-20 HTTP 200",
+          "skipped": false
+        },
+        {
+          "assertion": "browser scan schema and real evidence",
+          "skipped": false
+        }
+      ]
+    },
+    {
+      "name": "API-21 BUG-003 nonexistent project",
+      "status": 404,
+      "assertions": [
+        {
+          "assertion": "API-21 HTTP 404",
+          "skipped": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,465 @@
+{
+  "numTotalTestSuites": 5,
+  "numPassedTestSuites": 5,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 32,
+  "numPassedTests": 32,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1791472235993,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries latency 0 yields 100",
+          "status": "passed",
+          "title": "latency 0 yields 100",
+          "duration": 1.7907000000000153,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries latency 2500 yields 100",
+          "status": "passed",
+          "title": "latency 2500 yields 100",
+          "duration": 0.32679999999999154,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries latency 2501 yields 70",
+          "status": "passed",
+          "title": "latency 2501 yields 70",
+          "duration": 0.1488999999999976,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries latency 4500 yields 70",
+          "status": "passed",
+          "title": "latency 4500 yields 70",
+          "duration": 0.27600000000001046,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries latency 4501 yields 35",
+          "status": "passed",
+          "title": "latency 4501 yields 35",
+          "duration": 0.14359999999999218,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries clamps and rounds -20 to 0",
+          "status": "passed",
+          "title": "clamps and rounds -20 to 0",
+          "duration": 0.25380000000001246,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries clamps and rounds 101 to 100",
+          "status": "passed",
+          "title": "clamps and rounds 101 to 100",
+          "duration": 0.20849999999998658,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries clamps and rounds 84.6 to 85",
+          "status": "passed",
+          "title": "clamps and rounds 84.6 to 85",
+          "duration": 0.11240000000000805,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries penalises serious accessibility violations",
+          "status": "passed",
+          "title": "penalises serious accessibility violations",
+          "duration": 0.5728000000000009,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries caps heavy accessibility penalties at zero",
+          "status": "passed",
+          "title": "caps heavy accessibility penalties at zero",
+          "duration": 0.319500000000005,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries rewards a complete SEO baseline",
+          "status": "passed",
+          "title": "rewards a complete SEO baseline",
+          "duration": 0.226600000000019,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries penalises missing metadata and broken requests",
+          "status": "passed",
+          "title": "penalises missing metadata and broken requests",
+          "duration": 0.10880000000000223,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries gives a healthy secure page full best-practice score",
+          "status": "passed",
+          "title": "gives a healthy secure page full best-practice score",
+          "duration": 0.12810000000001764,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "score boundaries"
+          ],
+          "fullName": "score boundaries does not let runtime penalties reduce category weights below zero",
+          "status": "passed",
+          "title": "does not let runtime penalties reduce category weights below zero",
+          "duration": 0.08039999999999736,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791472236466,
+      "endTime": 1791472236471.2266,
+      "status": "passed",
+      "message": "",
+      "name": "H:/My Projects - IT/qa-portal/tests/unit/scoring.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation normalises example.com",
+          "status": "passed",
+          "title": "normalises example.com",
+          "duration": 1.9491000000000156,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation normalises  localhost:4173 ",
+          "status": "passed",
+          "title": "normalises  localhost:4173 ",
+          "duration": 0.3363999999999976,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation normalises 127.0.0.1:4173",
+          "status": "passed",
+          "title": "normalises 127.0.0.1:4173",
+          "duration": 0.13670000000001892,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation rejects invalid URL ",
+          "status": "passed",
+          "title": "rejects invalid URL ",
+          "duration": 1.4248000000000047,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation rejects invalid URL    ",
+          "status": "passed",
+          "title": "rejects invalid URL    ",
+          "duration": 0.290300000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation rejects invalid URL http://[",
+          "status": "passed",
+          "title": "rejects invalid URL http://[",
+          "duration": 0.5452999999999975,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation rejects invalid URL ftp://example.com",
+          "status": "passed",
+          "title": "rejects invalid URL ftp://example.com",
+          "duration": 0.22499999999999432,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation rejects invalid URL https://user:password@example.com",
+          "status": "passed",
+          "title": "rejects invalid URL https://user:password@example.com",
+          "duration": 0.2009999999999934,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation creates stable project keys",
+          "status": "passed",
+          "title": "creates stable project keys",
+          "duration": 0.5968000000000018,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "URL parsing and validation"
+          ],
+          "fullName": "URL parsing and validation sanitises filenames",
+          "status": "passed",
+          "title": "sanitises filenames",
+          "duration": 0.3101000000000056,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation trims title and defaults status",
+          "status": "passed",
+          "title": "trims title and defaults status",
+          "duration": 1.2151999999999816,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation rejects invalid field {\"title\":\" \"}",
+          "status": "passed",
+          "title": "rejects invalid field {\"title\":\" \"}",
+          "duration": 0.4240999999999815,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation rejects invalid field {\"severity\":\"urgent\"}",
+          "status": "passed",
+          "title": "rejects invalid field {\"severity\":\"urgent\"}",
+          "duration": 0.19230000000001723,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation rejects invalid field {\"title\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}",
+          "status": "passed",
+          "title": "rejects invalid field {\"title\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}",
+          "duration": 0.16800000000000637,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation rejects invalid field {\"description\":\"\"}",
+          "status": "passed",
+          "title": "rejects invalid field {\"description\":\"\"}",
+          "duration": 0.10900000000000887,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation rejects invalid field {\"owner\":\"unexpected\"}",
+          "status": "passed",
+          "title": "rejects invalid field {\"owner\":\"unexpected\"}",
+          "duration": 0.1092999999999904,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation rejects empty patches",
+          "status": "passed",
+          "title": "rejects empty patches",
+          "duration": 0.3305000000000007,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [
+            "defect validation"
+          ],
+          "fullName": "defect validation accepts a status-only patch without resetting other fields",
+          "status": "passed",
+          "title": "accepts a status-only patch without resetting other fields",
+          "duration": 0.25789999999997804,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791472236479,
+      "endTime": 1791472236488.3306,
+      "status": "passed",
+      "message": "",
+      "name": "H:/My Projects - IT/qa-portal/tests/unit/validation.test.ts"
+    }
+  ]
+}

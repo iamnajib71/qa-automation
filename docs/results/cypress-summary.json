@@ -1,0 +1,479 @@
+{
+  "recordedAt": "2026-10-08T15:16:11.560Z",
+  "specs": [
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-10-08T15:14:50.094Z",
+        "end": "2026-10-08T15:14:50.995Z",
+        "duration": 901,
+        "testsRegistered": 1,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "results": [
+        {
+          "uuid": "ea804d03-2002-4c53-bfd1-0ff49c07d77a",
+          "title": "",
+          "fullFile": "cypress\\e2e\\01-navigation.cy.js",
+          "file": "cypress\\e2e\\01-navigation.cy.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "93cf6617-6107-4d94-8a69-45d8000ba952",
+              "title": "CY-01 workspace navigation",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "opens the workspace and main journeys",
+                  "fullTitle": "CY-01 workspace navigation opens the workspace and main journeys",
+                  "timedOut": null,
+                  "duration": 837,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const page = new _WorkspacePage.WorkspacePage();\npage.visit();\npage.open();\ncy.location('pathname').should('eq', '/dashboard');\npage.navigate('Defects');\ncy.contains('h2', 'Saved defects').should('be.visible');\npage.navigate('Projects');\ncy.location('pathname').should('eq', '/projects');",
+                  "err": {},
+                  "uuid": "473c770f-9896-40a5-9357-b8d5c937b8e7",
+                  "parentUUID": "93cf6617-6107-4d94-8a69-45d8000ba952",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "473c770f-9896-40a5-9357-b8d5c937b8e7"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 837,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": true,
+          "rootEmpty": true,
+          "_timeout": 2000
+        }
+      ]
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-10-08T15:14:53.502Z",
+        "end": "2026-10-08T15:14:55.000Z",
+        "duration": 1498,
+        "testsRegistered": 1,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "results": [
+        {
+          "uuid": "c81efe99-831c-4075-bffb-da8bb34ccd2e",
+          "title": "",
+          "fullFile": "cypress\\e2e\\02-create.cy.js",
+          "file": "cypress\\e2e\\02-create.cy.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "31cc587e-4d31-46c0-b425-a9efe7301506",
+              "title": "CY-02 defect creation and persistence",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "creates a fixture defect and reloads it",
+                  "fullTitle": "CY-02 defect creation and persistence creates a fixture defect and reloads it",
+                  "timedOut": null,
+                  "duration": 1439,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const page = new _DefectsPage.DefectsPage();\ncy.fixture('defect').then(defect => {\n  defect.title += ` create ${Date.now()}`;\n  page.visit();\n  page.fill(defect);\n  cy.intercept('POST', '/api/defects').as('create');\n  page.create();\n  cy.wait('@create').then(({\n    response\n  }) => {\n    expect(response.statusCode).to.eq(201);\n    id = response.body.defect.id;\n  });\n  page.card(defect.title).should('be.visible');\n  cy.reload();\n  page.card(defect.title).should('contain', 'Severity: high');\n});",
+                  "err": {},
+                  "uuid": "6e274f29-afcd-4a48-a913-cfaf6c852665",
+                  "parentUUID": "31cc587e-4d31-46c0-b425-a9efe7301506",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "6e274f29-afcd-4a48-a913-cfaf6c852665"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1439,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": true,
+          "rootEmpty": true,
+          "_timeout": 2000
+        }
+      ]
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-10-08T15:14:57.368Z",
+        "end": "2026-10-08T15:14:58.414Z",
+        "duration": 1046,
+        "testsRegistered": 1,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "results": [
+        {
+          "uuid": "48115896-149b-45cc-a35a-945b8f01635c",
+          "title": "",
+          "fullFile": "cypress\\e2e\\03-update.cy.js",
+          "file": "cypress\\e2e\\03-update.cy.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "63ab737a-b0d3-4e75-8110-00598c9ef039",
+              "title": "CY-03 defect retest and closure",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "updates a real record through retest and closed",
+                  "fullTitle": "CY-03 defect retest and closure updates a real record through retest and closed",
+                  "timedOut": null,
+                  "duration": 1012,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const page = new _DefectsPage.DefectsPage();\ncy.fixture('defect').then(defect => {\n  defect.title += ` update ${Date.now()}`;\n  cy.request('POST', '/api/defects', defect).then(({\n    body\n  }) => {\n    id = body.defect.id;\n  });\n  page.visit();\n  ['retest', 'closed'].forEach(status => {\n    page.edit(defect.title);\n    page.field('Status').select(status);\n    page.save();\n    page.card(defect.title).find('[data-testid=\"defect-status\"]').should('have.text', status);\n  });\n});",
+                  "err": {},
+                  "uuid": "970ef78a-28c9-431d-9e7d-314cb52c1f2b",
+                  "parentUUID": "63ab737a-b0d3-4e75-8110-00598c9ef039",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "970ef78a-28c9-431d-9e7d-314cb52c1f2b"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1012,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": true,
+          "rootEmpty": true,
+          "_timeout": 2000
+        }
+      ]
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-10-08T15:15:00.742Z",
+        "end": "2026-10-08T15:15:01.295Z",
+        "duration": 553,
+        "testsRegistered": 1,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "results": [
+        {
+          "uuid": "f5a4dece-d748-4202-b572-2d6d23dde551",
+          "title": "",
+          "fullFile": "cypress\\e2e\\04-delete.cy.js",
+          "file": "cypress\\e2e\\04-delete.cy.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "f6f47a59-ce59-4f1d-bc78-f1e585dc4ee1",
+              "title": "CY-04 deletion",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "removes a record in UI and API",
+                  "fullTitle": "CY-04 deletion removes a record in UI and API",
+                  "timedOut": null,
+                  "duration": 510,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const page = new _DefectsPage.DefectsPage();\ncy.fixture('defect').then(defect => {\n  defect.title += ` delete ${Date.now()}`;\n  cy.request('POST', '/api/defects', defect).then(({\n    body\n  }) => {\n    id = body.defect.id;\n  });\n  page.visit();\n  page.remove(defect.title);\n  page.card(defect.title).should('not.exist');\n  cy.then(() => cy.request({\n    url: `/api/defects/${id}`,\n    failOnStatusCode: false\n  })).its('status').should('eq', 404);\n});",
+                  "err": {},
+                  "uuid": "b5299453-ebbd-4b91-980a-80fc0a84720c",
+                  "parentUUID": "f6f47a59-ce59-4f1d-bc78-f1e585dc4ee1",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "b5299453-ebbd-4b91-980a-80fc0a84720c"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 510,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": true,
+          "rootEmpty": true,
+          "_timeout": 2000
+        }
+      ]
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-10-08T15:15:03.641Z",
+        "end": "2026-10-08T15:15:04.442Z",
+        "duration": 801,
+        "testsRegistered": 1,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "results": [
+        {
+          "uuid": "75f5bb9e-1122-4cef-ac3a-e6c2a6d1f2cf",
+          "title": "",
+          "fullFile": "cypress\\e2e\\05-validation.cy.js",
+          "file": "cypress\\e2e\\05-validation.cy.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "a042347e-3c6c-43c6-856b-e8211db512d5",
+              "title": "CY-05 user validation",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "shows actionable messages for invalid input",
+                  "fullTitle": "CY-05 user validation shows actionable messages for invalid input",
+                  "timedOut": null,
+                  "duration": 764,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const defects = new _DefectsPage.DefectsPage();\ndefects.visit();\ndefects.create();\ncy.get('[role=\"alert\"]').should('contain', 'Enter a title');\nconst scanner = new _ScannerPage.ScannerPage();\nscanner.visit();\nscanner.enter('http://[');\nscanner.run();\ncy.contains('valid HTTP').should('be.visible');",
+                  "err": {},
+                  "uuid": "72eb5423-7605-4c40-9bae-f7194903cc23",
+                  "parentUUID": "a042347e-3c6c-43c6-856b-e8211db512d5",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "72eb5423-7605-4c40-9bae-f7194903cc23"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 764,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": true,
+          "rootEmpty": true,
+          "_timeout": 2000
+        }
+      ]
+    },
+    {
+      "stats": {
+        "suites": 1,
+        "tests": 1,
+        "passes": 1,
+        "pending": 0,
+        "failures": 0,
+        "start": "2026-10-08T15:15:06.746Z",
+        "end": "2026-10-08T15:15:08.791Z",
+        "duration": 2045,
+        "testsRegistered": 1,
+        "passPercent": 100,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 0,
+        "hasSkipped": false
+      },
+      "results": [
+        {
+          "uuid": "c91b66cc-fa2d-46ed-aa71-4eb46cb2bcb5",
+          "title": "",
+          "fullFile": "cypress\\e2e\\06-scanner.cy.js",
+          "file": "cypress\\e2e\\06-scanner.cy.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "73cd2e45-1fab-4aa0-87a2-bf90743afc9d",
+              "title": "CY-06 browser scanner",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "scans this portal and restores saved results",
+                  "fullTitle": "CY-06 browser scanner scans this portal and restores saved results",
+                  "timedOut": null,
+                  "duration": 2011,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "const page = new _ScannerPage.ScannerPage();\npage.visit();\npage.enter(Cypress.config('baseUrl'));\ncy.intercept('POST', '/api/smoke-test').as('scan');\npage.run();\ncy.wait('@scan', {\n  responseTimeout: 90000\n}).then(({\n  response\n}) => {\n  expect(response.statusCode).to.eq(200);\n  expect(response.body.pageScan.metrics.browserFallbackReason).to.equal(undefined);\n});\ncy.contains('HTTP status').should('be.visible');\ncy.contains('Full-page screenshot').should('be.visible');\ncy.reload();\ncy.contains('button', 'Website QA').first().click();\ncy.contains('HTTP status').should('be.visible');",
+                  "err": {},
+                  "uuid": "3e96127b-081a-4dfc-b8c3-3f88f3b5f4d4",
+                  "parentUUID": "73cd2e45-1fab-4aa0-87a2-bf90743afc9d",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "3e96127b-081a-4dfc-b8c3-3f88f3b5f4d4"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 2011,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": true,
+          "rootEmpty": true,
+          "_timeout": 2000
+        }
+      ]
+    }
+  ]
+}

@@ -1,170 +1,120 @@
-﻿# QA Test Management Portal
+A real Next.js QA portal tested with Playwright, Cypress, Newman, Vitest and k6 — with evidence you can inspect.
 
-A portfolio-ready QA operations web app built with Next.js, TypeScript, Tailwind CSS, and Supabase.
+![Real API lifecycle, browser scan and unit-test demo](docs/demo.gif)
 
-This project is evolving into a hybrid website QA platform where manual QA workflow and automated website analysis live side by side.
+[![CI](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml)
+[![MIT licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
+![TypeScript](https://img.shields.io/badge/main_language-TypeScript-3178c6)
 
-## What it does now
+**Runs locally.** The complete scanner needs Node, Chromium and writable local storage. The legacy Vercel preview is not advertised as the working framework demo. [Demo recording details](docs/results/demo.md).
 
-- tracks QA-oriented workspace pages for projects, defects, test cases, runs, and reports
-- provides a public smoke-test scanner page
-- runs a real browser-backed single-page scan with Playwright
-- runs axe-core accessibility checks
-- captures screenshot and raw evidence artifacts
-- stores scan runs, findings, evidence, and project summaries in local JSON persistence
-- surfaces saved scans under `/smoke-test`, `/projects`, and `/projects/[projectId]`
+## What it shows recruiters
 
-## Why this project works well in interviews
+- **Functional, regression and API testing:** real defect CRUD and lifecycle, negative cases, schemas, boundary values and permanent retests for three real fixed defects.
+- **Cypress and Playwright:** six Cypress journeys using page objects and fixtures, Playwright request/E2E automation, real browser scan artifacts and axe WCAG 2.1 AA checks.
+- **Release delivery:** gated GitHub Actions with HTML reports and failure artifacts; a local k6 performance smoke run; [test strategy, plan, cases and traceability](docs/testing/test-strategy.md).
 
-It gives you a concrete way to talk about:
+## Architecture
 
-- regression testing and acceptance testing
-- defect triage and retest flow
-- release readiness and go-live support
-- structured QA documentation
-- business-style software design
-- using AI as a delivery accelerator while keeping the product practical
-- local-first automation using free tooling instead of paid APIs
-
-## Tech stack
-
-- Next.js App Router
-- TypeScript
-- Tailwind CSS
-- Supabase Auth, Postgres, and Storage foundation
-- Playwright
-- axe-core
-- rule-based QA heuristics
-- optional Ollama integration later
-
-## Milestone A status
-
-Milestone A introduces the first real automated scan slice:
-
-- public smoke-test scanner page
-- Playwright page load and screenshot capture
-- page title, final URL, response timing, and element counts
-- axe-core accessibility findings
-- simplified local audit scores for performance, SEO, accessibility, and best practices
-- source-labeled automated findings with confidence scores
-- local persistence for projects, scans, findings, evidence, and activity logs
-- project list/detail views that surface saved automated scan data
-
-## Local setup
-
-### 1. Install dependencies
-
-```bash
-npm install
-npx playwright install chromium
+```mermaid
+flowchart LR
+  U[Portal UI] --> N[Next.js routes]
+  N --> D[(Local JSON store)]
+  N --> S[Playwright Chromium + axe scanner]
+  S --> E[Screenshot / raw scan / axe evidence]
+  A[Postman + Newman] --> N
+  P[Playwright request + E2E + axe] --> U
+  P --> N
+  C[Cypress page objects + fixtures] --> U
+  V[Vitest] --> F[Scoring / parsing / validation]
+  K[k6 local smoke] --> N
+  G[GitHub Actions] --> A
+  G --> P
+  G --> C
+  G --> V
 ```
 
-If PowerShell blocks `npm`, use:
+## Screenshots
+
+![Working portal](docs/img/portal.png)
+![Real saved browser scan](docs/img/scanner.png)
+![Playwright HTML report](docs/img/playwright-report.png)
+![Cypress HTML report](docs/img/cypress-report.png)
+
+## Quick start — Windows PowerShell
+
+Tested with Node 22 and Windows. No secrets, external services or environment file are required. The shared port is 43187; lower development ports became reserved by Windows during verification.
 
 ```powershell
-npm.cmd install
+git clone https://github.com/iamnajib71/qa-automation.git
+cd qa-automation
+npm.cmd ci
 npx.cmd playwright install chromium
+npm.cmd test
+npm.cmd run build
+npm.cmd run serve:test
 ```
 
-### 2. Create your environment file
+Open **http://127.0.0.1:43187**. Create a fictional defect at /defects; at /smoke-test scan **http://127.0.0.1:43187**. Reload to inspect saved data. Use Ctrl+C to stop the server before suites that start their own server. On Ubuntu, use npm/npx and install Chromium with `npx playwright install --with-deps chromium`.
 
-Copy `.env.example` to `.env.local` and fill in values you want to use:
+### One command per suite
 
-```env
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=qwen2.5-coder:7b
+Run after installation and build. The API and Cypress commands start and stop the production server; Playwright manages its server too. Only k6 expects an already running production server.
+
+| Suite | Command | Report |
+|---|---|---|
+| Lint | `npm run lint` | Terminal |
+| Type-check | `npm run typecheck` | Terminal |
+| Unit (Vitest) | `npm test` | reports/unit JSON + JUnit |
+| API (Postman/Newman) | `npm run test:api` | reports/newman/index.html + JSON + JUnit |
+| API (Playwright request) | `npm run test:request` | reports/playwright/index.html |
+| Playwright request + E2E + axe | `npm run test:e2e` | reports/playwright/index.html + trace/axe attachments |
+| Cypress six journey specs | `npm run test:cypress` | reports/cypress/index.html + JSON; videos |
+| Performance smoke (local only) | `npm run test:perf` | docs/results/k6-summary.json |
+| All correctness gates | `npm run test:all` | All reports above; excludes k6 |
+
+On PowerShell, use `npm.cmd` if script execution policy blocks `npm`. Install the free [k6 CLI](https://grafana.com/docs/k6/latest/set-up/install-k6/) separately and place it on PATH for the performance command. Cypress installation is included in npm ci; `npx cypress install` repairs a missing binary. [API contract and Postman import](docs/testing/api-contract.md).
+
+## Results and evidence
+
+[Executed Windows run](docs/results/local-summary.json) (CI publication pending). Counts below are read from that run's reports; requests and assertions are explicitly distinguished. Fixtures are synthetic; scan metrics are measured from this real portal. No coverage percentage is claimed.
+
+| Suite | Passed | Failed | Evidence |
+|---|---:|---:|---|
+| Vitest unit | 32 tests | 0 | [Unit JSON](docs/results/unit-results.json) |
+| Newman API | 21 requests / 44 assertions | 0 | [API execution summary](docs/results/newman-summary.json) |
+| Playwright request | 22 tests | 0 | [Playwright summary](docs/results/playwright-summary.json) |
+| Playwright E2E + accessibility | 7 tests | 0 | [Playwright summary](docs/results/playwright-summary.json) |
+| Cypress | 6 tests across six specs | 0 | [Cypress summary](docs/results/cypress-summary.json) |
+| k6 (local only) | 74 requests / 148 checks; p95 11.81 ms | 0% HTTP errors; 0 failed checks | [Local summary](docs/results/k6-summary.json), [raw output](docs/results/k6-output.txt) |
+
+[Windows execution snapshot](docs/results/local-summary.json) · [clean-clone verification](docs/results/clean-clone.json) · [BUG-001](docs/testing/bug-reports/BUG-001.md) · [BUG-002](docs/testing/bug-reports/BUG-002.md) · [BUG-003](docs/testing/bug-reports/BUG-003.md).
+
+CI gates: lint → type-check → unit → Newman API → Playwright → Cypress. Every job must pass. HTML reports, JSON/JUnit, failure screenshots, retained Playwright videos/traces and Cypress videos are uploaded as Actions artifacts for 30 days. Performance runs locally only. Screenshots show the inspected Windows reports; the linked CI artifacts contain the exact CI reports.
+
+## Project structure
+
+```text
+src/app/api/          defects REST routes and real scanner route
+src/lib/             shared JSON store, validation and scoring
+tests/unit/          pure-function boundary and validation tests
+tests/api/           exported Postman collection
+tests/playwright/    request, E2E and axe tests
+cypress/             six specs, page objects and synthetic fixtures
+tests/performance/   local-only k6 smoke script
+docs/testing/        strategy, plan, 40 cases, traceability, bug reports
+docs/results/        actual execution snapshots and recording provenance
+docs/img/            app and report screenshots
+.github/workflows/   ordered CI gates and artifact uploads
+scripts/             cross-platform runners and evidence utilities
 ```
 
-Supabase is optional for the current Milestone A slice. The app can still run with local persistence only.
+## Honest limits
 
-### 3. Start the app
+This is a junior QA portfolio framework, not a production multi-tenant service. Defects and scans work; dashboard/release/test-case/run/report pages contain labelled synthetic previews. Authentication/Supabase scaffolds are excluded from testing. The JSON writer supports one Node process. Saved local records and generated scan artifacts are ignored by Git.
 
-```bash
-npm run dev
-```
+The scanner accepts its own origin only and blocks browser requests to other origins. Browser launch failure can trigger a legacy HTML fallback; the automated happy paths reject fallback and require real Chromium evidence. axe checks do not replace manual accessibility testing. Playwright runs Chromium only; Cypress runs Electron. k6 is a short warmed local GET smoke test, not capacity or production benchmarking. Some transitive development/build dependencies remain flagged by npm audit; no claim of security certification is made.
 
-Then open `http://localhost:3000`.
+## Built by Nazmul Hassan
 
-## Current routes
-
-- `/` - landing page
-- `/login` - sign-in scaffold
-- `/signup` - registration scaffold
-- `/dashboard` - dashboard shell
-- `/projects`
-- `/projects/[projectId]`
-- `/releases`
-- `/test-cases`
-- `/test-runs`
-- `/defects`
-- `/reports`
-- `/smoke-test` - run a real local browser-backed website scan
-
-## Smoke test feature in this milestone
-
-The smoke test page now performs a real automated analysis slice.
-
-What it currently does:
-
-- accepts loose URLs like `example.com` or `localhost:3000`
-- opens the page in Playwright Chromium
-- captures final URL and page title
-- captures a full-page screenshot
-- counts links, forms, buttons, inputs, and images
-- runs axe-core accessibility checks
-- generates practical rule-based findings
-- saves evidence and scan history locally
-- shows saved results in the UI
-
-## Free-host deployment before the next milestone
-
-This app is not suitable for GitHub Pages because it needs a Node server and Playwright. A free Docker-capable host is the right fit.
-
-### Recommended host: Render
-
-This repo now includes:
-
-- `Dockerfile`
-- `render.yaml`
-
-### Deploy steps on Render
-
-1. Push this repo to GitHub
-2. Log in to Render
-3. Create a new Web Service from your GitHub repo
-4. Render should detect `render.yaml`, or you can point it at the included `Dockerfile`
-5. Set these env vars in Render:
-
-```env
-NEXT_PUBLIC_APP_URL=https://your-render-url.onrender.com
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-```
-
-6. Deploy
-
-### Important note about persistence on a free host
-
-The current Milestone A slice stores scan data in:
-
-- `data/qa-platform.json`
-- `public/generated/scans/...`
-
-On a free cloud host this storage is usually ephemeral, which means scans may reset after restarts or redeploys.
-
-That is acceptable for trying the product before the next milestone, but the next persistence upgrade should move scan artifacts into Supabase tables and storage.
-
-## Suggested next milestone
-
-Milestone B should implement:
-
-- project-level scan orchestration
-- scan mode selection: single page, multi-page, full site
-- internal link crawling with safety caps
-- discovered pages storage
-- per-project scan coverage metrics
+[LinkedIn](https://linkedin.com/in/iamnajib71) · [GitHub](https://github.com/iamnajib71)

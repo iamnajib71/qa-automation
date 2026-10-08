@@ -1,0 +1,32 @@
+{
+  "recordedAt": "2026-10-08T15:16:11.560Z",
+  "environment": {
+    "os": "win32",
+    "node": "v22.22.0",
+    "baseURL": "http://127.0.0.1:43187",
+    "data": "synthetic"
+  },
+  "totals": {
+    "unit": 32,
+    "newmanRequests": 21,
+    "newmanAssertions": 44,
+    "playwrightAPI": 22,
+    "playwrightE2E": 7,
+    "cypress": 6
+  },
+  "failures": 0,
+  "reports": [
+    {
+      "file": "reports/unit/results.json",
+      "sha256": "a2d60bd4d52e7e0e17539a93113f72df90b8b48edb527445c3ac3d956c27cf17"
+    },
+    {
+      "file": "reports/newman/results.json",
+      "sha256": "9dd2464bcb41875499a21f56a4fc77135962fca386b69c8e357f20ef80959f3f"
+    },
+    {
+      "file": "reports/playwright-results.json",
+      "sha256": "6b348d059c1e298dac3f1eb3c4dc9c2f860d10f290003db6a7b945ca16a3dd0c"
+    }
+  ]
+}
