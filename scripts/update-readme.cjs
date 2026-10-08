@@ -4,6 +4,8 @@ const local=read('docs/results/local-summary.json');
 const ci=fs.existsSync('docs/results/ci-summary.json')?read('docs/results/ci-summary.json'):null;
 const source=ci||local;
 const t=source.totals;
+const perf=read('docs/results/k6-summary.json').metrics;
+const performanceResult=`${perf.http_reqs.count} requests / ${perf.checks.passes} checks; p95 ${perf.http_req_duration['p(95)'].toFixed(2)} ms`;
 const evidence=ci?`[GitHub CI run](${ci.url}) · [saved counts](docs/results/ci-summary.json)`:'[Executed Windows run](docs/results/local-summary.json) (CI publication pending)';
 fs.writeFileSync('README.md',`A real Next.js QA portal tested with Playwright, Cypress, Newman, Vitest and k6 — with evidence you can inspect.
 
@@ -50,7 +52,7 @@ flowchart LR
 
 ## Quick start — Windows PowerShell
 
-Tested with Node 22 and Windows. No secrets, external services or environment file are required. Port 43187 is used because port 3000 is reserved on the reference Windows machine.
+Tested with Node 22 and Windows. No secrets, external services or environment file are required. The shared port is 43187; lower development ports became reserved by Windows during verification.
 
 \`\`\`powershell
 git clone https://github.com/iamnajib71/qa-automation.git
@@ -93,7 +95,7 @@ ${evidence}. Counts below are read from that run's reports; requests and asserti
 | Playwright request | ${t.playwrightAPI} tests | 0 | ${ci?'[CI counts](docs/results/ci-summary.json)':'[Playwright summary](docs/results/playwright-summary.json)'} |
 | Playwright E2E + accessibility | ${t.playwrightE2E} tests | 0 | ${ci?'[CI counts](docs/results/ci-summary.json)':'[Playwright summary](docs/results/playwright-summary.json)'} |
 | Cypress | ${t.cypress} tests across six specs | 0 | ${ci?'[CI counts](docs/results/ci-summary.json)':'[Cypress summary](docs/results/cypress-summary.json)'} |
-| k6 | See measured p95, requests and checks | See raw output | [Local summary](docs/results/k6-summary.json), [raw output](docs/results/k6-output.txt) |
+| k6 (local only) | ${performanceResult} | ${perf.http_req_failed.value * 100}% HTTP errors; ${perf.checks.fails} failed checks | [Local summary](docs/results/k6-summary.json), [raw output](docs/results/k6-output.txt) |
 
 [Windows execution snapshot](docs/results/local-summary.json) · [clean-clone verification](docs/results/clean-clone.json) · [BUG-001](docs/testing/bug-reports/BUG-001.md) · [BUG-002](docs/testing/bug-reports/BUG-002.md) · [BUG-003](docs/testing/bug-reports/BUG-003.md).
 

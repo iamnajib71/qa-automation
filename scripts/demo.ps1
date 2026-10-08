@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 Set-Location -LiteralPath (Split-Path -Parent $PSScriptRoot)
 Clear-Host
 Write-Host 'QA PORTAL | NAZMUL HASSAN'
