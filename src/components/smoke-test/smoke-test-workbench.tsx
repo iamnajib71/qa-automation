@@ -1,9 +1,10 @@
 ﻿"use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { ExternalLink, Globe, LoaderCircle, ShieldAlert, ShieldCheck } from "lucide-react";
+import { ExternalLink, Globe, LoaderCircle } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import Image from "next/image";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 
@@ -192,7 +193,10 @@ function ResultPanel({ result }: { result: ScanResult }) {
 
         <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-4">
           <p className="text-sm font-medium text-slate-900">Evidence artifacts</p>
-          {screenshot ? <img src={screenshot.filePath} alt="Scanned page screenshot" className="w-full rounded-2xl border border-slate-200" /> : null}
+          {screenshot ? <figure>
+            <Image src={screenshot.filePath} width={1440} height={900} unoptimized alt="Scanned page screenshot" className="h-auto w-full rounded-2xl border border-slate-200" />
+            <figcaption className="mt-2 text-sm text-slate-700">{screenshot.label}</figcaption>
+          </figure> : null}
           <div className="space-y-2 text-sm">
             {rawScan ? (
               <a href={rawScan.filePath} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-slate-700 hover:bg-slate-100">

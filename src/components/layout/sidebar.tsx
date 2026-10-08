@@ -29,9 +29,9 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto rounded-2xl border border-white/10 bg-white/5 p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Milestone 1</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-400">Synthetic preview</p>
         <p className="mt-2 text-sm text-slate-200">
-          Layout, Supabase scaffolding, SQL schema, and a website smoke test prototype are ready to build on.
+          Defects and scanner are functional. Other workspace pages show fictional preview data.
         </p>
       </div>
     </aside>

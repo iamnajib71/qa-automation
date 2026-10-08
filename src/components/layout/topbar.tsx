@@ -22,7 +22,7 @@ export function Topbar({ pageTitle = "Delivery Overview" }: TopbarProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <StatusBadge label="Auth scaffold" tone="info" />
+            <StatusBadge label="Synthetic preview" tone="info" />
             <StatusBadge label="Role: QA Analyst" tone="success" />
             <button
               type="button"
@@ -35,7 +35,7 @@ export function Topbar({ pageTitle = "Delivery Overview" }: TopbarProps) {
               type="button"
               className="inline-flex items-center rounded-2xl border border-slate-200 bg-white p-2 text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
             >
-              <Bell className="h-4 w-4" />
+              <Bell className="h-4 w-4" aria-hidden="true" /><span className="sr-only">Notifications preview</span>
             </button>
           </div>
         </div>

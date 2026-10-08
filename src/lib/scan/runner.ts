@@ -1,12 +1,13 @@
 ﻿import path from "node:path";
 import { promises as fs } from "node:fs";
-import os from "node:os";
 
 import axe from "axe-core";
 import { chromium } from "playwright";
 
 import type { ArtifactSource, FindingRecord, FindingCategory, Severity } from "@/lib/scan/types";
-import { clampScore, createId, ensureDirPath, nowIso, publicFileUrl, safeFileStem } from "@/lib/scan/utils";
+import { createId, ensureDirPath, nowIso, publicFileUrl, safeFileStem } from "@/lib/scan/utils";
+
+import { scoreFromThreshold, accessibilityScore, seoScore, bestPracticesScore } from "./scoring";
 
 const isVercelRuntime = Boolean(process.env.VERCEL);
 
@@ -83,28 +84,6 @@ export type WebsiteScanResult = {
   artifacts: ScanArtifacts;
   rawMetrics: Record<string, unknown>;
 };
-
-function scoreFromThreshold(value: number, good: number, okay: number) {
-  if (value <= good) {
-    return 100;
-  }
-  if (value <= okay) {
-    return 70;
-  }
-  return 35;
-}
-
-function accessibilityScore(violationCount: number, seriousCount: number) {
-  return clampScore(100 - violationCount * 8 - seriousCount * 6);
-}
-
-function seoScore(hasTitle: boolean, hasMetaDescription: boolean, h1Count: number, brokenRequests: number) {
-  return clampScore((hasTitle ? 35 : 0) + (hasMetaDescription ? 30 : 0) + (h1Count > 0 ? 20 : 0) + (brokenRequests === 0 ? 15 : 0));
-}
-
-function bestPracticesScore(isHttps: boolean, consoleErrorCount: number, requestFailureCount: number, imagesMissingAlt: number) {
-  return clampScore((isHttps ? 30 : 10) + Math.max(0, 30 - consoleErrorCount * 10) + Math.max(0, 25 - requestFailureCount * 8) + Math.max(0, 15 - imagesMissingAlt * 5));
-}
 
 function mapImpactToSeverity(impact?: string): Severity {
   switch (impact) {
@@ -352,7 +331,7 @@ async function runHttpFallbackScan(targetUrl: string, launchError: string): Prom
   const started = Date.now();
   const response = await fetch(targetUrl, {
     method: "GET",
-    redirect: "follow",
+    redirect: "error",
     headers: {
       "User-Agent": "QA-Automation-Fallback-Scanner"
     },
@@ -431,6 +410,10 @@ export async function runWebsiteScan(targetUrl: string): Promise<WebsiteScanResu
     const startedAt = nowIso();
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await context.route("**/*", route => {
+      const url = new URL(route.request().url());
+      return url.origin === new URL(targetUrl).origin ? route.continue() : route.abort();
+    });
     const page = await context.newPage();
 
     const consoleErrors: string[] = [];

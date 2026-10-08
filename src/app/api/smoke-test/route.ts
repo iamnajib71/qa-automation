@@ -28,6 +28,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid request." }, { status: 400 });
     }
 
+    const allowedOrigin = new URL(process.env.NEXT_PUBLIC_APP_URL || "http://127.0.0.1:4173").origin;
+    if (new URL(parsed.data.websiteUrl).origin !== allowedOrigin) {
+      return NextResponse.json({ error: "This portfolio scans its own portal origin only." }, { status: 400 });
+    }
+
     const result = await executeSinglePageScan(parsed.data.websiteUrl);
     return NextResponse.json(result);
   } catch (error) {
