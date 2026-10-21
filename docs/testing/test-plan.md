@@ -2,7 +2,7 @@
 
 Owner: Nazmul Hassan. Planned release date: 9 October 2026 (Australia/Sydney). Actual execution timestamps and revisions are recorded in `docs/results/` and linked CI runs.
 
-Objective: release a recruiter-readable local automation framework with functional defects CRUD, real self-scanning, reproducible suites and honest evidence. Requirements and exact automated spec mappings are in `traceability.md`; manual steps and expected results are in `test-cases.csv`.
+Objective: release a documented local automation framework with defect tracking, application scanning, reproducible test suites and verified results. Requirements and exact automated spec mappings are in `traceability.md`; manual steps and expected results are in `test-cases.csv`.
 
 ## Execution sequence
 

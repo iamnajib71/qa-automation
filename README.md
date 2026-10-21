@@ -8,7 +8,7 @@ A real Next.js QA portal tested with Playwright, Cypress, Newman, Vitest and k6 
 
 **Runs locally.** The complete scanner needs Node, Chromium and writable local storage. The legacy Vercel preview is not advertised as the working framework demo. [Demo recording details](docs/results/demo.md).
 
-## What it shows recruiters
+## Technical capabilities
 
 - **Functional, regression and API testing:** real defect CRUD and lifecycle, negative cases, schemas, boundary values and permanent retests for three real fixed defects.
 - **Cypress and Playwright:** six Cypress journeys using page objects and fixtures, Playwright request/E2E automation, real browser scan artifacts and axe WCAG 2.1 AA checks.
