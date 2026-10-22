@@ -4,7 +4,7 @@ Four reproducible defect classes in unmodified Gitea 28.2.0: one response-contra
 
 | Defect | Severity | Status | Upstream link |
 |---|---|---|---|
-| [GIT-001: issue response schema rejects null associations](GIT-001.md) | Medium | Confirmed; not filed; draft fix in preparation | |
+| [GIT-001: issue response schema rejects null associations](GIT-001.md) | Medium | Confirmed; not filed; regression-tested patch prepared | |
 | [GIT-002: collapsed dropdowns expose invalid menu structure](GIT-002.md) | Medium | Confirmed; not filed | |
 | [GIT-003: default light-theme text contrast](GIT-003.md) | Medium | Confirmed; not filed | |
 | [GIT-004: unnamed repository avatar/heading links](GIT-004.md) | Medium | Confirmed; not filed | |

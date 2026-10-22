@@ -20,7 +20,7 @@ The matrix is generated from actual JUnit plus separately recorded manual outcom
 
 ## CI provenance
 
-First actual GitHub run: https://github.com/iamnajib71/qa-automation/actions/runs/39763949058 . That run included initial framework mistakes and had 15 passes/16 failures. The repository selector, main-container wait, case-sensitive 404 assertion, malformed-JSON expected status and Schemathesis auth inference were corrected. Those framework failures are not product defects. Later CI execution is recorded in ci-run.json when available.
+First actual GitHub run: https://github.com/iamnajib71/qa-automation/actions/runs/39763949058 . That run included initial framework mistakes and had 15 passes/16 failures. The repository selector, main-container wait, case-sensitive 404 assertion, malformed-JSON expected status and Schemathesis auth inference were corrected. Those framework failures are not product defects. Corrected [CI run](https://github.com/iamnajib71/qa-automation/actions/runs/39808735895) reproduced 25 passes and 6 failures; metadata and artifact-derived counts are in [ci-run.json](ci-run.json).
 
 GitHub and Azure configurations start the same disposable Docker target, run all suites, and retain JUnit/HTML/Allure data and browser evidence. Azure has not been executed in an Azure DevOps project. The upstream contract fix is separately tested; its results must not overwrite unmodified-product failures.
 

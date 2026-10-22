@@ -2,6 +2,8 @@
 
 The portal's `/php-security` tool supports an evidence-first workflow for the published PHP2Shell advisories: [CVE-2026-109618](https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w) and [CVE-2026-109619](https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp).
 
+[Open the hosted developer tool](https://qa-automation-one.vercel.app/php-security). Import the helper's JSON with **Read runtime JSON** to populate the version and inspect relevant configuration observations. Changing version, evidence source or inventory clears an earlier verdict so the exported assessment cannot silently describe old inputs. [Actual helper output from an official fixed PHP Docker runtime](results/php-fixed-runtime.json) is CLI evidence only; [hosted checks](results/hosted-tools.json) verify the tool's behavior separately.
+
 PHP's [21 October 2026 advisory](https://www.php.net/archive/2026.php#2026-10-21-5) identifies upstream fixes in 8.2.35, 8.3.36, 8.4.27 and 8.5.12. These are known published vulnerabilities, not new defects discovered by this portfolio.
 
 1. Download the runtime helper from the screen and execute it in your own serving environment. It reports PHP version/SAPI and a small set of relevant limits/settings; it does not dump environment variables, customer data or phpinfo. CLI and PHP-FPM/Apache may use different installations. Any temporary web endpoint must remain private and be removed after collection.

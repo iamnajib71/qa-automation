@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/iamnajib71/qa-automation/actions/runs/39808735930",
+  "status": "completed",
+  "conclusion": "success",
+  "headSha": "6e937e29029cada752fcb733c715b1dfe5a39142",
+  "jobs": [
+    {
+      "name": "regression",
+      "conclusion": "success",
+      "url": "https://github.com/iamnajib71/qa-automation/actions/runs/39808735930/job/119928891494"
+    }
+  ]
+}

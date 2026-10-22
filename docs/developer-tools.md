@@ -2,6 +2,8 @@
 
 Open `/api-testing` in the portal. The included JSONPlaceholder example uses fictional public API data. For your API, supply a base URL and one to three cases; set expected HTTP status, optional response-time threshold, JSON paths and an inline JSON Schema. A bearer token is optional and can be omitted per case for authentication-negative checks. Enable writes deliberately before POST/PUT/PATCH/DELETE; use disposable test data.
 
+[Try the hosted tester](https://qa-automation-one.vercel.app/api-testing). [Production verification](results/hosted-tools.json) records three actual public sample requests, PHP screen behavior and the downloadable helper. The PHP form's test inputs are synthetic; they do not claim that a remote PHP application was assessed.
+
 The contract importer accepts OpenAPI 3.0 or Swagger 2.0 JSON. It imports up to three concrete GET operations and inlines bounded nonrecursive local schema references. Parameterized paths, recursive/external schema references and unsupported response definitions require explicit manual cases. This is a configurable HTTP/JSON tester, not a guarantee that every API protocol or schema dialect is supported.
 
 The hosted endpoint permits public HTTPS/443 targets, pins the validated DNS address, blocks local/reserved/metadata destinations, does not follow redirects, limits each request to eight seconds and responses to 512 KiB, and caps suites at three requests/64 KiB. Hosted schemas reject expensive regex/recursive features. The UI reports failed assertions and request errors separately. JSON and JUnit downloads exclude bearer tokens, request payloads, query strings and raw response bodies. Case labels and assertion paths remain user-provided; never put secrets in those labels.
