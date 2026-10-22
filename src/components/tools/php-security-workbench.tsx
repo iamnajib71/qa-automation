@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { ArrowLeft, ArrowRight, Download, ShieldCheck } from "lucide-react";
-import { assessPhpVersion, phpAdvisory } from "@/lib/security/php";
+import { assessPhpVersion, inspectPhpRuntime, phpAdvisory } from "@/lib/security/php";
 import { downloadReport } from "./report-download";
 
 export function PhpSecurityWorkbench() {
@@ -13,9 +13,17 @@ export function PhpSecurityWorkbench() {
   const [result, setResult] = useState<ReturnType<typeof assessPhpVersion> | null>(null);
   const [checkedAt, setCheckedAt] = useState("");
   const [restarted, setRestarted] = useState(false);
+  const [runtimeNotes, setRuntimeNotes] = useState<string[]>([]);
+  const [runtimeError, setRuntimeError] = useState("");
+  function readRuntime() {
+    try {
+      const runtime = inspectPhpRuntime(JSON.parse(inventory));
+      setVersion(runtime.version); setSource("runtime"); setRuntimeNotes(runtime.notes); setRuntimeError(""); setResult(null);
+    } catch (error) { setRuntimeError(error instanceof Error ? error.message : "Invalid runtime JSON."); setResult(null); }
+  }
   function assess(event: FormEvent) { event.preventDefault(); setResult(assessPhpVersion(version, source)); setCheckedAt(new Date().toISOString()); }
   const report = { checkedAt, advisoryReviewed: phpAdvisory.checkedAt, assessment: result, evidenceSource: source,
-    runtimeEvidence: inventory, workersRestartedConfirmedByUser: restarted, cves: phpAdvisory.cves, references: phpAdvisory.advisories,
+    runtimeEvidence: inventory, configurationObservations: runtimeNotes, workersRestartedConfirmedByUser: restarted, cves: phpAdvisory.cves, references: phpAdvisory.advisories,
     limitation: "Version/configuration assessment only. No exploit, overload, memory-disclosure or compromise test was performed." };
   return <main className="mx-auto max-w-6xl px-5 py-8 lg:py-12">
     <nav aria-label="Tool navigation" className="mb-8 flex flex-wrap justify-between gap-4 text-sm font-medium"><Link href="/" className="inline-flex items-center gap-2 text-slate-600"><ArrowLeft size={16} aria-hidden="true" /> QA portfolio</Link><Link href="/api-testing" className="inline-flex items-center gap-2 text-blue-800">API testing <ArrowRight size={16} aria-hidden="true" /></Link></nav>
@@ -25,9 +33,10 @@ export function PhpSecurityWorkbench() {
         <p className="text-sm leading-6 text-slate-600">Run the small diagnostic helper in your own environment. A CLI installation can differ from PHP-FPM or Apache; use evidence from the serving runtime. Keep diagnostic endpoints private and remove them afterward.</p>
         <a href="/tools/php-runtime-check.php.txt" download="php-runtime-check.php" className="inline-flex items-center gap-2 font-semibold text-blue-800 underline"><Download size={16} aria-hidden="true" /> Download PHP runtime helper</a>
         <pre className="overflow-x-auto rounded-xl bg-slate-950 p-4 text-xs leading-6 text-slate-200">{`php php-runtime-check.php\n# Docker: run inside the serving container\ndocker exec <container> php /path/php-runtime-check.php`}</pre>
-        <label className="block text-sm font-semibold">PHP version<input required placeholder="For example, 8.4.26" value={version} onChange={e => setVersion(e.target.value)} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-mono" /></label>
-        <div><label htmlFor="php-evidence-source" className="block text-sm font-semibold">Evidence source</label><select id="php-evidence-source" value={source} onChange={e => setSource(e.target.value as typeof source)} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3"><option value="runtime">Actual runtime version</option><option value="package">Distribution package / vendor backport</option><option value="header">Remote HTTP header only</option></select></div>
-        <div><label htmlFor="php-inventory" className="block text-sm font-semibold">Runtime or package evidence <span className="font-normal text-slate-500">(optional, stored in this tab only)</span></label><textarea id="php-inventory" rows={5} value={inventory} onChange={e => setInventory(e.target.value)} placeholder="Paste the helper output or vendor package advisory. Exclude secrets." className="mt-2 w-full rounded-xl border border-slate-300 p-4 font-mono text-xs" /></div>
+        <label className="block text-sm font-semibold">PHP version<input required placeholder="For example, 8.4.26" value={version} onChange={e => { setVersion(e.target.value); setResult(null); }} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-mono" /></label>
+        <div><label htmlFor="php-evidence-source" className="block text-sm font-semibold">Evidence source</label><select id="php-evidence-source" value={source} onChange={e => { setSource(e.target.value as typeof source); setResult(null); }} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3"><option value="runtime">Actual runtime version</option><option value="package">Distribution package / vendor backport</option><option value="header">Remote HTTP header only</option></select></div>
+        <div><label htmlFor="php-inventory" className="block text-sm font-semibold">Runtime or package evidence <span className="font-normal text-slate-500">(optional, stored in this tab only)</span></label><textarea id="php-inventory" rows={5} value={inventory} onChange={e => { setInventory(e.target.value); setRuntimeNotes([]); setResult(null); }} placeholder="Paste the helper output or vendor package advisory. Exclude secrets." className="mt-2 w-full rounded-xl border border-slate-300 p-4 font-mono text-xs" /></div>
+        <button type="button" onClick={readRuntime} className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold">Read runtime JSON</button>{runtimeError && <p role="alert" className="text-sm text-red-800">{runtimeError}</p>}{runtimeNotes.length > 0 && <ul className="space-y-2 rounded-xl bg-blue-50 p-4 text-sm leading-6 text-blue-950">{runtimeNotes.map(note => <li key={note}>{note}</li>)}</ul>}
         <label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={restarted} onChange={e => setRestarted(e.target.checked)} className="mt-1" />I have restarted every serving PHP worker after applying the update.</label>
         <button className="w-full rounded-xl bg-blue-800 px-5 py-3 font-semibold text-white">Assess PHP patch status</button>
       </form>

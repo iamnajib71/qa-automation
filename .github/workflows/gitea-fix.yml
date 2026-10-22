@@ -44,7 +44,7 @@ jobs:
           p.write_text(text.replace(old, 'generate spec --nullable-pointers --enable-allof-compounding'))
           p = Path('build/openapi3gen/convert.go')
           text = p.read_text()
-          p.write_text(text.replace('fixFileSchemas(oas3)', 'fixFileSchemas(oas3)\n\tapplyNullableExtensions(oas3)', 1))
+          p.write_text(text.replace('fixFileSchemas(oas3)', 'fixFileSchemas(oas3)\n\tif err := applyNullableReferences(oas3, swaggerJSON); err != nil { return nil, err }', 1))
           PY
           cp ../real-world/gitea/fixes/nullable.go build/openapi3gen/
           gofmt -w build/openapi3gen/nullable.go build/openapi3gen/convert.go

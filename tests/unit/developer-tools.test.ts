@@ -4,7 +4,7 @@ import { isPublicAddress } from "@/lib/api-testing/network";
 import { runApiChecks } from "@/lib/api-testing/runner";
 import { checkInput } from "@/lib/api-testing/schema";
 import { importOpenApi, validateSchemaBudget } from "@/lib/api-testing/openapi";
-import { assessPhpVersion, phpAdvisory } from "@/lib/security/php";
+import { assessPhpVersion, inspectPhpRuntime, phpAdvisory } from "@/lib/security/php";
 import { acceptsOrigin } from "@/lib/api-testing/origin";
 
 it("uses the browser-facing Host for same-origin requests behind Next", () => {
@@ -76,6 +76,13 @@ describe("contract import and execution budgets", () => {
 });
 
 describe("PHP advisory assessment", () => {
+  it("identifies CLI evidence limitations and relevant configuration without claiming exploitation", () => {
+    const info = inspectPhpRuntime({ php_version: "8.4.27", sapi: "cli", memory_limit: "128M", session_upload_progress_enabled: "1" });
+    expect(info.version).toBe("8.4.27");
+    expect(info.notes.some(note => note.includes("does not establish"))).toBe(true);
+    expect(info.notes.some(note => note.includes("upload progress is enabled"))).toBe(true);
+    expect(() => inspectPhpRuntime({ php_version: "8.4.27" })).toThrow();
+  });
   for (const fixed of Object.values(phpAdvisory.fixed)) {
     const parts = fixed.split(".");
     it(`classifies the release boundary for ${fixed}`, () => {

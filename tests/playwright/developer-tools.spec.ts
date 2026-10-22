@@ -10,6 +10,7 @@ test("API tester runs a real public API suite and exports JUnit", async ({ page 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "JUnit report", exact: true }).click();
   expect((await downloadPromise).suggestedFilename()).toBe("api-results.xml");
+  if (process.env.QA_CAPTURE_SCREENSHOTS) await page.screenshot({ path: "docs/img/api-testing.png", fullPage: true });
 });
 
 test("API tester rejects a private destination with a visible error", async ({ page }) => {
@@ -27,6 +28,7 @@ test("PHP diagnostics distinguish affected, patched and inconclusive evidence", 
   await page.getByRole("button", { name: "Assess PHP patch status" }).click();
   await expect(page.getByTestId("php-assessment")).toContainText("needs-update");
   await page.getByLabel("PHP version", { exact: true }).fill("8.4.27");
+  await expect(page.getByTestId("php-assessment")).toHaveCount(0);
   await page.getByRole("button", { name: "Assess PHP patch status" }).click();
   await expect(page.getByTestId("php-assessment")).toContainText("upstream-fixed");
   await page.getByLabel("Evidence source", { exact: true }).selectOption("header");
@@ -35,6 +37,12 @@ test("PHP diagnostics distinguish affected, patched and inconclusive evidence", 
   const helper = await page.request.get("/tools/php-runtime-check.php.txt");
   expect(helper.status()).toBe(200);
   expect(await helper.text()).toContain("PHP_SAPI");
+  await page.getByLabel("Runtime or package evidence", { exact: false }).fill(JSON.stringify({ php_version: "8.4.27", sapi: "cli", memory_limit: "128M", session_upload_progress_enabled: "1" }));
+  await page.getByRole("button", { name: "Read runtime JSON", exact: true }).click();
+  await expect(page.getByText(/CLI evidence does not establish/)).toBeVisible();
+  await page.getByRole("button", { name: "Assess PHP patch status" }).click();
+  await expect(page.getByTestId("php-assessment")).toContainText("upstream-fixed");
+  if (process.env.QA_CAPTURE_SCREENSHOTS) await page.screenshot({ path: "docs/img/php-diagnostics.png", fullPage: true });
 });
 
 for (const route of ["/api-testing", "/php-security"]) {

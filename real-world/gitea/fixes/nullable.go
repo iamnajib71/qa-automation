@@ -3,33 +3,53 @@
 
 package openapi3gen
 
-import "github.com/getkin/kin-openapi/openapi3"
+import (
+	"gitea.dev/modules/json"
 
-func applyNullableExtensions(doc *openapi3.T) {
-	seen := map[*openapi3.Schema]bool{}
-	var visit func(*openapi3.SchemaRef)
-	visit = func(ref *openapi3.SchemaRef) {
-		if ref == nil || ref.Value == nil || ref.Ref != "" || seen[ref.Value] {
+	"github.com/getkin/kin-openapi/openapi3"
+)
+
+func applyNullableReferences(doc *openapi3.T, swaggerJSON []byte) error {
+	var source struct {
+		Definitions map[string]any `json:"definitions"`
+	}
+	if err := json.Unmarshal(swaggerJSON, &source); err != nil {
+		return err
+	}
+	var visit func(any, *openapi3.SchemaRef)
+	visit = func(input any, ref *openapi3.SchemaRef) {
+		raw, ok := input.(map[string]any)
+		if !ok || ref == nil {
 			return
 		}
-		s := ref.Value
-		seen[s] = true
-		if nullable, ok := s.Extensions["x-nullable"].(bool); ok && nullable {
-			s.Nullable = true
-			delete(s.Extensions, "x-nullable")
+		if nullable, _ := raw["x-nullable"].(bool); nullable && ref.Ref != "" {
+			// The converter drops siblings of $ref; preserve nullability on a wrapper.
+			target := ref.Ref
+			ref.Ref = ""
+			ref.Value = &openapi3.Schema{Nullable: true, AllOf: []*openapi3.SchemaRef{{Ref: target}}}
 		}
-		for _, property := range s.Properties {
-			visit(property)
+		if ref.Value == nil {
+			return
 		}
-		visit(s.Items)
-		for _, group := range [][]*openapi3.SchemaRef{s.AllOf, s.AnyOf, s.OneOf} {
-			for _, member := range group {
-				visit(member)
+		properties, _ := raw["properties"].(map[string]any)
+		for name, property := range ref.Value.Properties {
+			visit(properties[name], property)
+		}
+		visit(raw["items"], ref.Value.Items)
+		for name, group := range map[string][]*openapi3.SchemaRef{"allOf": ref.Value.AllOf, "anyOf": ref.Value.AnyOf, "oneOf": ref.Value.OneOf} {
+			inputs, _ := raw[name].([]any)
+			for index, member := range group {
+				if index < len(inputs) {
+					visit(inputs[index], member)
+				}
 			}
 		}
-		visit(s.Not)
 	}
-	for _, schema := range doc.Components.Schemas {
-		visit(schema)
+	if doc.Components == nil {
+		return nil
 	}
+	for name, schema := range doc.Components.Schemas {
+		visit(source.Definitions[name], schema)
+	}
+	return nil
 }

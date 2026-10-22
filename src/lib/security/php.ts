@@ -24,3 +24,16 @@ export function assessPhpVersion(input: string, evidence: "runtime" | "header" |
     version, fixedVersion, detail: fixed ? "This version meets the upstream release threshold for both CVEs. Verify every serving worker was restarted; this is not an exploit or compromise assessment."
       : `Update this branch to ${fixedVersion} or a later supported release, restart all serving workers, then verify the effective web runtime again. Vendor backports require separate evidence.` };
 }
+
+export function inspectPhpRuntime(input: unknown) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) throw new Error("Paste the runtime helper's JSON object.");
+  const data = input as Record<string, unknown>;
+  if (typeof data.php_version !== "string" || typeof data.sapi !== "string") throw new Error("Runtime JSON needs php_version and sapi fields.");
+  const notes = [data.sapi === "cli" ? "CLI evidence does not establish the PHP version serving web requests. Verify PHP-FPM, Apache or the actual serving container separately."
+    : `Reported serving interface: ${data.sapi}. Confirm this evidence came from the application you are assessing.`];
+  if (String(data.session_upload_progress_enabled) === "1") notes.push("Session upload progress is enabled. The stale-state advisory includes confirmed session-related paths; updating remains the complete fix.");
+  else notes.push("Session upload progress is not reported as enabled. This does not rule out other stale-state paths.");
+  if (data.memory_limit && String(data.memory_limit) !== "-1") notes.push(`A finite PHP memory limit (${String(data.memory_limit)}) is configured. Memory-exhaustion handling is relevant to CVE-2026-109618; apply the update rather than interpreting this setting as an exploit result.`);
+  if (data.fatal_error_backtraces === true || data.fatal_error_backtraces === "1") notes.push("Fatal error backtraces are enabled. Review the PHP 8.5 advisory path and apply the full update.");
+  return { version: data.php_version, sapi: data.sapi, notes };
+}

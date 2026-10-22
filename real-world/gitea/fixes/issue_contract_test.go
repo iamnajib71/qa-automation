@@ -24,4 +24,8 @@ func TestIssueContractAcceptsAbsentAssociations(t *testing.T) {
 	if err := doc.Components.Schemas["Issue"].Value.VisitJSON(issue); err != nil {
 		t.Fatalf("ordinary issue with no associated PR, milestone or assignee must match its response contract: %v", err)
 	}
+	issue["pull_request"] = "not-a-pull-request-object"
+	if err := doc.Components.Schemas["Issue"].Value.VisitJSON(issue); err == nil {
+		t.Fatal("non-null pull_request must still satisfy the referenced object schema")
+	}
 }
