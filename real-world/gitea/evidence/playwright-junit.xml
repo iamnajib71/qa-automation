@@ -1,0 +1,2081 @@
+<testsuites id="" name="" tests="9" failures="5" skipped="0" errors="0" time="19.256832000000003">
+<testsuite name="journeys.spec.cjs" timestamp="2026-10-22T11:00:14.262Z" hostname="" tests="9" failures="5" skipped="0" time="9.98" errors="0">
+<testcase name="authenticated dashboard" classname="journeys.spec.cjs" time="0.832">
+</testcase>
+<testcase name="public repository and issue navigation" classname="journeys.spec.cjs" time="0.653">
+</testcase>
+<testcase name="create and close issue through UI" classname="journeys.spec.cjs" time="1.523">
+</testcase>
+<testcase name="private repository hidden from anonymous visitor" classname="journeys.spec.cjs" time="0.232">
+</testcase>
+<testcase name="axe /" classname="journeys.spec.cjs" time="1.45">
+<failure message="journeys.spec.cjs:44:3 axe /" type="FAILURE">
+<![CDATA[  journeys.spec.cjs:44:3 › axe / ───────────────────────────────────────────────────────────────────
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -   1
+    + Received  + 396
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "description": "Ensure elements with an ARIA role that require child roles contain them",
+    +     "help": "Certain ARIA roles must contain particular children",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-required-children?application=playwright",
+    +     "id": "aria-required-children",
+    +     "impact": "critical",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown custom\" id=\"footer-theme-selector\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_0\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "#footer-theme-selector",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown upward\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_1\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".upward",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.aria",
+    +       "wcag2a",
+    +       "wcag131",
+    +       "EN-301-549",
+    +       "EN-9.1.3.1",
+    +       "RGAAv4",
+    +       "RGAA-9.3.1",
+    +     ],
+    +   },
+    +   Object {
+    +     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    +     "help": "Elements must meet minimum color contrast ratio thresholds",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+    +     "id": "color-contrast",
+    +     "impact": "serious",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.45,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#609926",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://docs.gitea.com/installation/install-from-binary\">run the binary</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".eight.wide.column:nth-child(1) > p > a[rel=\"noopener noreferrer\"][target=\"_blank\"]:nth-child(1)",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.45,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#609926",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://github.com/go-gitea/gitea/tree/master/docker\">Docker</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".eight.wide.column:nth-child(1) > p > a[rel=\"noopener noreferrer\"][target=\"_blank\"]:nth-child(2)",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.45,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#609926",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://docs.gitea.com/installation/install-from-package\">packaged</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[rel=\"noopener noreferrer\"][target=\"_blank\"]:nth-child(3)",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.45,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#609926",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://go.dev/\">Go</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"go.dev/\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.45,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#609926",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://gitea.dev\">gitea.dev</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"gitea.dev\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.45,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#609926",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.45 (foreground color: #609926, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://github.com/go-gitea/gitea\">contributing</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".eight.wide.column:nth-child(2) > p > a[rel=\"noopener noreferrer\"][target=\"_blank\"]:nth-child(2)",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" href=\"https://about.gitea.com\">Powered by Gitea</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"about.gitea.com\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/assets/licenses.txt\">Licenses</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"licenses.txt\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/api/swagger\">API</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"swagger\"]",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.color",
+    +       "wcag2aa",
+    +       "wcag143",
+    +       "TTv5",
+    +       "TT13.c",
+    +       "EN-301-549",
+    +       "EN-9.1.4.3",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-3.2.1",
+    +     ],
+    +   },
+    + ]
+
+      48 |     fs.writeFileSync(`reports/axe/${route.replace(/[^a-z0-9]/gi, '_') || 'home'}.json`, JSON.stringify(results, null, 2));
+      49 |     await info.attach('axe-results', { body: JSON.stringify(results, null, 2), contentType: 'application/json' });
+    > 50 |     expect(results.violations).toEqual([]);
+         |                                ^
+      51 |   });
+      52 | }
+      53 |
+        at H:\My Projects - IT\qa-portal\real-world\gitea\ui\journeys.spec.cjs:50:32
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\reports\traces\journeys-axe-\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\reports\traces\journeys-axe-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|traces\journeys-axe-\test-failed-1.png]]
+
+[[ATTACHMENT|traces\journeys-axe-\error-context.md]]
+
+[[ATTACHMENT|traces\journeys-axe-\trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="axe /user/login" classname="journeys.spec.cjs" time="1.717">
+<failure message="journeys.spec.cjs:44:3 axe /user/login" type="FAILURE">
+<![CDATA[  journeys.spec.cjs:44:3 › axe /user/login ─────────────────────────────────────────────────────────
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -   1
+    + Received  + 313
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "description": "Ensure elements with an ARIA role that require child roles contain them",
+    +     "help": "Certain ARIA roles must contain particular children",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-required-children?application=playwright",
+    +     "id": "aria-required-children",
+    +     "impact": "critical",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown custom\" id=\"footer-theme-selector\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_0\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "#footer-theme-selector",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown upward\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_2\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".upward",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.aria",
+    +       "wcag2a",
+    +       "wcag131",
+    +       "EN-301-549",
+    +       "EN-9.1.3.1",
+    +       "RGAAv4",
+    +       "RGAA-9.3.1",
+    +     ],
+    +   },
+    +   Object {
+    +     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    +     "help": "Elements must meet minimum color contrast ratio thresholds",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+    +     "id": "color-contrast",
+    +     "impact": "serious",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.98,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<div class=\"ui attached segment\">",
+    +                 "target": Array [
+    +                   ".container.fluid.ui:nth-child(1) > .segment.attached.ui",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/user/forgot_password\" tabindex=\"4\">Forgot password?</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"forgot_password\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#4183c4",
+    +               "contrastRatio": 3.98,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#ffffff",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.98 (foreground color: #ffffff, background color: #4183c4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<button type=\"submit\" class=\"ui primary button tw-w-full\" tabindex=\"3\">
+    + 					
+    + 						Sign In
+    + 					
+    + 				</button>",
+    +                 "target": Array [
+    +                   ".primary",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.98 (foreground color: #ffffff, background color: #4183c4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<button type=\"submit\" class=\"ui primary button tw-w-full\" tabindex=\"3\">
+    + 					
+    + 						Sign In
+    + 					
+    + 				</button>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".primary",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.98,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<div class=\"ui attached segment header top tw-max-w-2xl tw-m-auto tw-flex tw-flex-col tw-items-center\">",
+    +                 "target": Array [
+    +                   ".tw-items-center",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a class=\"signin-passkey\">Sign in with a passkey</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".signin-passkey",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" href=\"https://about.gitea.com\">Powered by Gitea</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"about.gitea.com\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/assets/licenses.txt\">Licenses</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"licenses.txt\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/api/swagger\">API</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"swagger\"]",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.color",
+    +       "wcag2aa",
+    +       "wcag143",
+    +       "TTv5",
+    +       "TT13.c",
+    +       "EN-301-549",
+    +       "EN-9.1.4.3",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-3.2.1",
+    +     ],
+    +   },
+    + ]
+
+      48 |     fs.writeFileSync(`reports/axe/${route.replace(/[^a-z0-9]/gi, '_') || 'home'}.json`, JSON.stringify(results, null, 2));
+      49 |     await info.attach('axe-results', { body: JSON.stringify(results, null, 2), contentType: 'application/json' });
+    > 50 |     expect(results.violations).toEqual([]);
+         |                                ^
+      51 |   });
+      52 | }
+      53 |
+        at H:\My Projects - IT\qa-portal\real-world\gitea\ui\journeys.spec.cjs:50:32
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-user-login\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\reports\traces\journeys-axe-user-login\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-user-login\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\reports\traces\journeys-axe-user-login\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|traces\journeys-axe-user-login\test-failed-1.png]]
+
+[[ATTACHMENT|traces\journeys-axe-user-login\error-context.md]]
+
+[[ATTACHMENT|traces\journeys-axe-user-login\trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="axe /explore/repos" classname="journeys.spec.cjs" time="1.153">
+<failure message="journeys.spec.cjs:44:3 axe /explore/repos" type="FAILURE">
+<![CDATA[  journeys.spec.cjs:44:3 › axe /explore/repos ──────────────────────────────────────────────────────
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -   1
+    + Received  + 270
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "description": "Ensure elements with an ARIA role that require child roles contain them",
+    +     "help": "Certain ARIA roles must contain particular children",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-required-children?application=playwright",
+    +     "id": "aria-required-children",
+    +     "impact": "critical",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown custom\" id=\"footer-theme-selector\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_0\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "#footer-theme-selector",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown upward\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_26\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".upward",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.aria",
+    +       "wcag2a",
+    +       "wcag131",
+    +       "EN-301-549",
+    +       "EN-9.1.3.1",
+    +       "RGAAv4",
+    +       "RGAA-9.3.1",
+    +     ],
+    +   },
+    +   Object {
+    +     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    +     "help": "Elements must meet minimum color contrast ratio thresholds",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+    +     "id": "color-contrast",
+    +     "impact": "serious",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.98,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a class=\"tw-text-primary name\" href=\"/qaowner\">qaowner</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"qaowner\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 3.98,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "12.0pt (16px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.98 (foreground color: #4183c4, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a class=\"tw-text-primary name\" href=\"/qaowner/journeys\">journeys</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"journeys\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" href=\"https://about.gitea.com\">Powered by Gitea</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"about.gitea.com\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/assets/licenses.txt\">Licenses</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"licenses.txt\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/api/swagger\">API</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"swagger\"]",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.color",
+    +       "wcag2aa",
+    +       "wcag143",
+    +       "TTv5",
+    +       "TT13.c",
+    +       "EN-301-549",
+    +       "EN-9.1.4.3",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-3.2.1",
+    +     ],
+    +   },
+    + ]
+
+      48 |     fs.writeFileSync(`reports/axe/${route.replace(/[^a-z0-9]/gi, '_') || 'home'}.json`, JSON.stringify(results, null, 2));
+      49 |     await info.attach('axe-results', { body: JSON.stringify(results, null, 2), contentType: 'application/json' });
+    > 50 |     expect(results.violations).toEqual([]);
+         |                                ^
+      51 |   });
+      52 | }
+      53 |
+        at H:\My Projects - IT\qa-portal\real-world\gitea\ui\journeys.spec.cjs:50:32
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-explore-repos\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\reports\traces\journeys-axe-explore-repos\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-explore-repos\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\reports\traces\journeys-axe-explore-repos\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|traces\journeys-axe-explore-repos\test-failed-1.png]]
+
+[[ATTACHMENT|traces\journeys-axe-explore-repos\error-context.md]]
+
+[[ATTACHMENT|traces\journeys-axe-explore-repos\trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="axe /qaowner/journeys" classname="journeys.spec.cjs" time="1.231">
+<failure message="journeys.spec.cjs:44:3 axe /qaowner/journeys" type="FAILURE">
+<![CDATA[  journeys.spec.cjs:44:3 › axe /qaowner/journeys ───────────────────────────────────────────────────
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -   1
+    + Received  + 494
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "description": "Ensure elements with an ARIA role that require child roles contain them",
+    +     "help": "Certain ARIA roles must contain particular children",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-required-children?application=playwright",
+    +     "id": "aria-required-children",
+    +     "impact": "critical",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<button type=\"button\" class=\"ui dropdown basic compact jump button repo-add-file\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_1\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".jump",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown custom\" id=\"footer-theme-selector\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_0\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "#footer-theme-selector",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown upward\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_5\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".upward",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.aria",
+    +       "wcag2a",
+    +       "wcag131",
+    +       "EN-301-549",
+    +       "EN-9.1.3.1",
+    +       "RGAAv4",
+    +       "RGAA-9.3.1",
+    +     ],
+    +   },
+    +   Object {
+    +     "description": "Ensure buttons have discernible text",
+    +     "help": "Buttons must have discernible text",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/button-name?application=playwright",
+    +     "id": "button-name",
+    +     "impact": "critical",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": null,
+    +             "id": "button-has-visible-text",
+    +             "impact": "critical",
+    +             "message": "Element does not have inner text that is visible to screen readers",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "aria-label",
+    +             "impact": "critical",
+    +             "message": "aria-label attribute does not exist or is empty",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "aria-labelledby",
+    +             "impact": "critical",
+    +             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": Object {
+    +               "messageKey": "noAttr",
+    +             },
+    +             "id": "non-empty-title",
+    +             "impact": "critical",
+    +             "message": "Element has no title attribute",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "implicit-label",
+    +             "impact": "critical",
+    +             "message": "Element does not have an implicit (wrapped) <label>",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "explicit-label",
+    +             "impact": "critical",
+    +             "message": "Element does not have an explicit <label>",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "presentational-role",
+    +             "impact": "critical",
+    +             "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element does not have inner text that is visible to screen readers
+    +   aria-label attribute does not exist or is empty
+    +   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+    +   Element has no title attribute
+    +   Element does not have an implicit (wrapped) <label>
+    +   Element does not have an explicit <label>
+    +   Element's default semantics were not overridden with role=\"none\" or role=\"presentation\"",
+    +         "html": "<button type=\"button\" class=\"ui dropdown basic compact jump button repo-add-file\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_1\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".jump",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.name-role-value",
+    +       "wcag2a",
+    +       "wcag412",
+    +       "section508",
+    +       "section508.22.a",
+    +       "TTv5",
+    +       "TT6.a",
+    +       "EN-301-549",
+    +       "EN-9.4.1.2",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-11.9.1",
+    +     ],
+    +   },
+    +   Object {
+    +     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    +     "help": "Elements must meet minimum color contrast ratio thresholds",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+    +     "id": "color-contrast",
+    +     "impact": "serious",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#4183c4",
+    +               "contrastRatio": 3.98,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#ffffff",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.98 (foreground color: #ffffff, background color: #4183c4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<button type=\"button\" class=\"ui compact primary button\" data-global-init=\"initRepoClonePanel\" aria-expanded=\"false\" aria-haspopup=\"true\">",
+    +                 "target": Array [
+    +                   ".primary",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.98 (foreground color: #ffffff, background color: #4183c4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<span>Code</span>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".primary > span",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" href=\"https://about.gitea.com\">Powered by Gitea</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"about.gitea.com\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/assets/licenses.txt\">Licenses</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"licenses.txt\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/api/swagger\">API</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"swagger\"]",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.color",
+    +       "wcag2aa",
+    +       "wcag143",
+    +       "TTv5",
+    +       "TT13.c",
+    +       "EN-301-549",
+    +       "EN-9.1.4.3",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-3.2.1",
+    +     ],
+    +   },
+    +   Object {
+    +     "description": "Ensure links have discernible text",
+    +     "help": "Links must have discernible text",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/link-name?application=playwright",
+    +     "id": "link-name",
+    +     "impact": "serious",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": null,
+    +             "id": "has-visible-text",
+    +             "impact": "serious",
+    +             "message": "Element does not have text that is visible to screen readers",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "aria-label",
+    +             "impact": "serious",
+    +             "message": "aria-label attribute does not exist or is empty",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "aria-labelledby",
+    +             "impact": "serious",
+    +             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": Object {
+    +               "messageKey": "noAttr",
+    +             },
+    +             "id": "non-empty-title",
+    +             "impact": "serious",
+    +             "message": "Element has no title attribute",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix all of the following:
+    +   Element is in tab order and does not have accessible text
+    +
+    + Fix any of the following:
+    +   Element does not have text that is visible to screen readers
+    +   aria-label attribute does not exist or is empty
+    +   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+    +   Element has no title attribute",
+    +         "html": "<a href=\"/qaowner/journeys/commits/branch/main/search?q=author%3Aqaowner%40example.invalid\"><img loading=\"lazy\" alt=\"\" class=\"ui avatar tw-align-middle\" src=\"/avatars/cf8b7d25b84da426f50115e5eb79b7874b8ac59dbd76a619f0f347f71600e41d?size=40\" title=\"qaowner\" width=\"20\" height=\"20\"></a>",
+    +         "impact": "serious",
+    +         "none": Array [
+    +           Object {
+    +             "data": null,
+    +             "id": "focusable-no-name",
+    +             "impact": "serious",
+    +             "message": "Element is in tab order and does not have accessible text",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "target": Array [
+    +           ".avatar-stack > a",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": null,
+    +             "id": "has-visible-text",
+    +             "impact": "serious",
+    +             "message": "Element does not have text that is visible to screen readers",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "aria-label",
+    +             "impact": "serious",
+    +             "message": "aria-label attribute does not exist or is empty",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": null,
+    +             "id": "aria-labelledby",
+    +             "impact": "serious",
+    +             "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty",
+    +             "relatedNodes": Array [],
+    +           },
+    +           Object {
+    +             "data": Object {
+    +               "messageKey": "noAttr",
+    +             },
+    +             "id": "non-empty-title",
+    +             "impact": "serious",
+    +             "message": "Element has no title attribute",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix all of the following:
+    +   Element is in tab order and does not have accessible text
+    +
+    + Fix any of the following:
+    +   Element does not have text that is visible to screen readers
+    +   aria-label attribute does not exist or is empty
+    +   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+    +   Element has no title attribute",
+    +         "html": "<a class=\"anchor\" href=\"#journeys\">",
+    +         "impact": "serious",
+    +         "none": Array [
+    +           Object {
+    +             "data": null,
+    +             "id": "focusable-no-name",
+    +             "impact": "serious",
+    +             "message": "Element is in tab order and does not have accessible text",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "target": Array [
+    +           ".anchor",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.name-role-value",
+    +       "wcag2a",
+    +       "wcag244",
+    +       "wcag412",
+    +       "section508",
+    +       "section508.22.a",
+    +       "TTv5",
+    +       "TT6.a",
+    +       "EN-301-549",
+    +       "EN-9.2.4.4",
+    +       "EN-9.4.1.2",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-6.2.1",
+    +     ],
+    +   },
+    + ]
+
+      48 |     fs.writeFileSync(`reports/axe/${route.replace(/[^a-z0-9]/gi, '_') || 'home'}.json`, JSON.stringify(results, null, 2));
+      49 |     await info.attach('axe-results', { body: JSON.stringify(results, null, 2), contentType: 'application/json' });
+    > 50 |     expect(results.violations).toEqual([]);
+         |                                ^
+      51 |   });
+      52 | }
+      53 |
+        at H:\My Projects - IT\qa-portal\real-world\gitea\ui\journeys.spec.cjs:50:32
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-qaowner-journeys\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\reports\traces\journeys-axe-qaowner-journeys\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-qaowner-journeys\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\reports\traces\journeys-axe-qaowner-journeys\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|traces\journeys-axe-qaowner-journeys\test-failed-1.png]]
+
+[[ATTACHMENT|traces\journeys-axe-qaowner-journeys\error-context.md]]
+
+[[ATTACHMENT|traces\journeys-axe-qaowner-journeys\trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="axe /qaowner/journeys/issues" classname="journeys.spec.cjs" time="1.189">
+<failure message="journeys.spec.cjs:44:3 axe /qaowner/journeys/issues" type="FAILURE">
+<![CDATA[  journeys.spec.cjs:44:3 › axe /qaowner/journeys/issues ────────────────────────────────────────────
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -   1
+    + Received  + 371
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "description": "Ensure elements with an ARIA role that require child roles contain them",
+    +     "help": "Certain ARIA roles must contain particular children",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/aria-required-children?application=playwright",
+    +     "id": "aria-required-children",
+    +     "impact": "critical",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"item ui dropdown jump\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_17\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "div[aria-controls=\"_aria_dropdown_menu_17\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown custom\" id=\"footer-theme-selector\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_0\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "#footer-theme-selector",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Array [
+    +               "group",
+    +               "menuitemradio",
+    +               "menuitem",
+    +               "menuitemcheckbox",
+    +               "menu",
+    +               "separator",
+    +             ],
+    +             "id": "aria-required-children",
+    +             "impact": "critical",
+    +             "message": "Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +             "relatedNodes": Array [],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Required ARIA children role not present: group, menuitemradio, menuitem, menuitemcheckbox, menu, separator",
+    +         "html": "<div class=\"ui dropdown upward\" tabindex=\"0\" role=\"menu\" aria-haspopup=\"\" aria-controls=\"_aria_dropdown_menu_35\" aria-expanded=\"false\">",
+    +         "impact": "critical",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".upward",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.aria",
+    +       "wcag2a",
+    +       "wcag131",
+    +       "EN-301-549",
+    +       "EN-9.1.3.1",
+    +       "RGAAv4",
+    +       "RGAA-9.3.1",
+    +     ],
+    +   },
+    +   Object {
+    +     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    +     "help": "Elements must meet minimum color contrast ratio thresholds",
+    +     "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=playwright",
+    +     "id": "color-contrast",
+    +     "impact": "serious",
+    +     "nodes": Array [
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#4183c4",
+    +               "contrastRatio": 3.98,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#ffffff",
+    +               "fontSize": "9.8pt (13px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.98 (foreground color: #ffffff, background color: #4183c4, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<a class=\"ui small primary button issue-list-new\" href=\"/qaowner/journeys/issues/new\">New Issue</a>",
+    +                 "target": Array [
+    +                   ".primary",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.98 (foreground color: #ffffff, background color: #4183c4, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a class=\"ui small primary button issue-list-new\" href=\"/qaowner/journeys/issues/new\">New Issue</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".primary",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 2.38,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#a5a8ab",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 2.38 (foreground color: #a5a8ab, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 2.38 (foreground color: #a5a8ab, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<span class=\"text\">Label</span>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".label-filter > .text",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 2.38,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#a5a8ab",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 2.38 (foreground color: #a5a8ab, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 2.38 (foreground color: #a5a8ab, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<span class=\"text\">
+    + 		Milestone
+    + 	</span>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "div[aria-controls=\"_aria_dropdown_menu_7\"] > .text",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#ffffff",
+    +               "contrastRatio": 2.38,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#a5a8ab",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 2.38 (foreground color: #a5a8ab, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<body>",
+    +                 "target": Array [
+    +                   "body",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 2.38 (foreground color: #a5a8ab, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<span class=\"text\">
+    + 		Project
+    + 	</span>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           ".project-filter > .text",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a target=\"_blank\" href=\"https://about.gitea.com\">Powered by Gitea</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"about.gitea.com\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/assets/licenses.txt\">Licenses</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"licenses.txt\"]",
+    +         ],
+    +       },
+    +       Object {
+    +         "all": Array [],
+    +         "any": Array [
+    +           Object {
+    +             "data": Object {
+    +               "bgColor": "#f6f7fa",
+    +               "contrastRatio": 3.72,
+    +               "expectedContrastRatio": "4.5:1",
+    +               "fgColor": "#4183c4",
+    +               "fontSize": "10.5pt (14px)",
+    +               "fontWeight": "normal",
+    +               "messageKey": null,
+    +             },
+    +             "id": "color-contrast",
+    +             "impact": "serious",
+    +             "message": "Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +             "relatedNodes": Array [
+    +               Object {
+    +                 "html": "<footer class=\"page-footer\" role=\"group\" aria-label=\"Footer\">",
+    +                 "target": Array [
+    +                   "footer",
+    +                 ],
+    +               },
+    +             ],
+    +           },
+    +         ],
+    +         "failureSummary": "Fix any of the following:
+    +   Element has insufficient color contrast of 3.72 (foreground color: #4183c4, background color: #f6f7fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+    +         "html": "<a href=\"/api/swagger\">API</a>",
+    +         "impact": "serious",
+    +         "none": Array [],
+    +         "target": Array [
+    +           "a[href$=\"swagger\"]",
+    +         ],
+    +       },
+    +     ],
+    +     "tags": Array [
+    +       "cat.color",
+    +       "wcag2aa",
+    +       "wcag143",
+    +       "TTv5",
+    +       "TT13.c",
+    +       "EN-301-549",
+    +       "EN-9.1.4.3",
+    +       "ACT",
+    +       "RGAAv4",
+    +       "RGAA-3.2.1",
+    +     ],
+    +   },
+    + ]
+
+      48 |     fs.writeFileSync(`reports/axe/${route.replace(/[^a-z0-9]/gi, '_') || 'home'}.json`, JSON.stringify(results, null, 2));
+      49 |     await info.attach('axe-results', { body: JSON.stringify(results, null, 2), contentType: 'application/json' });
+    > 50 |     expect(results.violations).toEqual([]);
+         |                                ^
+      51 |   });
+      52 | }
+      53 |
+        at H:\My Projects - IT\qa-portal\real-world\gitea\ui\journeys.spec.cjs:50:32
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-qaowner-journeys-issues\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\reports\traces\journeys-axe-qaowner-journeys-issues\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\reports\traces\journeys-axe-qaowner-journeys-issues\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\reports\traces\journeys-axe-qaowner-journeys-issues\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|traces\journeys-axe-qaowner-journeys-issues\test-failed-1.png]]
+
+[[ATTACHMENT|traces\journeys-axe-qaowner-journeys-issues\error-context.md]]
+
+[[ATTACHMENT|traces\journeys-axe-qaowner-journeys-issues\trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

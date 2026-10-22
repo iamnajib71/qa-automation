@@ -17,4 +17,5 @@ tests = {
 with (root / 'manual-cases.csv').open(encoding='utf-8', newline='') as stream:
     rows = [{'journey': row['title'], 'case': row['ID'],
              'automated_test': tests.get(row['ID'][3:], '')} for row in csv.DictReader(stream)]
+rows.append({'journey': 'Accessible main pages (automated WCAG checks)', 'case': 'GT-026/GT-027', 'automated_test': 'axe '})
 (root / 'traceability-map.json').write_text(json.dumps(rows, indent=2) + '\n', encoding='utf-8')

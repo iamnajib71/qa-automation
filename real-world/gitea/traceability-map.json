@@ -148,5 +148,10 @@
     "journey": "API Swagger response contract",
     "case": "GT-030",
     "automated_test": "test_contract"
+  },
+  {
+    "journey": "Accessible main pages (automated WCAG checks)",
+    "case": "GT-026/GT-027",
+    "automated_test": "axe "
   }
 ]

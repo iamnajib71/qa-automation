@@ -1,34 +1,39 @@
-# Execution status — 22 October 2026
+# Gitea execution record — 22–23 October 2026
 
-## Product results
+The unmodified official Gitea 28.2.0 image ran locally in Docker. The resolved image digest is in environment.json. Synthetic fixture data only.
 
-- Manual cases authored: 30; executed: 0.
-- Exploratory charters authored: 3; sessions executed: 0.
-- Automated product test executions: 0; confirmed defects: 0.
-- New GitHub Actions / Azure run: not available.
+## Corrected local results
 
-These are setup blockers, not product defects. The scope is not complete and the test-plan exit criteria are not met.
+| Suite | Passed | Failed | Evidence |
+|---|---:|---:|---|
+| pytest REST, negative/auth and served Swagger contract | 13 | 1 | api-junit.xml |
+| Selenium Chrome + Firefox headless | 8 | 0 | selenium-junit.xml |
+| Playwright UI journeys | 4 | 0 | playwright-junit.xml |
+| axe scans on five routes | 0 | 5 | playwright-junit.xml and axe-findings.json |
+| Total automated executions | 25 | 6 | summary.json |
 
-## Observed blockers
+Four distinct defect classes are recorded in ../defects/README.md. Shared dropdown role/name symptoms are consolidated. A failing page or axe node is not automatically counted as a separate defect. Nothing was posted upstream.
 
-On Windows, `docker version` found client 29.5.3 but could not connect to `//./pipe/dockerDesktopLinuxEngine` (pipe absent). `docker compose -f real-world/gitea/compose.yml up -d` failed at the same engine connection before pulling or starting Gitea. `wsl --status` returned `Wsl/E_ACCESSDENIED` inside the sandbox. `docker desktop start` did not complete. Two elevated-start approval-review attempts timed out; neither produced an approved elevated command execution.
+Thirty manual cases were authored. Twelve complete cases passed; five are partial/inconclusive; thirteen were not manually run. See ../manual-results.csv and the three actual exploratory notes in ../exploratory/. Sessions used focused five-minute wall-clock timeboxes; tool delays and triage interruptions are disclosed, with no claim of uninterrupted human execution.
 
-`gh auth status` reported the stored iamnajib71 token invalid. `git ls-remote origin HEAD` failed with `getaddrinfo() thread failed to start` in the sandbox. The connected GitHub tool could read repository metadata, but that does not establish usable local Git push authentication.
+The matrix is generated from actual JUnit plus separately recorded manual outcomes. No report is interpreted as not run, never passed. Counts describe the corrected local report set, not a sum of repeated attempts.
 
-Nested `npm ci --ignore-scripts` failed with EPERM creating `real-world/gitea/node_modules/@axe-core`. Lockfile generation succeeded. Existing root dependencies allowed Playwright test collection without starting any application test. Local Python is 3.14.3; CI deliberately uses Python 3.12 for the pinned testing dependencies.
+## CI provenance
 
-Python dependency installation also failed because `pypi.org` DNS resolution was unavailable in the sandbox. Creating the local Git branch failed because `.git/refs/heads/codex/real-world-gitea-qa` was not writable in the current sandbox.
+First actual GitHub run: https://github.com/iamnajib71/qa-automation/actions/runs/39763949058 . That run included initial framework mistakes and had 15 passes/16 failures. The repository selector, main-container wait, case-sensitive 404 assertion, malformed-JSON expected status and Schemathesis auth inference were corrected. Those framework failures are not product defects. Later CI execution is recorded in ci-run.json when available.
 
-## Framework checks performed
+GitHub and Azure configurations start the same disposable Docker target, run all suites, and retain JUnit/HTML/Allure data and browser evidence. Azure has not been executed in an Azure DevOps project. The upstream contract fix is separately tested; its results must not overwrite unmodified-product failures.
 
-- `docker compose -f real-world/gitea/compose.yml config --quiet`: exit 0.
-- `python -m compileall -q real-world/gitea`: exit 0 (syntax only).
-- `node --check` for the Playwright config and journey suite: exit 0.
-- Playwright `--list`: collected 9 tests; this is not test execution.
-- `scripts/results.py`: generated zero-execution summary from no JUnit files.
+## Real setup problems and recovery
 
-The generated matrix preserves `not run` for mappings with no matching JUnit testcase. The absence of a report is never interpreted as a pass.
+The sandbox could not access WSL, Docker's engine pipe, Python downloads or Git credentials. Approved host access resolved dependency installation, Git commit/push and the real GitHub CLI login.
 
-## Resume
+Docker Desktop itself failed on stale AF_UNIX runtime objects in its run directory and the separate Secrets Engine socket directory. Their exact runtime parent directories were preserved under backup names; restarting with both stale socket locations absent restored Docker. No images, volumes or stored application data were deleted, and no factory reset was used. These host-runtime problems are not Gitea defects. The two earlier elevated-start review attempts timed out; subsequent approved executable launch and diagnostics succeeded.
 
-Start Docker Desktop with Linux containers in an approved host session; confirm `docker info` succeeds. Make Python 3.12 and both browsers available, install dependencies, run bootstrap and all suites, perform the 30 manual cases and three timed sessions, triage real findings against upstream, then save results and rerun CI. Replace this blocked snapshot with evidence of actual execution only after those steps occur.
+After the four-hour interruption, Windows forwarded-port evidence requests timed out. A container-local wget request returned HTTP 200; its actual headers/body and the previously served contract from the same image were used for issue-contract.json. This transport is stated in that file. No new performance defect is inferred from the resumed host's slowness.
+
+## Framework verification and limits
+
+Compose configuration, Python compilation, Playwright JavaScript syntax and test collection were checked. All eight corrected Selenium checks passed; the first run's selector failures remain historical only. The result generator was checked with separate synthetic JUnit fixtures for passed/failed/skipped and absent-report behavior. Synthetic fixtures were never counted as product executions.
+
+The full test-plan exit criteria are not met: manual coverage is incomplete and contract/accessibility defects remain open. Release recommendation: retain the findings and triage before claiming accessibility/contract conformance. No security, capacity or screen-reader certification is claimed. PHP2Shell diagnostics belong to the portal's separate known-vulnerability feature; Gitea is Go-based and was not tested as a PHP target.

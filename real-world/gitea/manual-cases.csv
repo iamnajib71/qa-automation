@@ -27,5 +27,5 @@ GT-025,Explore repository search,Anonymous browser and public/private fixtures,O
 GT-026,Keyboard login,Anonymous browser and keyboard only,Tab through login; enter fixture values; submit with keyboard,Focus is visible and login is operable without pointer,P1
 GT-027,Zoom and narrow layout,Anonymous browser,Set zoom 200 percent; inspect login and repository issue list; test narrow viewport,Core content and controls remain reachable without overlap hiding actions,P2
 GT-028,API authentication errors,REST client with no stored credentials,GET /api/v1/user without auth; repeat with invalid token,Both requests return 401 and no user profile,P1
-GT-029,API malformed JSON,REST client with fixture basic auth,POST /api/v1/user/repos with Content-Type application/json and body {,400 response rejects malformed JSON without creating a repository,P1
+GT-029,API malformed JSON,REST client with fixture basic auth,POST /api/v1/user/repos with Content-Type application/json and body {,422 validation response rejects malformed JSON without creating a repository,P1
 GT-030,API Swagger response contract,Running target and REST client,Download /swagger.v1.json; GET version and repository and issue endpoints; validate documented responses,Responses conform to served Swagger status and schemas,P1

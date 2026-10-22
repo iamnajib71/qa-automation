@@ -11,6 +11,8 @@ export function FrameworkHome() {
       <div className="mt-8 flex flex-wrap gap-4">
         <Link href="/defects" className="rounded-xl bg-amber-200 px-5 py-3 font-semibold text-slate-950">Try defect workflow</Link>
         <Link href="/smoke-test" className="rounded-xl border border-slate-400 px-5 py-3 font-semibold">Try smoke test</Link>
+        <Link href="/api-testing" className="rounded-xl border border-slate-400 px-5 py-3 font-semibold">Test your API</Link>
+        <Link href="/php-security" className="rounded-xl border border-slate-400 px-5 py-3 font-semibold">Check PHP patch status</Link>
         <Link href="/dashboard" className="rounded-xl border border-slate-400 px-5 py-3 font-semibold">Open demo workspace</Link>
       </div>
     </section>

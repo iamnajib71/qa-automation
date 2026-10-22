@@ -1,0 +1,238 @@
+{
+  "captured_at": "2026-10-22T15:18:02.908816+00:00",
+  "request": {
+    "method": "GET",
+    "url": "http://127.0.0.1:3000/api/v1/repos/qaowner/journeys/issues"
+  },
+  "transport": "docker exec wget against http://127.0.0.1:3000; bootstrap-served contract from same image",
+  "status": 200,
+  "content_type": "application/json (see captured headers)",
+  "captured_headers": "  HTTP/1.1 200 OK\n  Access-Control-Expose-Headers: X-Total-Count\n  Cache-Control: max-age=0, private, must-revalidate\n  Content-Type: application/json;charset=utf-8\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: SAMEORIGIN\n  X-Total-Count: 2\n  Date: Thu, 22 Oct 2026 15:17:23 GMT\n  Connection: close\n  Transfer-Encoding: chunked\n  \n",
+  "issue": {
+    "id": 1,
+    "url": "http://127.0.0.1:43210/api/v1/repos/qaowner/journeys/issues/1",
+    "html_url": "http://127.0.0.1:3000/qaowner/journeys/issues/1",
+    "number": 1,
+    "user": {
+      "id": 1,
+      "login": "qaowner",
+      "type": "User",
+      "login_name": "",
+      "source_id": 0,
+      "full_name": "",
+      "email": "1+qaowner@noreply.127.0.0.1",
+      "avatar_url": "http://127.0.0.1:3000/avatars/cf8b7d25b84da426f50115e5eb79b7874b8ac59dbd76a619f0f347f71600e41d",
+      "html_url": "http://127.0.0.1:3000/qaowner",
+      "language": "",
+      "is_admin": false,
+      "last_login": "0001-01-01T00:00:00Z",
+      "created": "2026-10-22T10:40:36Z",
+      "restricted": false,
+      "active": false,
+      "prohibit_login": false,
+      "location": "",
+      "website": "",
+      "description": "",
+      "visibility": "public",
+      "followers_count": 0,
+      "following_count": 0,
+      "starred_repos_count": 0,
+      "username": "qaowner"
+    },
+    "original_author": "",
+    "original_author_id": 0,
+    "title": "Seed issue",
+    "body": "Synthetic local QA data",
+    "ref": "",
+    "assets": [],
+    "labels": [],
+    "milestone": null,
+    "projects": null,
+    "assignee": null,
+    "assignees": null,
+    "state": "open",
+    "is_locked": false,
+    "comments": 0,
+    "created_at": "2026-10-22T10:40:37Z",
+    "updated_at": "2026-10-22T10:40:37Z",
+    "closed_at": null,
+    "due_date": null,
+    "time_estimate": 0,
+    "pull_request": null,
+    "repository": {
+      "id": 1,
+      "name": "journeys",
+      "owner": "qaowner",
+      "full_name": "qaowner/journeys"
+    },
+    "pin_order": 0,
+    "content_version": 0
+  },
+  "issue_schema": {
+    "description": "Issue represents an issue in a repository",
+    "type": "object",
+    "properties": {
+      "assets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Attachment"
+        },
+        "x-go-name": "Attachments"
+      },
+      "assignee": {
+        "$ref": "#/definitions/User"
+      },
+      "assignees": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/User"
+        },
+        "x-go-name": "Assignees"
+      },
+      "body": {
+        "type": "string",
+        "x-go-name": "Body"
+      },
+      "closed_at": {
+        "type": "string",
+        "format": "date-time",
+        "x-go-name": "Closed"
+      },
+      "comments": {
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "Comments"
+      },
+      "content_version": {
+        "description": "The version of the issue content for optimistic locking",
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "ContentVersion"
+      },
+      "created_at": {
+        "type": "string",
+        "format": "date-time",
+        "x-go-name": "Created"
+      },
+      "due_date": {
+        "type": "string",
+        "format": "date-time",
+        "x-go-name": "Deadline"
+      },
+      "html_url": {
+        "type": "string",
+        "x-go-name": "HTMLURL"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "ID"
+      },
+      "is_locked": {
+        "type": "boolean",
+        "x-go-name": "IsLocked"
+      },
+      "labels": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Label"
+        },
+        "x-go-name": "Labels"
+      },
+      "milestone": {
+        "$ref": "#/definitions/Milestone"
+      },
+      "number": {
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "Index"
+      },
+      "original_author": {
+        "type": "string",
+        "x-go-name": "OriginalAuthor"
+      },
+      "original_author_id": {
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "OriginalAuthorID"
+      },
+      "pin_order": {
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "PinOrder"
+      },
+      "projects": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Project"
+        },
+        "x-go-name": "Projects"
+      },
+      "pull_request": {
+        "$ref": "#/definitions/PullRequestMeta"
+      },
+      "ref": {
+        "type": "string",
+        "x-go-name": "Ref"
+      },
+      "repository": {
+        "$ref": "#/definitions/RepositoryMeta"
+      },
+      "state": {
+        "type": "string",
+        "enum": [
+          "open",
+          "closed"
+        ],
+        "x-go-enum-desc": "open StateOpen pr is opened\nclosed StateClosed pr is closed",
+        "x-go-name": "State"
+      },
+      "time_estimate": {
+        "type": "integer",
+        "format": "int64",
+        "x-go-name": "TimeEstimate"
+      },
+      "title": {
+        "type": "string",
+        "x-go-name": "Title"
+      },
+      "updated_at": {
+        "type": "string",
+        "format": "date-time",
+        "x-go-name": "Updated"
+      },
+      "url": {
+        "type": "string",
+        "x-go-name": "URL"
+      },
+      "user": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "x-go-package": "gitea.dev/modules/structs"
+  },
+  "pull_request_schema": {
+    "description": "PullRequestMeta PR info if an issue is a PR",
+    "type": "object",
+    "properties": {
+      "draft": {
+        "type": "boolean",
+        "x-go-name": "IsWorkInProgress"
+      },
+      "html_url": {
+        "type": "string",
+        "x-go-name": "HTMLURL"
+      },
+      "merged": {
+        "type": "boolean",
+        "x-go-name": "HasMerged"
+      },
+      "merged_at": {
+        "type": "string",
+        "format": "date-time",
+        "x-go-name": "Merged"
+      }
+    },
+    "x-go-package": "gitea.dev/modules/structs"
+  }
+}

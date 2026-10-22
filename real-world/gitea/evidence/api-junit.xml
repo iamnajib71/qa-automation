@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="14" time="10.564" timestamp="2026-10-22T21:58:20.644920+11:00" hostname="NAJIB-PC"><testcase classname="tests.test_api" name="test_contract[/version]" time="7.094" /><testcase classname="tests.test_api" name="test_contract[/user]" time="0.081" /><testcase classname="tests.test_api" name="test_contract[/repos/qaowner/journeys]" time="0.084" /><testcase classname="tests.test_api" name="test_contract[/repos/qaowner/journeys/issues]" time="0.117"><failure message="schemathesis.exceptions.CheckFailed: &#10;&#10;1. Response violates schema&#10;&#10;    None is not of type 'object'&#10;&#10;    Schema at /items/properties/pull_request:&#10;&#10;        {&#10;            &quot;description&quot;: &quot;PullRequestMeta PR info if an issue is a PR&quot;,&#10;            &quot;type&quot;: &quot;object&quot;,&#10;            &quot;properties&quot;: {&#10;                &quot;draft&quot;: {&#10;                    &quot;type&quot;: &quot;boolean&quot;,&#10;                    &quot;x-go-name&quot;: &quot;IsWorkInProgress&quot;&#10;                },&#10;                &quot;html_url&quot;: {&#10;                    &quot;type&quot;: &quot;string&quot;,&#10;                    &quot;x-go-name&quot;: &quot;HTMLURL&quot;&#10;                },&#10;                &quot;merged&quot;: {&#10;                    &quot;type&quot;: &quot;boolean&quot;,&#10;                    &quot;x-go-name&quot;: &quot;HasMerged&quot;&#10;                },&#10;                &quot;merged_at&quot;: {&#10;                    &quot;type&quot;: &quot;string&quot;,&#10;                    &quot;format&quot;: &quot;date-time&quot;,&#10;            // Output truncated...&#10;        }&#10;&#10;    Value:&#10;&#10;        null&#10;&#10;[200] OK:&#10;&#10;    `[{&quot;id&quot;:3,&quot;url&quot;:&quot;http://127.0.0.1:43210/api/v1/repos/qaowner/journeys/issues/3&quot;,&quot;html_url&quot;:&quot;http://127.0.0.1:43210/qaowner/journeys/issues/3&quot;,&quot;number&quot;:3,&quot;user&quot;:{&quot;id&quot;:1,&quot;login&quot;:&quot;qaowner&quot;,&quot;type&quot;:&quot;User&quot;,&quot;login_name&quot;:&quot;&quot;,&quot;source_id&quot;:0,&quot;full_name&quot;:&quot;&quot;,&quot;email&quot;:&quot;qaowner@example.invalid&quot;,&quot;avatar_url&quot;:&quot;http://127.0.0.1:43210/avatars/cf8b7d25b84da426f50115e5eb79b7874b8ac59dbd76a619f0f347f71600e41d&quot;,&quot;html_url&quot;:&quot;http://127.0.0.1:43210/qaowner&quot;,&quot;language&quot;:&quot;en-US&quot;,&quot;is_admin&quot;:false,&quot;last_login&quot;:&quot;2026-10-22T10:53:46Z&quot;,&quot;create // Output truncated...`&#10;&#10;Reproduce with: &#10;&#10;    curl -X GET -H 'Authorization: [Filtered]' http://127.0.0.1:43210/api/v1/repos/qaowner/journeys/issues">api = &lt;requests.sessions.Session object at 0x000001F101471010&gt;
+path = '/repos/qaowner/journeys/issues'
+
+    @pytest.mark.parametrize('path', ['/version', '/user', '/repos/qaowner/journeys', '/repos/qaowner/journeys/issues'])
+    def test_contract(api, path):
+        schema = schemathesis.from_uri(BASE + '/swagger.v1.json')
+        templates = {'/version': '/version', '/user': '/user',
+                     '/repos/qaowner/journeys': '/repos/{owner}/{repo}',
+                     '/repos/qaowner/journeys/issues': '/repos/{owner}/{repo}/issues'}
+        case = schema[templates[path]]['GET'].make_case(
+            path_parameters={'owner': USER, 'repo': 'journeys'} if 'repos' in path else {})
+        response = api.get(api.base + path, timeout=15)
+        assert response.status_code == 200
+        # Authentication is exercised separately with independent unauthenticated requests.
+        # These checks validate the documented response, without inferring auth from make_case.
+&gt;       case.validate_response(response, checks=(status_code_conformance, content_type_conformance, response_schema_conformance))
+E       schemathesis.exceptions.CheckFailed: 
+E       
+E       1. Response violates schema
+E       
+E           None is not of type 'object'
+E       
+E           Schema at /items/properties/pull_request:
+E       
+E               {
+E                   "description": "PullRequestMeta PR info if an issue is a PR",
+E                   "type": "object",
+E                   "properties": {
+E                       "draft": {
+E                           "type": "boolean",
+E                           "x-go-name": "IsWorkInProgress"
+E                       },
+E                       "html_url": {
+E                           "type": "string",
+E                           "x-go-name": "HTMLURL"
+E                       },
+E                       "merged": {
+E                           "type": "boolean",
+E                           "x-go-name": "HasMerged"
+E                       },
+E                       "merged_at": {
+E                           "type": "string",
+E                           "format": "date-time",
+E                   // Output truncated...
+E               }
+E       
+E           Value:
+E       
+E               null
+E       
+E       [200] OK:
+E       
+E           `[{"id":3,"url":"http://127.0.0.1:43210/api/v1/repos/qaowner/journeys/issues/3","html_url":"http://127.0.0.1:43210/qaowner/journeys/issues/3","number":3,"user":{"id":1,"login":"qaowner","type":"User","login_name":"","source_id":0,"full_name":"","email":"qaowner@example.invalid","avatar_url":"http://127.0.0.1:43210/avatars/cf8b7d25b84da426f50115e5eb79b7874b8ac59dbd76a619f0f347f71600e41d","html_url":"http://127.0.0.1:43210/qaowner","language":"en-US","is_admin":false,"last_login":"2026-10-22T10:53:46Z","create // Output truncated...`
+E       
+E       Reproduce with: 
+E       
+E           curl -X GET -H 'Authorization: [Filtered]' http://127.0.0.1:43210/api/v1/repos/qaowner/journeys/issues
+
+tests\test_api.py:23: CheckFailed</failure></testcase><testcase classname="tests.test_api" name="test_repository_lifecycle" time="0.826" /><testcase classname="tests.test_api" name="test_issue_lifecycle" time="0.228" /><testcase classname="tests.test_api" name="test_auth_required[headers0]" time="0.004" /><testcase classname="tests.test_api" name="test_auth_required[headers1]" time="0.005" /><testcase classname="tests.test_api" name="test_invalid_repository[body0]" time="0.040" /><testcase classname="tests.test_api" name="test_invalid_repository[body1]" time="0.039" /><testcase classname="tests.test_api" name="test_invalid_repository[body2]" time="0.046" /><testcase classname="tests.test_api" name="test_missing_repository" time="0.040" /><testcase classname="tests.test_api" name="test_duplicate_repository" time="0.039" /><testcase classname="tests.test_api" name="test_malformed_json" time="0.041" /></testsuite></testsuites>

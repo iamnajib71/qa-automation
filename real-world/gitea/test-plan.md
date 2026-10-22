@@ -40,7 +40,7 @@ Execute P1 manual cases before P2/P3. Record each manual execution separately wi
 
 All 30 manual cases have recorded outcomes; three actual timeboxed exploratory sessions have timestamps and evidence; every planned automated test has a result; P1 failures are triaged; genuine new defects have upstream duplicate searches and reproducible evidence. CI passes or an explicit release recommendation explains unresolved failures. An environment blockage means these exit criteria have not been met.
 
-## Exploratory sessions (three planned 15-minute timeboxes)
+## Exploratory sessions (three focused 5-minute timeboxes)
 
 1. **Identity and privacy:** as owner and anonymous visitor, vary login/logout, bad passwords, direct private URLs, back/refresh, error messages and account navigation. Oracle: authorization boundaries remain enforced and navigation reflects session state. Capture redirect/status, screenshot and session transitions.
 2. **Issue integrity:** create, edit, close and reopen issues; vary Unicode, Markdown and empty titles; refresh and revisit lists. Oracle: saved content/state match user intent, no unsaved draft appears as persisted. Capture issue URLs, before/after content and timestamps.

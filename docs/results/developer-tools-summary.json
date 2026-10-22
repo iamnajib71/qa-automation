@@ -1,0 +1,8 @@
+{
+  "scope": "Portal unit tests including developer tools; separate from Gitea product tests",
+  "total": 57,
+  "passed": 57,
+  "failed": 0,
+  "source": "reports/unit/results.json",
+  "start_time_unix_ms": 1792681225514
+}

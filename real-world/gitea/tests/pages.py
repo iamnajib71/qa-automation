@@ -29,12 +29,12 @@ class RepositoryPage:
 
     def open(self, owner='qaowner', name='journeys'):
         self.driver.get(f'{self.base}/{owner}/{name}')
-        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, '.repo-title')))
+        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, f'a.muted[href="/{owner}/{name}"]')))
         return self
 
     def title(self):
-        return self.driver.find_element(By.CSS_SELECTOR, '.repo-title').text
+        return self.driver.find_element(By.CSS_SELECTOR, 'a.muted[href="/qaowner/journeys"]').text
 
     def issues(self):
         self.driver.get(self.base + '/qaowner/journeys/issues')
-        return self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'main'))).text
+        return self.wait.until(EC.visibility_of_element_located((By.LINK_TEXT, 'Seed issue'))).text

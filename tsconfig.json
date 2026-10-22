@@ -37,6 +37,9 @@
   ],
   "exclude": [
     "node_modules",
+    ".verification",
+    ".tools",
+    "real-world",
     "cypress",
     "tests/performance"
   ]

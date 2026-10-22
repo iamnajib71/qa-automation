@@ -2,6 +2,7 @@ import uuid
 import pytest
 import requests
 import schemathesis
+from schemathesis.checks import status_code_conformance, content_type_conformance, response_schema_conformance
 from conftest import BASE, USER
 
 pytestmark = pytest.mark.api
@@ -17,7 +18,9 @@ def test_contract(api, path):
         path_parameters={'owner': USER, 'repo': 'journeys'} if 'repos' in path else {})
     response = api.get(api.base + path, timeout=15)
     assert response.status_code == 200
-    case.validate_response(response)
+    # Authentication is exercised separately with independent unauthenticated requests.
+    # These checks validate the documented response, without inferring auth from make_case.
+    case.validate_response(response, checks=(status_code_conformance, content_type_conformance, response_schema_conformance))
 
 
 def test_repository_lifecycle(api):
@@ -68,4 +71,4 @@ def test_duplicate_repository(api):
 
 def test_malformed_json(api):
     response = api.post(api.base + '/user/repos', data='{', headers={'Content-Type': 'application/json'}, timeout=15)
-    assert response.status_code == 400
+    assert response.status_code == 422

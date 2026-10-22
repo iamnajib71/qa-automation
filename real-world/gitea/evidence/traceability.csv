@@ -1,31 +1,48 @@
-requirement_or_journey,test_case,automated_test,result,evidence
-View public home,GT-001,,not run,
-Successful login,GT-002,test_login,not run,
-Reject wrong password,GT-003,test_invalid_login,not run,
-Reject unknown user,GT-004,,not run,
-Required login fields,GT-005,,not run,
-Logout revokes UI session,GT-006,,not run,
-Public repository visible,GT-007,test_public_repository,not run,
-Private repository hidden,GT-008,private repository hidden,not run,
-Owner opens private repository,GT-009,,not run,
-Create public repository,GT-010,test_repository_lifecycle,not run,
-Create private repository,GT-011,test_repository_lifecycle,not run,
-Reject duplicate repository,GT-012,test_duplicate_repository,not run,
-Reject empty repository name,GT-013,test_invalid_repository,not run,
-Reject path-like repository name,GT-014,test_invalid_repository,not run,
-Edit repository description,GT-015,test_repository_lifecycle,not run,
-Delete disposable repository,GT-016,test_repository_lifecycle,not run,
-View issue list,GT-017,test_issue_visible,not run,
-Create issue,GT-018,create and close issue through UI,not run,
-Reject empty issue title,GT-019,,not run,
-Edit issue content,GT-020,test_issue_lifecycle,not run,
-Close issue,GT-021,test_issue_lifecycle,not run,
-Reopen issue,GT-022,,not run,
-Markdown and Unicode issue body,GT-023,,not run,
-Anonymous issue write boundary,GT-024,,not run,
-Explore repository search,GT-025,,not run,
-Keyboard login,GT-026,,not run,
-Zoom and narrow layout,GT-027,,not run,
-API authentication errors,GT-028,test_auth_required,not run,
-API malformed JSON,GT-029,test_malformed_json,not run,
-API Swagger response contract,GT-030,test_contract,not run,
+requirement_or_journey,test_case,automated_test,result,evidence,manual_result,manual_evidence
+View public home,GT-001,,not run,,passed,exploratory/session-01.md
+Successful login,GT-002,test_login[chrome],passed,reports/selenium.xml,passed,exploratory/session-01.md
+Successful login,GT-002,test_login[firefox],passed,reports/selenium.xml,passed,exploratory/session-01.md
+Reject wrong password,GT-003,test_invalid_login[chrome],passed,reports/selenium.xml,passed,exploratory/session-01.md
+Reject wrong password,GT-003,test_invalid_login[firefox],passed,reports/selenium.xml,passed,exploratory/session-01.md
+Reject unknown user,GT-004,,not run,,passed,exploratory/session-01.md
+Required login fields,GT-005,,not run,,passed,exploratory/session-01.md
+Logout revokes UI session,GT-006,,not run,,inconclusive,exploratory/session-03.md
+Public repository visible,GT-007,test_public_repository[chrome],passed,reports/selenium.xml,not run,
+Public repository visible,GT-007,test_public_repository[firefox],passed,reports/selenium.xml,not run,
+Private repository hidden,GT-008,private repository hidden from anonymous visitor,passed,reports/playwright.xml,passed,exploratory/session-01.md
+Owner opens private repository,GT-009,,not run,,passed,exploratory/session-03.md
+Create public repository,GT-010,test_repository_lifecycle,passed,reports/api.xml,not run,
+Create private repository,GT-011,test_repository_lifecycle,passed,reports/api.xml,not run,
+Reject duplicate repository,GT-012,test_duplicate_repository,passed,reports/api.xml,not run,
+Reject empty repository name,GT-013,test_invalid_repository[body0],passed,reports/api.xml,not run,
+Reject empty repository name,GT-013,test_invalid_repository[body1],passed,reports/api.xml,not run,
+Reject empty repository name,GT-013,test_invalid_repository[body2],passed,reports/api.xml,not run,
+Reject path-like repository name,GT-014,test_invalid_repository[body0],passed,reports/api.xml,not run,
+Reject path-like repository name,GT-014,test_invalid_repository[body1],passed,reports/api.xml,not run,
+Reject path-like repository name,GT-014,test_invalid_repository[body2],passed,reports/api.xml,not run,
+Edit repository description,GT-015,test_repository_lifecycle,passed,reports/api.xml,not run,
+Delete disposable repository,GT-016,test_repository_lifecycle,passed,reports/api.xml,not run,
+View issue list,GT-017,test_issue_visible[chrome],passed,reports/selenium.xml,partial,exploratory/session-02.md
+View issue list,GT-017,test_issue_visible[firefox],passed,reports/selenium.xml,partial,exploratory/session-02.md
+Create issue,GT-018,create and close issue through UI,passed,reports/playwright.xml,passed,exploratory/session-02.md
+Reject empty issue title,GT-019,,not run,,passed,exploratory/session-02.md
+Edit issue content,GT-020,test_issue_lifecycle,passed,reports/api.xml,not run,
+Close issue,GT-021,test_issue_lifecycle,passed,reports/api.xml,passed,exploratory/session-03.md
+Reopen issue,GT-022,,not run,,passed,exploratory/session-03.md
+Markdown and Unicode issue body,GT-023,,not run,,passed,exploratory/session-02.md
+Anonymous issue write boundary,GT-024,,not run,,not run,
+Explore repository search,GT-025,,not run,,partial,exploratory/session-03.md
+Keyboard login,GT-026,,not run,,partial,exploratory/session-03.md
+Zoom and narrow layout,GT-027,,not run,,partial,exploratory/session-03.md
+API authentication errors,GT-028,test_auth_required[headers0],passed,reports/api.xml,not run,
+API authentication errors,GT-028,test_auth_required[headers1],passed,reports/api.xml,not run,
+API malformed JSON,GT-029,test_malformed_json,passed,reports/api.xml,not run,
+API Swagger response contract,GT-030,test_contract[/version],passed,reports/api.xml,not run,
+API Swagger response contract,GT-030,test_contract[/user],passed,reports/api.xml,not run,
+API Swagger response contract,GT-030,test_contract[/repos/qaowner/journeys],passed,reports/api.xml,not run,
+API Swagger response contract,GT-030,test_contract[/repos/qaowner/journeys/issues],failed,reports/api.xml,not run,
+Accessible main pages (automated WCAG checks),GT-026/GT-027,axe /,failed,reports/playwright.xml,not run,
+Accessible main pages (automated WCAG checks),GT-026/GT-027,axe /user/login,failed,reports/playwright.xml,not run,
+Accessible main pages (automated WCAG checks),GT-026/GT-027,axe /explore/repos,failed,reports/playwright.xml,not run,
+Accessible main pages (automated WCAG checks),GT-026/GT-027,axe /qaowner/journeys,failed,reports/playwright.xml,not run,
+Accessible main pages (automated WCAG checks),GT-026/GT-027,axe /qaowner/journeys/issues,failed,reports/playwright.xml,not run,

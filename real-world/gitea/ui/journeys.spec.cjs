@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
+const fs = require('node:fs');
 
 async function login(page) {
   await page.goto('/user/login');
@@ -16,7 +17,7 @@ test('authenticated dashboard', async ({ page }) => {
 
 test('public repository and issue navigation', async ({ page }) => {
   await page.goto('/qaowner/journeys');
-  await expect(page.locator('.repo-title')).toContainText('journeys');
+  await expect(page.locator('a.muted[href="/qaowner/journeys"]')).toContainText('journeys');
   await page.goto('/qaowner/journeys/issues');
   await page.getByRole('link', { name: 'Seed issue', exact: true }).click();
   await expect(page.locator('body')).toContainText('Seed issue');
@@ -36,13 +37,15 @@ test('create and close issue through UI', async ({ page }) => {
 
 test('private repository hidden from anonymous visitor', async ({ page }) => {
   await page.goto('/qaowner/private-fixture');
-  await expect(page.locator('body')).toContainText('not found');
+  await expect(page.locator('body')).toContainText(/404 Not Found/i);
 });
 
 for (const route of ['/', '/user/login', '/explore/repos', '/qaowner/journeys', '/qaowner/journeys/issues']) {
   test(`axe ${route}`, async ({ page }, info) => {
     await page.goto(route);
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    fs.mkdirSync('reports/axe', { recursive: true });
+    fs.writeFileSync(`reports/axe/${route.replace(/[^a-z0-9]/gi, '_') || 'home'}.json`, JSON.stringify(results, null, 2));
     await info.attach('axe-results', { body: JSON.stringify(results, null, 2), contentType: 'application/json' });
     expect(results.violations).toEqual([]);
   });

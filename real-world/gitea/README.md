@@ -2,7 +2,7 @@
 
 A risk-based QA framework for an independent open-source Git hosting product, focused on repository privacy and issue integrity.
 
-**Status: implementation prepared; product execution blocked.** Read [execution status](evidence/execution-status.md) before using any counts. Thirty manual cases are authored; zero are recorded as executed. Zero exploratory sessions and zero automated product tests have been executed. No product defects have been confirmed.
+**Status: executed; unresolved product findings remain.** [31 automated checks: 25 passed, 6 failed](evidence/summary.json). [30 manual cases](manual-cases.csv): [12 completed, 5 partial/inconclusive, 13 not run](manual-results.csv). [Three exploratory sessions](exploratory/README.md) and [four confirmed defect classes](defects/README.md). Nothing was posted upstream. Read [execution details](evidence/execution-status.md) before interpreting the counts.
 
 ## Why Gitea
 
@@ -15,16 +15,16 @@ The selected target is **28.2.0**, released 18 October 2026 according to the [up
 | Asset | Location | Execution status |
 |---|---|---|
 | Risk plan and three exploratory charters | [test-plan.md](test-plan.md) | Authored; exit criteria not met |
-| 30 TestRail/Xray-style manual cases | [manual-cases.csv](manual-cases.csv) | Not run |
-| Exploratory session notes | [exploratory](exploratory/README.md) | 0 actual sessions |
-| Selenium Python/pytest page objects | [tests](tests/) | Not run against product |
-| REST, negative/auth and Schemathesis contract checks | [test_api.py](tests/test_api.py) | Not run against product |
-| Playwright journeys and five axe routes | [journeys.spec.cjs](ui/journeys.spec.cjs) | Collection checked only |
+| 30 TestRail/Xray-style manual cases | [manual-cases.csv](manual-cases.csv) | 12 complete; 5 partial/inconclusive; 13 not run |
+| Exploratory session notes | [exploratory](exploratory/README.md) | 3 recorded timeboxes |
+| Selenium Python/pytest page objects | [tests](tests/) | 8 passed across Chrome and Firefox |
+| REST, negative/auth and Schemathesis contract checks | [test_api.py](tests/test_api.py) | 13 passed; 1 contract failure |
+| Playwright journeys and five axe routes | [journeys.spec.cjs](ui/journeys.spec.cjs) | 4 UI passed; 5 axe scans failed |
 | Generated traceability | [traceability.csv](evidence/traceability.csv) | Unexecuted mappings marked not run |
-| Execution counts | [summary.json](evidence/summary.json) | Derived from JUnit; no passing claims |
-| Defects | [register](defects/README.md) | None confirmed; no upstream postings |
+| Execution counts | [summary.json](evidence/summary.json) | Derived from actual JUnit |
+| Defects | [register](defects/README.md) | 4 distinct confirmed classes; not filed |
 
-Manual case mappings indicate related automated coverage, not proof that every manual step is automated. Browser and parameter variants appear as separate executions in JUnit; automated execution counts are not unique manual case counts. Manual and exploratory results must be recorded independently. No source-product fix branch exists because no defect has been reproduced.
+Manual mappings indicate related automated coverage, not proof that every manual step is automated. Browser/parameter variants count as separate executions. Manual outcomes are recorded independently. [Upstream fix preparation](fixes/README.md) is separate from the unmodified product's results.
 
 ## Reproduce locally
 
@@ -55,7 +55,7 @@ npm.cmd test
 python scripts/results.py
 ```
 
-The two pytest suites create JUnit, self-contained HTML and Allure result data. Playwright creates JUnit/HTML, failure screenshots, retained failure traces and axe JSON attachments. To view Allure locally install the Allure CLI and run `allure serve reports/allure-results`; HTML reports require no Allure installation. The full runner attempts all suites and returns failure if any suite fails.
+The pytest suites create JUnit, self-contained HTML and separate Allure result directories. Playwright creates JUnit/HTML, failure screenshots/traces and axe JSON. The full runner clears the three named JUnit outputs before starting, uses clean suite-specific Allure directories, attempts every suite and fails if any suite fails. HTML reports require no Allure installation. Install the Allure CLI to view the raw Allure directories.
 
 Stop without deleting data: `docker compose -f compose.yml down`. To intentionally reset disposable data: `docker compose -f compose.yml down -v`.
 
@@ -63,4 +63,4 @@ Stop without deleting data: `docker compose -f compose.yml down`. To intentional
 
 [GitHub Actions workflow](../../.github/workflows/real-world.yml) and [Azure pipeline](../../azure-pipelines.yml) start the same Docker target and invoke the same bootstrap/runner scripts on Ubuntu. They retain JUnit, HTML, Allure results, screenshots/traces, axe output, environment/digest, contract and traceability. GitHub retains artifacts for 30 days; Azure publishes test results and artifacts using its configured retention policy. Azure requires an Azure DevOps pipeline connected to this repository; that service has not been configured or run here.
 
-No new CI run URL is available yet. Configuration is not evidence of a successful run. Actual application behavior and selectors remain unverified until the target runs.
+[First actual CI execution](https://github.com/iamnajib71/qa-automation/actions/runs/39763949058) included framework failures that were subsequently corrected. The saved local JUnit evidence reflects the corrected 25-pass/6-failure result; follow the execution record for subsequent CI runs. Azure is configured but has not been run in an Azure DevOps project.
