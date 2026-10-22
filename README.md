@@ -1,5 +1,19 @@
 A real Next.js QA portal tested with Playwright, Cypress, Newman, Vitest and k6 — with evidence you can inspect.
 
+<!-- project-overview:start -->
+## Project overview
+
+| Area | What to look for |
+| --- | --- |
+| **Problem addressed** | Defect tracking and browser scanning need repeatable functional, API, accessibility and regression checks before release. |
+| **Implemented work** | Built a working Next.js portal and layered test framework; documented three real fixed defects with permanent regression tests. Published unit, API, browser, accessibility and local performance results. |
+| **Skills demonstrated** | Test design, Playwright, Cypress page objects/fixtures, Postman/Newman, Vitest, k6, axe accessibility checks and CI reporting. |
+| **Demo** | [Watch the real API, browser scan and unit-test demo](docs/demo.gif), then inspect the [app and report screenshots](#screenshots). |
+| **How to use it** | [Quick start](#quick-start--windows-powershell): install, build and serve the portal on port 43187. Create a fictional defect and scan the local portal; run the suite commands to reproduce reports. |
+| **Verification** | [Results and evidence](#results-and-evidence), test traceability and three linked bug reports. Labelled synthetic preview pages and the single-process JSON-store limit remain explicit. |
+
+<!-- project-overview:end -->
+
 ![Real API lifecycle, browser scan and unit-test demo](docs/demo.gif)
 
 [![CI](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml)
