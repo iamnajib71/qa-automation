@@ -42,7 +42,12 @@ jobs:
           old = 'generate spec --enable-allof-compounding'
           assert old in text
           p.write_text(text.replace(old, 'generate spec --nullable-pointers --enable-allof-compounding'))
+          p = Path('build/openapi3gen/convert.go')
+          text = p.read_text()
+          p.write_text(text.replace('fixFileSchemas(oas3)', 'fixFileSchemas(oas3)\n\tapplyNullableExtensions(oas3)', 1))
           PY
+          cp ../real-world/gitea/fixes/nullable.go build/openapi3gen/
+          gofmt -w build/openapi3gen/nullable.go build/openapi3gen/convert.go
           make generate-swagger
       - name: Verify the regression after the fix
         working-directory: upstream
@@ -50,6 +55,7 @@ jobs:
           go test -run '^TestIssueContractAcceptsAbsentAssociations$' ./build/openapi3gen/ | tee ../after.txt
           go test ./build/openapi3gen/
           git add -N build/openapi3gen/issue_contract_test.go
+          git add -N build/openapi3gen/nullable.go
           git diff --binary > ../gitea-nullability.patch
       - uses: actions/upload-artifact@v4
         if: always()
@@ -60,4 +66,6 @@ jobs:
             after.txt
             make-help.txt
             gitea-nullability.patch
+            upstream/templates/swagger/v1-swagger.generated.json
+            upstream/templates/swagger/v1-openapi3.generated.json
           retention-days: 30

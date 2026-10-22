@@ -5,6 +5,13 @@ import { runApiChecks } from "@/lib/api-testing/runner";
 import { checkInput } from "@/lib/api-testing/schema";
 import { importOpenApi, validateSchemaBudget } from "@/lib/api-testing/openapi";
 import { assessPhpVersion, phpAdvisory } from "@/lib/security/php";
+import { acceptsOrigin } from "@/lib/api-testing/origin";
+
+it("uses the browser-facing Host for same-origin requests behind Next", () => {
+  expect(acceptsOrigin(new Headers({ host: "127.0.0.1:43187", origin: "http://127.0.0.1:43187" }), "http://localhost:43187/api/api-check")).toBe(true);
+  expect(acceptsOrigin(new Headers({ host: "example.com", origin: "https://evil.example" }), "https://example.com/api/api-check")).toBe(false);
+  expect(acceptsOrigin(new Headers({ host: "example.com", origin: "http://example.com" }), "https://example.com/api/api-check")).toBe(false);
+});
 
 describe("API network boundary", () => {
   it.each(["127.0.0.1", "10.1.2.3", "169.254.169.254", "172.16.1.1", "192.168.1.1", "0.0.0.0", "::1", "::ffff:127.0.0.1", "2001:0db8::1", "fe80::1", "fc00::1", "2001::1"]) ("blocks %s", address => expect(isPublicAddress(address)).toBe(false));

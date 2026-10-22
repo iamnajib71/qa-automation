@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { checkInput } from "@/lib/api-testing/schema";
 import { runApiChecks } from "@/lib/api-testing/runner";
+import { acceptsOrigin } from "@/lib/api-testing/origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 export async function POST(request: Request) {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) return NextResponse.json({ error: "Cross-origin submissions are not accepted." }, { status: 403 });
+  if (!acceptsOrigin(request.headers, request.url)) return NextResponse.json({ error: "Cross-origin submissions are not accepted." }, { status: 403 });
   const reader = request.body?.getReader();
   const chunks: Uint8Array[] = [];
   let bytes = 0;
