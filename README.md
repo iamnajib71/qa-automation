@@ -1,32 +1,37 @@
-A real Next.js QA portal tested with Playwright, Cypress, Newman, Vitest and k6 — with evidence you can inspect.
+# QA Automation
 
-<!-- project-overview:start -->
-## Project overview
-
-| Area | What to look for |
-| --- | --- |
-| **Problem addressed** | Defect tracking and browser scanning need repeatable functional, API, accessibility and regression checks before release. |
-| **Implemented work** | Built a working Next.js portal and layered test framework; documented three real fixed defects with permanent regression tests. Published unit, API, browser, accessibility and local performance results. |
-| **Skills demonstrated** | Test design, Playwright, Cypress page objects/fixtures, Postman/Newman, Vitest, k6, axe accessibility checks and CI reporting. |
-| **Demo** | [Watch the real API, browser scan and unit-test demo](docs/demo.gif), then inspect the [app and report screenshots](#screenshots). |
-| **How to use it** | [Quick start](#quick-start--windows-powershell): install, build and serve the portal on port 43187. Create a fictional defect and scan the local portal; run the suite commands to reproduce reports. |
-| **Verification** | [Results and evidence](#results-and-evidence), test traceability and three linked bug reports. Labelled synthetic preview pages and the single-process JSON-store limit remain explicit. |
-
-<!-- project-overview:end -->
+I tested a working defect-management portal across its API, browser journeys and accessibility checks, with reproducible bug reports and release evidence.
 
 ![Real API lifecycle, browser scan and unit-test demo](docs/demo.gif)
 
-[![CI](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml)
-[![MIT licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
-![TypeScript](https://img.shields.io/badge/main_language-TypeScript-3178c6)
+[![CI](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/iamnajib71/qa-automation/actions/workflows/ci.yml) · [MIT licence](LICENSE)
 
-**Runs locally.** The complete scanner needs Node, Chromium and writable local storage. The legacy Vercel preview is not advertised as the working framework demo. [Demo recording details](docs/results/demo.md).
+## At a glance
 
-## Technical capabilities
+| Area | Evidence-backed summary |
+| --- | --- |
+| **The problem** | A QA analyst and release team need to know whether defects survive reloads, invalid input gets a useful response and missing projects are identified correctly; misleading results cause repeated triage and weaken release decisions. This portal uses synthetic fixtures. |
+| **What I built** | I built a test framework around the real portal: API contracts, browser journeys, accessibility checks, defect reproductions, traceability and ordered CI release gates. |
+| **Results** | [32 unit tests, 44 Newman assertions, 22 Playwright API tests, 7 E2E/accessibility tests and 6 Cypress tests passed with zero failures](docs/results/ci-summary.json). [Three recorded defects have regression retests](docs/testing/traceability.md). |
+| **Skills shown** | Functional testing, regression testing, API testing, Playwright, Cypress, Postman, Newman, Vitest, TypeScript, accessibility testing, k6 and GitHub Actions. |
+| **Relevant roles** | QA Analyst, Test Analyst, Junior Test Automation Engineer, Software Tester. |
+| **How it was built** | Designed, specified and reviewed by me; built with Codex as my coding agent (vibe coding). Verification and its limits are linked below. |
+| **Try it / evidence** | [Demo](docs/demo.gif) · [Test strategy](docs/testing/test-strategy.md) · [CI evidence](docs/results/ci-summary.json) · [Quick start](#quick-start--windows-powershell) |
 
-- **Functional, regression and API testing:** real defect CRUD and lifecycle, negative cases, schemas, boundary values and permanent retests for three real fixed defects.
-- **Cypress and Playwright:** six Cypress journeys using page objects and fixtures, Playwright request/E2E automation, real browser scan artifacts and axe WCAG 2.1 AA checks.
-- **Release delivery:** gated GitHub Actions with HTML reports and failure artifacts; a local k6 performance smoke run; [test strategy, plan, cases and traceability](docs/testing/test-strategy.md).
+## What I did, step by step
+
+1. Reviewed the portal and defined its working features, exclusions and release risks in the [test strategy](docs/testing/test-strategy.md).
+2. Mapped functional cases to requirements and evidence in the [traceability matrix](docs/testing/traceability.md).
+3. Reproduced real failures before fixing them and retained the [before/after responses](docs/results/defects-before.json).
+4. Automated the API contract and browser journeys with independent request, UI and accessibility checks.
+5. Added ordered CI gates and downloadable failure reports, keeping the performance smoke run separate from correctness gates.
+6. Retested the fixes and repeated installation and execution from a [fresh public clone](docs/results/clean-clone.json).
+
+## Problems I hit and how I solved them
+
+- **Malformed scanner JSON returned a server error:** separated request parsing from scan execution and added a permanent regression for the expected validation response. [BUG-001 and fixing commit](docs/testing/bug-reports/BUG-001.md).
+- **A malformed URL reached service execution:** added URL validation and an API regression so invalid input is rejected before a scan starts. [BUG-002 and fixing commit](docs/testing/bug-reports/BUG-002.md).
+- **Missing projects appeared to exist:** stopped using an empty scan history as the existence check and retested the missing-project response. [BUG-003 and fixing commit](docs/testing/bug-reports/BUG-003.md).
 
 ## Architecture
 
@@ -104,7 +109,7 @@ On PowerShell, use `npm.cmd` if script execution policy blocks `npm`. Install th
 
 [Windows execution snapshot](docs/results/local-summary.json) · [clean-clone verification](docs/results/clean-clone.json) · [BUG-001](docs/testing/bug-reports/BUG-001.md) · [BUG-002](docs/testing/bug-reports/BUG-002.md) · [BUG-003](docs/testing/bug-reports/BUG-003.md).
 
-CI gates: lint → type-check → unit → Newman API → Playwright → Cypress. Every job must pass. HTML reports, JSON/JUnit, failure screenshots, retained Playwright videos/traces and Cypress videos are uploaded as Actions artifacts for 30 days. Performance runs locally only. Screenshots show the inspected Windows reports; the linked CI artifacts contain the exact CI reports.
+[CI workflow and artifact retention](.github/workflows/ci.yml). CI gates: lint → type-check → unit → Newman API → Playwright → Cypress. Every job must pass. HTML reports, JSON/JUnit, failure screenshots, retained Playwright videos/traces and Cypress videos are uploaded as Actions artifacts for 30 days. Performance runs locally only. Screenshots show the inspected Windows reports; the linked CI artifacts contain the exact CI reports.
 
 ## Project structure
 
@@ -131,4 +136,4 @@ The scanner accepts its own origin only and blocks browser requests to other ori
 
 ## Built by Nazmul Hassan
 
-[LinkedIn](https://linkedin.com/in/iamnajib71) · [GitHub](https://github.com/iamnajib71)
+[LinkedIn](https://www.linkedin.com/in/iamnajib71) · [GitHub](https://github.com/iamnajib71)
