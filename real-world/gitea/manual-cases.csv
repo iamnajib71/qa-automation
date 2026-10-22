@@ -1,0 +1,31 @@
+ID,title,preconditions,steps,expected,priority
+GT-001,View public home,Fresh anonymous browser,Open /; inspect page title and navigation,Home renders with links to explore and sign in,P2
+GT-002,Successful login,qaowner fixture exists,Open /user/login; enter fixture username and password; submit,Authenticated dashboard is shown,P1
+GT-003,Reject wrong password,Anonymous browser,Open login; enter qaowner and wrong-password; submit,Error is shown and no authenticated session is established,P1
+GT-004,Reject unknown user,Anonymous browser,Open login; enter nonexistent-user and arbitrary password; submit,Login is refused without an authenticated session,P1
+GT-005,Required login fields,Anonymous browser,Open login; leave username and password blank; submit,Validation prevents login and required fields are identified,P2
+GT-006,Logout revokes UI session,Logged in as qaowner,Open account menu; sign out; revisit dashboard,Authenticated dashboard is unavailable until signing in again,P1
+GT-007,Public repository visible,Anonymous browser and journeys fixture,Open /qaowner/journeys; inspect name and README,Repository name and initialized content are visible,P1
+GT-008,Private repository hidden,Anonymous browser and private-fixture exists,Open /qaowner/private-fixture directly,Not-found response hides private repository contents,P1
+GT-009,Owner opens private repository,Logged in as qaowner,Open /qaowner/private-fixture,Owner can view private repository contents,P1
+GT-010,Create public repository,Logged in as qaowner,Create repository with unique name manual-public and public visibility; open it,Repository is saved under qaowner with public visibility,P1
+GT-011,Create private repository,Logged in as qaowner,Create unique manual-private repository with private visibility; inspect as anonymous,Owner sees repository and anonymous visitor cannot see contents,P1
+GT-012,Reject duplicate repository,journeys fixture exists and owner logged in,Create another repository named journeys,Useful validation rejects duplicate and existing repository remains intact,P1
+GT-013,Reject empty repository name,Logged in as qaowner,Open new repository form; leave name empty; submit,Required-name validation prevents creation,P1
+GT-014,Reject path-like repository name,Logged in as qaowner,Enter ../escape as repository name; submit,Validation rejects name and creates no repository,P1
+GT-015,Edit repository description,Owner of manual-public repository,Open repository settings; change description to Manual QA update; save; reload,New description persists after reload,P1
+GT-016,Delete disposable repository,Owner of manual-public repository,Delete through settings with required confirmation; reopen repository URL,Repository is deleted and URL returns not found,P1
+GT-017,View issue list,journeys contains Seed issue,Open /qaowner/journeys/issues; open Seed issue,Issue list and detail show saved seed issue,P1
+GT-018,Create issue,Owner logged in and journeys exists,Open new issue; enter unique title and body; submit; reload,Issue receives a number and title/body persist,P1
+GT-019,Reject empty issue title,Owner logged in,Open new issue; leave title blank; enter body; submit,Validation blocks issue creation,P1
+GT-020,Edit issue content,Owner logged in and disposable issue exists,Edit issue title and body; save; reload,Edited content persists with correct issue identity,P1
+GT-021,Close issue,Owner logged in and open disposable issue exists,Open issue; select Close Issue; reload,Closed state persists and issue moves out of open list,P1
+GT-022,Reopen issue,Owner logged in and closed disposable issue exists,Open closed issue; select Reopen Issue; reload,Open state persists and issue appears in open list,P1
+GT-023,Markdown and Unicode issue body,Owner logged in and disposable issue exists,Save body containing café 日本語 and Markdown heading; view rendered body,Unicode persists and heading renders without corrupting content,P2
+GT-024,Anonymous issue write boundary,Anonymous browser and journeys exists,Open new-issue URL; attempt to reach submission flow,Authentication is required before creating an issue,P1
+GT-025,Explore repository search,Anonymous browser and public/private fixtures,Open /explore/repos; search journeys; search private-fixture,Public fixture is searchable and private fixture is not exposed,P2
+GT-026,Keyboard login,Anonymous browser and keyboard only,Tab through login; enter fixture values; submit with keyboard,Focus is visible and login is operable without pointer,P1
+GT-027,Zoom and narrow layout,Anonymous browser,Set zoom 200 percent; inspect login and repository issue list; test narrow viewport,Core content and controls remain reachable without overlap hiding actions,P2
+GT-028,API authentication errors,REST client with no stored credentials,GET /api/v1/user without auth; repeat with invalid token,Both requests return 401 and no user profile,P1
+GT-029,API malformed JSON,REST client with fixture basic auth,POST /api/v1/user/repos with Content-Type application/json and body {,400 response rejects malformed JSON without creating a repository,P1
+GT-030,API Swagger response contract,Running target and REST client,Download /swagger.v1.json; GET version and repository and issue endpoints; validate documented responses,Responses conform to served Swagger status and schemas,P1

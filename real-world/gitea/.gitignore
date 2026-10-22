@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+.python-deps/
+node_modules/
+reports/
+test-results/

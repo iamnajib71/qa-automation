@@ -1,0 +1,51 @@
+name: Real-world Gitea QA
+on:
+  push:
+    branches: [main, 'codex/**']
+    paths: ['real-world/**', '.github/workflows/real-world.yml', 'azure-pipelines.yml']
+  pull_request:
+    paths: ['real-world/**', '.github/workflows/real-world.yml', 'azure-pipelines.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gitea:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: real-world/gitea
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-firefox@v1
+      - name: Install test dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Start Docker target and seed fixtures
+        run: python scripts/bootstrap.py
+      - name: Run API, Selenium Chrome and Firefox, Playwright and axe
+        run: python scripts/run.py
+      - name: Generate result traceability
+        if: always()
+        run: python scripts/results.py
+      - name: Save target logs
+        if: always()
+        run: docker compose -f compose.yml logs --no-color > reports/docker.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gitea-qa-evidence
+          path: |
+            real-world/gitea/reports
+            real-world/gitea/evidence
+          retention-days: 30
+      - name: Stop disposable target
+        if: always()
+        run: docker compose -f compose.yml down -v

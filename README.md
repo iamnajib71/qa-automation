@@ -11,12 +11,20 @@ I tested a working defect-management portal across its API, browser journeys and
 | Area | Evidence-backed summary |
 | --- | --- |
 | **The problem** | A QA analyst and release team need to know whether defects survive reloads, invalid input gets a useful response and missing projects are identified correctly; misleading results cause repeated triage and weaken release decisions. This portal uses synthetic fixtures. |
-| **What I built** | I built a test framework around the real portal: API contracts, browser journeys, accessibility checks, defect reproductions, traceability and ordered CI release gates. |
-| **Results** | [32 unit tests, 44 Newman assertions, 22 Playwright API tests, 7 E2E/accessibility tests and 6 Cypress tests passed with zero failures](docs/results/ci-summary.json). [Three recorded defects have regression retests](docs/testing/traceability.md). |
-| **Skills shown** | Functional testing, regression testing, API testing, Playwright, Cypress, Postman, Newman, Vitest, TypeScript, accessibility testing, k6 and GitHub Actions. |
+| **What I built** | I built a test framework around the real portal: API contracts, browser journeys, accessibility checks, defect reproductions, traceability and ordered CI release gates. I also prepared an independent Gitea QA campaign with manual cases, Selenium, API contracts and CI; its product execution is blocked. |
+| **Results** | Portal: [32 unit tests, 44 Newman assertions, 22 Playwright API tests, 7 E2E/accessibility tests and 6 Cypress tests passed with zero failures](docs/results/ci-summary.json). [Three portal defects have regression retests](docs/testing/traceability.md). Gitea: [30 cases authored; 0 product test executions and 0 confirmed defects](real-world/gitea/evidence/execution-status.md). |
+| **Skills shown** | Functional testing, regression testing, API testing, Playwright, Cypress, Postman, Newman, Vitest, TypeScript, accessibility testing, k6 and GitHub Actions. The prepared Gitea extension adds Selenium, Python, pytest, Page Object Model, Schemathesis and Azure Pipelines; product execution is pending. |
 | **Relevant roles** | QA Analyst, Test Analyst, Junior Test Automation Engineer, Software Tester. |
 | **How it was built** | Designed, specified and reviewed by me; built with Codex as my coding agent (vibe coding). Verification and its limits are linked below. |
 | **Try it / evidence** | [Demo](docs/demo.gif) · [Test strategy](docs/testing/test-strategy.md) · [CI evidence](docs/results/ci-summary.json) · [Quick start](#quick-start--windows-powershell) |
+
+## Real-world testing
+
+I selected **Gitea 28.2.0**, an independent open-source Git hosting and issue-tracking product, to test repository privacy, authentication and saved issue changes. [Choice and reproduction steps](real-world/gitea/README.md) · [risk-based plan](real-world/gitea/test-plan.md).
+
+**Execution is blocked; this extension is not yet a completed test campaign.** [30 manual cases](real-world/gitea/manual-cases.csv) are authored; **0 cases run, 0 automated product tests executed, 0 exploratory sessions completed and 0 confirmed defects**. These counts are recorded in the [execution status](real-world/gitea/evidence/execution-status.md) and [generated JUnit summary](real-world/gitea/evidence/summary.json). [Traceability CSV](real-world/gitea/evidence/traceability.csv) · [defect table](real-world/gitea/defects/README.md).
+
+The prepared suites cover Selenium in headless Chrome/Firefox, Playwright journeys, pytest/requests API checks, served Swagger response validation and axe accessibility checks. [GitHub Actions](.github/workflows/real-world.yml) and [Azure Pipelines](azure-pipelines.yml) are configured to publish JUnit, HTML and Allure result artifacts; no new successful run or product report is claimed. The portal results elsewhere in this README apply to the original portal only.
 
 ## What I did, step by step
 
@@ -26,12 +34,14 @@ I tested a working defect-management portal across its API, browser journeys and
 4. Automated the API contract and browser journeys with independent request, UI and accessibility checks.
 5. Added ordered CI gates and downloadable failure reports, keeping the performance smoke run separate from correctness gates.
 6. Retested the fixes and repeated installation and execution from a [fresh public clone](docs/results/clean-clone.json).
+7. Selected Gitea as an independent target, wrote a risk-based plan and 30 manual cases, and prepared cross-browser, API, accessibility and CI automation. Recorded the [Docker execution blocker](real-world/gitea/evidence/execution-status.md) and kept unexecuted checks marked as not run.
 
 ## Problems I hit and how I solved them
 
 - **Malformed scanner JSON returned a server error:** separated request parsing from scan execution and added a permanent regression for the expected validation response. [BUG-001 and fixing commit](docs/testing/bug-reports/BUG-001.md).
 - **A malformed URL reached service execution:** added URL validation and an API regression so invalid input is rejected before a scan starts. [BUG-002 and fixing commit](docs/testing/bug-reports/BUG-002.md).
 - **Missing projects appeared to exist:** stopped using an empty scan history as the existence check and retested the missing-project response. [BUG-003 and fixing commit](docs/testing/bug-reports/BUG-003.md).
+- **The Gitea Docker engine was unavailable:** validated the Compose configuration and prepared a reproducible bootstrap, but could not resolve host access within the sandbox. Recorded this as an unresolved environment blocker; application results remain pending. [Evidence](real-world/gitea/evidence/execution-status.md).
 
 ## Architecture
 
