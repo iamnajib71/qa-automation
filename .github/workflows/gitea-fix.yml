@@ -1,0 +1,71 @@
+name: Gitea contract fix regression
+on:
+  push:
+    branches: ['feature/**']
+    paths: ['real-world/gitea/fixes/**', '.github/workflows/gitea-fix.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: go-gitea/gitea
+          ref: v28.2.0
+          path: upstream
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.2'
+          cache-dependency-path: upstream/go.sum
+      - name: Install focused regression
+        run: cp real-world/gitea/fixes/issue_contract_test.go upstream/build/openapi3gen/
+      - name: Prove the original contract fails
+        working-directory: upstream
+        run: |
+          make help > ../make-help.txt
+          gofmt -w build/openapi3gen/issue_contract_test.go
+          if go test -run '^TestIssueContractAcceptsAbsentAssociations$' ./build/openapi3gen/ > ../before.txt 2>&1; then
+            echo 'Regression unexpectedly passed before the fix'; exit 1
+          fi
+          grep -F 'ordinary issue with no associated PR' ../before.txt
+      - name: Generate nullable pointer contracts
+        working-directory: upstream
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('Makefile')
+          text = p.read_text()
+          old = 'generate spec --enable-allof-compounding'
+          assert old in text
+          p.write_text(text.replace(old, 'generate spec --nullable-pointers --enable-allof-compounding'))
+          p = Path('build/openapi3gen/convert.go')
+          text = p.read_text()
+          p.write_text(text.replace('fixFileSchemas(oas3)', 'fixFileSchemas(oas3)\n\tif err := applyNullableReferences(oas3, swaggerJSON); err != nil { return nil, err }', 1))
+          PY
+          cp ../real-world/gitea/fixes/nullable.go build/openapi3gen/
+          gofmt -w build/openapi3gen/nullable.go build/openapi3gen/convert.go
+          make generate-swagger
+      - name: Verify the regression after the fix
+        working-directory: upstream
+        run: |
+          go test -run '^TestIssueContractAcceptsAbsentAssociations$' ./build/openapi3gen/ | tee ../after.txt
+          go test ./build/openapi3gen/
+          git add -N build/openapi3gen/issue_contract_test.go
+          git add -N build/openapi3gen/nullable.go
+          git diff --binary > ../gitea-nullability.patch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gitea-contract-fix
+          path: |
+            before.txt
+            after.txt
+            make-help.txt
+            gitea-nullability.patch
+            upstream/templates/swagger/v1-swagger.generated.json
+            upstream/templates/swagger/v1-openapi3.generated.json
+          retention-days: 30

@@ -1,0 +1,15 @@
+{
+  "source": "JUnit files in real-world/gitea/reports",
+  "junit_files": 3,
+  "reported_testcases": 31,
+  "automated_executions": 31,
+  "passed": 25,
+  "failed": 6,
+  "skipped": 0,
+  "manual": {
+    "authored": 30,
+    "completed_passed": 12,
+    "partial_or_inconclusive": 5,
+    "not_run": 13
+  }
+}

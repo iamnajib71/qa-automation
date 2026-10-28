@@ -1,0 +1,1 @@
+ok  	gitea.dev/build/openapi3gen	0.129s

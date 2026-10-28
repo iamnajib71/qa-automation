@@ -1,6 +1,6 @@
 # QA Automation
 
-I tested a working defect-management portal across its API, browser journeys and accessibility checks, with reproducible bug reports and release evidence.
+I built a developer testing portal with reusable API checks and PHP patch diagnostics, and tested an independent Git hosting product with reproducible defects and release evidence.
 
 ![Real API lifecycle, browser scan and unit-test demo](docs/demo.gif)
 
@@ -11,11 +11,29 @@ I tested a working defect-management portal across its API, browser journeys and
 | Area | Evidence-backed summary |
 | --- | --- |
 | **The problem** | A QA analyst and release team need to know whether defects survive reloads, invalid input gets a useful response and missing projects are identified correctly; misleading results cause repeated triage and weaken release decisions. This portal uses synthetic fixtures. |
-| **What I built** | I built a test framework around the real portal: API contracts, browser journeys, accessibility checks, defect reproductions, traceability and ordered CI release gates. |
-| **Results** | [32 unit tests, 44 Newman assertions, 22 Playwright API tests, 7 E2E/accessibility tests and 6 Cypress tests passed with zero failures](docs/results/ci-summary.json). [Three recorded defects have regression retests](docs/testing/traceability.md). |
-| **Skills shown** | Functional testing, regression testing, API testing, Playwright, Cypress, Postman, Newman, Vitest, TypeScript, accessibility testing, k6 and GitHub Actions. |
+| **What I built** | I built reusable API checks and PHP patch diagnostics into the portal. I tested Gitea independently in Docker with manual cases, exploratory sessions, Selenium, Playwright, API contracts and accessibility checks. |
+| **Results** | Gitea: [31 automated checks: 25 passed, 6 failed; 30 manual cases authored, 12 completed and 5 partial/inconclusive](real-world/gitea/evidence/summary.json). [Three exploratory sessions](real-world/gitea/exploratory/README.md) and [four confirmed defect classes](real-world/gitea/defects/README.md). Original portal CI results remain [separately recorded](docs/results/ci-summary.json). |
+| **Skills shown** | Functional testing, regression testing, API testing, Selenium, Python, pytest, Page Object Model, Playwright, Cypress, Postman, Newman, Schemathesis, accessibility testing, GitHub Actions and Azure Pipelines. |
 | **Relevant roles** | QA Analyst, Test Analyst, Junior Test Automation Engineer, Software Tester. |
-| **Try it / evidence** | [Demo](docs/demo.gif) · [Test strategy](docs/testing/test-strategy.md) · [CI evidence](docs/results/ci-summary.json) · [Quick start](#quick-start--windows-powershell) |
+| **Try it / evidence** | [Live API tester](https://qa-automation-one.vercel.app/api-testing) · [PHP diagnostics](https://qa-automation-one.vercel.app/php-security) · [Demo](docs/demo.gif) · [CI evidence](docs/results/ci-summary.json) · [Quick start](#quick-start--windows-powershell) |
+
+## Real-world testing
+
+I selected **Gitea 28.2.0**, an independent open-source Git hosting and issue-tracking product, to test repository privacy, authentication and saved issue changes. [Choice and reproduction steps](real-world/gitea/README.md) · [risk-based plan](real-world/gitea/test-plan.md).
+
+**Real results, including failures:** [30 manual cases](real-world/gitea/manual-cases.csv), [12 completed/5 partial or inconclusive/13 not run](real-world/gitea/manual-results.csv), [3 exploratory sessions](real-world/gitea/exploratory/README.md), and **31 automated checks: 25 passed, 6 failed**. Findings are grouped into **4 distinct defect classes** after source triage. [JUnit-derived summary](real-world/gitea/evidence/summary.json) · [traceability CSV](real-world/gitea/evidence/traceability.csv) · [defect table](real-world/gitea/defects/README.md).
+
+The suites cover Selenium in headless Chrome/Firefox, Playwright journeys, pytest/requests API checks, served Swagger response validation and axe accessibility checks. [Actual GitHub run and downloadable reports](https://github.com/iamnajib71/qa-automation/actions/runs/39808735895) reproduced 25 passes and 6 failures. [GitHub Actions](.github/workflows/real-world.yml) and [Azure Pipelines](azure-pipelines.yml) retain JUnit, HTML and Allure result artifacts; Azure is configured but has not been run. Unresolved product failures remain visible; no clean release is claimed. [Execution details and limits](real-world/gitea/evidence/execution-status.md) · [regression-tested contract fix for submission](real-world/gitea/fixes/README.md).
+
+## Developer tools in the portal
+
+- **API Testing** at `/api-testing`: configure an HTTPS API and up to three cases, import supported OpenAPI/Swagger GET operations, check status/time/JSON/schema assertions, and download JSON/JUnit evidence. Tokens and response bodies are not saved. [Usage and hosted limits](docs/developer-tools.md).
+- **PHP Diagnostics** at `/php-security`: collect serving-runtime evidence, assess the two published PHP2Shell CVEs, follow the upstream/vendor patch path, restart workers and export a before/after assessment. Hidden versions and vendor backports remain inconclusive without evidence. This is version/configuration triage, not an exploit or overload scanner. [Developer workflow](docs/php-diagnostics.md).
+
+[Portal verification](docs/results/developer-tools-summary.json): 59 unit tests and 5 focused local browser checks passed, including axe on both tool pages. The [full portal CI run](https://github.com/iamnajib71/qa-automation/actions/runs/39808735765) also passed all gates, including 34 Playwright API/UI checks and Cypress. These counts are separate from the Gitea product results.
+
+![API testing with actual public sample results](docs/img/api-testing.png)
+![PHP runtime evidence and patch assessment](docs/img/php-diagnostics.png)
 
 ## What I did, step by step
 
@@ -25,18 +43,26 @@ I tested a working defect-management portal across its API, browser journeys and
 4. Automated the API contract and browser journeys with independent request, UI and accessibility checks.
 5. Added ordered CI gates and downloadable failure reports, keeping the performance smoke run separate from correctness gates.
 6. Retested the fixes and repeated installation and execution from a [fresh public clone](docs/results/clean-clone.json).
+7. Ran Gitea in Docker, completed three focused exploratory sessions, recorded manual outcomes, and reproduced contract/accessibility findings with cross-browser and CI evidence. Prepared reports for review without posting upstream.
+8. Added reusable API and PHP diagnostic tools to the portal, with network-boundary tests, patch-version checks and downloadable developer evidence.
 
 ## Problems I hit and how I solved them
 
 - **Malformed scanner JSON returned a server error:** separated request parsing from scan execution and added a permanent regression for the expected validation response. [BUG-001 and fixing commit](docs/testing/bug-reports/BUG-001.md).
-- **A malformed URL reached service execution:** added URL validation and an API regression so invalid input is rejected before a scan starts. [BUG-002 and fixing commit](docs/testing/bug-reports/BUG-002.md).
+- **A valid API-tool request returned 403 locally:** Next.js exposed a different internal host from the browser's origin. I compared the browser-facing Host and scheme, added an origin regression, and retested the public example in the browser. [Origin checks](src/lib/api-testing/origin.ts) · [tool verification](docs/results/developer-tools-summary.json).
 - **Missing projects appeared to exist:** stopped using an empty scan history as the existence check and retested the missing-project response. [BUG-003 and fixing commit](docs/testing/bug-reports/BUG-003.md).
+- **Docker could not start because runtime sockets were stale:** preserved the failed socket directories and restarted Docker without deleting images/volumes, then ran Gitea. Initial selector and contract-check mistakes were corrected separately from genuine product failures. [Execution record](real-world/gitea/evidence/execution-status.md).
 
 ## Architecture
 
 ```mermaid
 flowchart LR
   U[Portal UI] --> N[Next.js routes]
+  U --> T[API testing workbench]
+  T --> R[Bounded HTTP runner and schema assertions]
+  R --> X[Developer-authorized public HTTPS API]
+  U --> H[PHP runtime evidence and patch assessment]
+  H --> J[Downloadable diagnostic JSON]
   N --> D[(Local JSON store)]
   N --> S[Playwright Chromium + axe scanner]
   S --> E[Screenshot / raw scan / axe evidence]

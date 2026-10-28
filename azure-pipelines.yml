@@ -1,0 +1,56 @@
+trigger:
+  branches:
+    include: [main, 'feature/*']
+  paths:
+    include: ['real-world/*', 'azure-pipelines.yml']
+pool:
+  vmImage: ubuntu-latest
+jobs:
+  - job: GiteaQA
+    timeoutInMinutes: 25
+    steps:
+      - task: UsePythonVersion@0
+        inputs: { versionSpec: '3.12' }
+      - task: NodeTool@0
+        inputs: { versionSpec: '22.x' }
+      - bash: |
+          python -m pip install -r requirements.txt
+          npm ci
+          npx playwright install --with-deps chromium
+          google-chrome --version
+          firefox --version
+        workingDirectory: real-world/gitea
+        displayName: Install dependencies and verify hosted browsers
+      - bash: python scripts/bootstrap.py
+        workingDirectory: real-world/gitea
+        displayName: Start Docker target and seed fixtures
+      - bash: python scripts/run.py
+        workingDirectory: real-world/gitea
+        displayName: Run API, Selenium, Playwright and axe
+      - bash: |
+          python scripts/results.py
+          mkdir -p reports
+          docker compose -f compose.yml logs --no-color > reports/docker.log
+        workingDirectory: real-world/gitea
+        condition: always()
+        displayName: Save traceability and target logs
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFormat: JUnit
+          testResultsFiles: 'real-world/gitea/reports/*.xml'
+          failTaskOnFailedTests: true
+      - task: PublishPipelineArtifact@1
+        condition: always()
+        inputs:
+          targetPath: real-world/gitea/reports
+          artifact: gitea-reports
+      - task: PublishPipelineArtifact@1
+        condition: always()
+        inputs:
+          targetPath: real-world/gitea/evidence
+          artifact: gitea-traceability
+      - bash: docker compose -f compose.yml down -v
+        workingDirectory: real-world/gitea
+        condition: always()
+        displayName: Stop disposable target

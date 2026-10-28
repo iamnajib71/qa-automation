@@ -1,0 +1,7 @@
+pytest==8.3.5
+requests==2.32.4
+selenium==4.32.0
+pytest-html==4.1.1
+allure-pytest==2.14.2
+schemathesis==3.39.16
+jsonschema==4.23.0

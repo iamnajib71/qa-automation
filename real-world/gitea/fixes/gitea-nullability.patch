@@ -1,0 +1,3704 @@
+From e09bf8093e5b306c791cad30208c061d85e8906a Mon Sep 17 00:00:00 2001
+From: Nazmul Hassan <iam.najib@yahoo.com>
+Date: Fri, 23 Oct 2026 02:53:37 +1100
+Subject: [PATCH] fix(api): preserve nullable references in generated contracts
+
+---
+ Makefile                                     |   2 +-
+ build/openapi3gen/convert.go                 |   3 +
+ build/openapi3gen/issue_contract_test.go     |  31 +
+ build/openapi3gen/nullable.go                |  55 ++
+ templates/swagger/v1-openapi3.generated.json | 697 ++++++++++++++++---
+ templates/swagger/v1-swagger.generated.json  | 457 ++++++++----
+ 6 files changed, 1038 insertions(+), 207 deletions(-)
+ create mode 100644 build/openapi3gen/issue_contract_test.go
+ create mode 100644 build/openapi3gen/nullable.go
+
+diff --git a/Makefile b/Makefile
+index 77b9cc9..3bb68c0 100644
+--- a/Makefile
++++ b/Makefile
+@@ -228,7 +228,7 @@ endif
+ generate-swagger: $(SWAGGER_SPEC) $(OPENAPI3_SPEC) ## generate the swagger spec from code comments
+ 
+ $(SWAGGER_SPEC): $(GO_SOURCES) $(SWAGGER_SPEC_INPUT)
+-	@output="$$($(GO) run $(SWAGGER_PACKAGE) generate spec --enable-allof-compounding --skip-enum-desc --exclude "$(SWAGGER_EXCLUDE)" --input "$(SWAGGER_SPEC_INPUT)" --output './$(SWAGGER_SPEC)' 2>&1)" || { printf '%s\n' "$$output" >&2; exit 1; }; \
++	@output="$$($(GO) run $(SWAGGER_PACKAGE) generate spec --nullable-pointers --enable-allof-compounding --skip-enum-desc --exclude "$(SWAGGER_EXCLUDE)" --input "$(SWAGGER_SPEC_INPUT)" --output './$(SWAGGER_SPEC)' 2>&1)" || { printf '%s\n' "$$output" >&2; exit 1; }; \
+ 	warnings="$$(printf '%s\n' "$$output" | grep -v '^go: ')"; \
+ 	if [ -n "$$warnings" ]; then printf '%s\n' "$$warnings" >&2; exit 1; fi
+ 
+diff --git a/build/openapi3gen/convert.go b/build/openapi3gen/convert.go
+index 922e055..68df2c9 100644
+--- a/build/openapi3gen/convert.go
++++ b/build/openapi3gen/convert.go
+@@ -44,6 +44,9 @@ func Convert(swaggerJSON []byte, astEnumMap map[string][]string) (*openapi3.T, e
+ 
+ 	oas3.Servers = openapi3.Servers{{URL: swagger2.BasePath}}
+ 	fixFileSchemas(oas3)
++	if err := applyNullableReferences(oas3, swaggerJSON); err != nil {
++		return nil, err
++	}
+ 	addURIFormats(oas3)
+ 	addDeprecatedFlags(oas3)
+ 	if err := extractSharedEnums(oas3, astEnumMap); err != nil {
+diff --git a/build/openapi3gen/issue_contract_test.go b/build/openapi3gen/issue_contract_test.go
+new file mode 100644
+index 0000000..f1e475e
+--- /dev/null
++++ b/build/openapi3gen/issue_contract_test.go
+@@ -0,0 +1,31 @@
++// Copyright 2026 The Gitea Authors. All rights reserved.
++// SPDX-License-Identifier: MIT
++
++package openapi3gen
++
++import (
++	"testing"
++
++	"github.com/getkin/kin-openapi/openapi3"
++)
++
++func TestIssueContractAcceptsAbsentAssociations(t *testing.T) {
++	doc, err := openapi3.NewLoader().LoadFromFile("../../templates/swagger/v1-openapi3.generated.json")
++	if err != nil {
++		t.Fatal(err)
++	}
++	issue := map[string]any{
++		"pull_request": nil,
++		"milestone":    nil,
++		"assignee":     nil,
++		"closed_at":    nil,
++		"due_date":     nil,
++	}
++	if err := doc.Components.Schemas["Issue"].Value.VisitJSON(issue); err != nil {
++		t.Fatalf("ordinary issue with no associated PR, milestone or assignee must match its response contract: %v", err)
++	}
++	issue["pull_request"] = "not-a-pull-request-object"
++	if err := doc.Components.Schemas["Issue"].Value.VisitJSON(issue); err == nil {
++		t.Fatal("non-null pull_request must still satisfy the referenced object schema")
++	}
++}
+diff --git a/build/openapi3gen/nullable.go b/build/openapi3gen/nullable.go
+new file mode 100644
+index 0000000..020bdd0
+--- /dev/null
++++ b/build/openapi3gen/nullable.go
+@@ -0,0 +1,55 @@
++// Copyright 2026 The Gitea Authors. All rights reserved.
++// SPDX-License-Identifier: MIT
++
++package openapi3gen
++
++import (
++	"gitea.dev/modules/json"
++
++	"github.com/getkin/kin-openapi/openapi3"
++)
++
++func applyNullableReferences(doc *openapi3.T, swaggerJSON []byte) error {
++	var source struct {
++		Definitions map[string]any `json:"definitions"`
++	}
++	if err := json.Unmarshal(swaggerJSON, &source); err != nil {
++		return err
++	}
++	var visit func(any, *openapi3.SchemaRef)
++	visit = func(input any, ref *openapi3.SchemaRef) {
++		raw, ok := input.(map[string]any)
++		if !ok || ref == nil {
++			return
++		}
++		if nullable, _ := raw["x-nullable"].(bool); nullable && ref.Ref != "" {
++			// The converter drops siblings of $ref; preserve nullability on a wrapper.
++			target := ref.Ref
++			ref.Ref = ""
++			ref.Value = &openapi3.Schema{Nullable: true, AllOf: []*openapi3.SchemaRef{{Ref: target}}}
++		}
++		if ref.Value == nil {
++			return
++		}
++		properties, _ := raw["properties"].(map[string]any)
++		for name, property := range ref.Value.Properties {
++			visit(properties[name], property)
++		}
++		visit(raw["items"], ref.Value.Items)
++		for name, group := range map[string][]*openapi3.SchemaRef{"allOf": ref.Value.AllOf, "anyOf": ref.Value.AnyOf, "oneOf": ref.Value.OneOf} {
++			inputs, _ := raw[name].([]any)
++			for index, member := range group {
++				if index < len(inputs) {
++					visit(inputs[index], member)
++				}
++			}
++		}
++	}
++	if doc.Components == nil {
++		return nil
++	}
++	for name, schema := range doc.Components.Schemas {
++		visit(source.Definitions[name], schema)
++	}
++	return nil
++}
+diff --git a/templates/swagger/v1-openapi3.generated.json b/templates/swagger/v1-openapi3.generated.json
+index 3fab4fe..f5283f8 100644
+--- a/templates/swagger/v1-openapi3.generated.json
++++ b/templates/swagger/v1-openapi3.generated.json
+@@ -1866,7 +1866,12 @@
+             "x-go-name": "URL"
+           },
+           "workflow_run": {
+-            "$ref": "#/components/schemas/ActionWorkflowRun"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/ActionWorkflowRun"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -2368,6 +2373,7 @@
+           "previous_attempt_url": {
+             "description": "PreviousAttemptURL is the API URL of the previous attempt of this run, e.g. \".../actions/runs/{run_id}/attempts/{attempt-1}\".\nIt is set only when the current attempt is \u003e 1 (i.e. a rerun). For the first attempt, or for legacy runs that pre-date ActionRunAttempt, it is null.",
+             "format": "uri",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "PreviousAttemptURL"
+           },
+@@ -2484,7 +2490,12 @@
+       "Activity": {
+         "properties": {
+           "act_user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "act_user_id": {
+             "description": "The ID of the user who performed the action",
+@@ -2493,7 +2504,12 @@
+             "x-go-name": "ActUserID"
+           },
+           "comment": {
+-            "$ref": "#/components/schemas/Comment"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Comment"
++              }
++            ],
++            "nullable": true
+           },
+           "comment_id": {
+             "description": "The ID of the comment associated with the activity (if applicable)",
+@@ -2563,7 +2579,12 @@
+             "x-go-name": "RefName"
+           },
+           "repo": {
+-            "$ref": "#/components/schemas/Repository"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Repository"
++              }
++            ],
++            "nullable": true
+           },
+           "repo_id": {
+             "description": "The ID of the repository associated with the activity",
+@@ -2631,7 +2652,12 @@
+             "x-go-name": "Message"
+           },
+           "object": {
+-            "$ref": "#/components/schemas/AnnotatedTagObject"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/AnnotatedTagObject"
++              }
++            ],
++            "nullable": true
+           },
+           "sha": {
+             "description": "The SHA hash of the annotated tag",
+@@ -2644,7 +2670,12 @@
+             "x-go-name": "Tag"
+           },
+           "tagger": {
+-            "$ref": "#/components/schemas/CommitUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitUser"
++              }
++            ],
++            "nullable": true
+           },
+           "url": {
+             "description": "The URL to access the annotated tag",
+@@ -2653,7 +2684,12 @@
+             "x-go-name": "URL"
+           },
+           "verification": {
+-            "$ref": "#/components/schemas/PayloadCommitVerification"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadCommitVerification"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -2806,7 +2842,12 @@
+         "description": "Branch represents a repository branch",
+         "properties": {
+           "commit": {
+-            "$ref": "#/components/schemas/PayloadCommit"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadCommit"
++              }
++            ],
++            "nullable": true
+           },
+           "effective_branch_protection_name": {
+             "description": "EffectiveBranchProtectionName is the name of the effective branch protection rule",
+@@ -3214,7 +3255,12 @@
+             "x-go-name": "CommitURL"
+           },
+           "repository": {
+-            "$ref": "#/components/schemas/Repository"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Repository"
++              }
++            ],
++            "nullable": true
+           },
+           "sha": {
+             "description": "SHA is the commit SHA this status applies to",
+@@ -3315,7 +3361,12 @@
+             "x-go-name": "Updated"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -3324,13 +3375,28 @@
+       "Commit": {
+         "properties": {
+           "author": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "commit": {
+-            "$ref": "#/components/schemas/RepoCommit"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/RepoCommit"
++              }
++            ],
++            "nullable": true
+           },
+           "committer": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "created": {
+             "description": "Created is the time when the commit was created",
+@@ -3366,7 +3432,12 @@
+             "x-go-name": "SHA"
+           },
+           "stats": {
+-            "$ref": "#/components/schemas/CommitStats"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitStats"
++              }
++            ],
++            "nullable": true
+           },
+           "url": {
+             "description": "URL is the API URL for the commit",
+@@ -3478,7 +3549,12 @@
+             "x-go-name": "Created"
+           },
+           "creator": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "description": {
+             "description": "Description provides a brief description of the status",
+@@ -3594,33 +3670,43 @@
+         "description": "ContentsResponse contains information about a repo's entry's (dir, file, symlink, submodule) metadata and content",
+         "properties": {
+           "_links": {
+-            "$ref": "#/components/schemas/FileLinksResponse"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/FileLinksResponse"
++              }
++            ],
++            "nullable": true
+           },
+           "content": {
+             "description": "`content` is populated when `type` is `file`, otherwise null",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Content"
+           },
+           "download_url": {
+             "description": "DownloadURL is the direct download URL for this file",
+             "format": "uri",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "DownloadURL"
+           },
+           "encoding": {
+             "description": "`encoding` is populated when `type` is `file`, otherwise null",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Encoding"
+           },
+           "git_url": {
+             "description": "GitURL is the Git API URL for this blob or tree",
+             "format": "uri",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "GitURL"
+           },
+           "html_url": {
+             "description": "HTMLURL is the web URL for this file or directory",
+             "format": "uri",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "HTMLURL"
+           },
+@@ -3684,11 +3770,13 @@
+           "submodule_git_url": {
+             "description": "`submodule_git_url` is populated when `type` is `submodule`, otherwise null",
+             "format": "uri",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "SubmoduleGitURL"
+           },
+           "target": {
+             "description": "`target` is populated when `type` is `symlink`, otherwise null",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Target"
+           },
+@@ -3700,6 +3788,7 @@
+           "url": {
+             "description": "URL is the API URL for this file or directory",
+             "format": "uri",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "URL"
+           }
+@@ -4062,11 +4151,13 @@
+         "properties": {
+           "name": {
+             "description": "name of the forked repository",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Name"
+           },
+           "organization": {
+             "description": "organization name, if forking into an organization",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Organization"
+           }
+@@ -4204,6 +4295,7 @@
+           },
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+@@ -4320,6 +4412,7 @@
+           "due_on": {
+             "description": "Deadline is the due date for the milestone",
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+@@ -4495,6 +4588,7 @@
+         "properties": {
+           "allow_maintainer_edit": {
+             "description": "Whether maintainers can edit the pull request",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "AllowMaintainerEdit"
+           },
+@@ -4523,6 +4617,7 @@
+           },
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+@@ -4967,6 +5062,7 @@
+           "created_at": {
+             "description": "For explicitly setting the user creation timestamp. Useful when users are\nmigrated from other systems. When omitted, the user's creation timestamp\nwill be set to \"now\".",
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Created"
+           },
+@@ -4986,6 +5082,7 @@
+           },
+           "must_change_password": {
+             "description": "Whether the user must change password on first login",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "MustChangePassword"
+           },
+@@ -4996,6 +5093,7 @@
+           },
+           "restricted": {
+             "description": "Whether the user has restricted access privileges",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "Restricted"
+           },
+@@ -5142,7 +5240,12 @@
+             "x-go-name": "Scopes"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/UserMeta"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/UserMeta"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "title": "CurrentAccessToken represents the metadata of the currently authenticated token.",
+@@ -5298,6 +5401,7 @@
+       "EditActionRunnerOption": {
+         "properties": {
+           "disabled": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "Disabled"
+           }
+@@ -5339,22 +5443,27 @@
+             "x-go-name": "ApprovalsWhitelistUsernames"
+           },
+           "block_admin_merge_override": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "BlockAdminMergeOverride"
+           },
+           "block_on_codeowner_reviews": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "BlockOnCodeownerReviews"
+           },
+           "block_on_official_review_requests": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "BlockOnOfficialReviewRequests"
+           },
+           "block_on_outdated_branch": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "BlockOnOutdatedBranch"
+           },
+           "block_on_rejected_reviews": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "BlockOnRejectedReviews"
+           },
+@@ -5373,42 +5482,52 @@
+             "x-go-name": "BypassAllowlistUsernames"
+           },
+           "dismiss_stale_approvals": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "DismissStaleApprovals"
+           },
+           "enable_approvals_whitelist": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnableApprovalsWhitelist"
+           },
+           "enable_bypass_allowlist": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnableBypassAllowlist"
+           },
+           "enable_force_push": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnableForcePush"
+           },
+           "enable_force_push_allowlist": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnableForcePushAllowlist"
+           },
+           "enable_merge_whitelist": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnableMergeWhitelist"
+           },
+           "enable_push": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnablePush"
+           },
+           "enable_push_whitelist": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnablePushWhitelist"
+           },
+           "enable_status_check": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "EnableStatusCheck"
+           },
+           "force_push_allowlist_deploy_keys": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "ForcePushAllowlistDeployKeys"
+           },
+@@ -5427,6 +5546,7 @@
+             "x-go-name": "ForcePushAllowlistUsernames"
+           },
+           "ignore_stale_approvals": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "IgnoreStaleApprovals"
+           },
+@@ -5446,14 +5566,17 @@
+           },
+           "priority": {
+             "format": "int64",
++            "nullable": true,
+             "type": "integer",
+             "x-go-name": "Priority"
+           },
+           "protected_file_patterns": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "ProtectedFilePatterns"
+           },
+           "push_whitelist_deploy_keys": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "PushWhitelistDeployKeys"
+           },
+@@ -5472,11 +5595,13 @@
+             "x-go-name": "PushWhitelistUsernames"
+           },
+           "require_signed_commits": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "RequireSignedCommits"
+           },
+           "required_approvals": {
+             "format": "int64",
++            "nullable": true,
+             "type": "integer",
+             "x-go-name": "RequiredApprovals"
+           },
+@@ -5488,6 +5613,7 @@
+             "x-go-name": "StatusCheckContexts"
+           },
+           "unprotected_file_patterns": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "UnprotectedFilePatterns"
+           }
+@@ -5500,6 +5626,7 @@
+         "properties": {
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           }
+@@ -5527,6 +5654,7 @@
+         "properties": {
+           "active": {
+             "description": "Whether the webhook is active and will be triggered",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "Active"
+           },
+@@ -5558,6 +5686,7 @@
+           },
+           "name": {
+             "description": "Optional human-readable name",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Name"
+           }
+@@ -5586,6 +5715,7 @@
+           "assignee": {
+             "deprecated": true,
+             "description": "deprecated",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Assignee"
+           },
+@@ -5597,22 +5727,26 @@
+             "x-go-name": "Assignees"
+           },
+           "body": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Body"
+           },
+           "content_version": {
+             "description": "The current version of the issue content to detect conflicts during editing",
+             "format": "int64",
++            "nullable": true,
+             "type": "integer",
+             "x-go-name": "ContentVersion"
+           },
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+           "milestone": {
+             "format": "int64",
++            "nullable": true,
+             "type": "integer",
+             "x-go-name": "Milestone"
+           },
+@@ -5622,14 +5756,17 @@
+               "format": "int64",
+               "type": "integer"
+             },
++            "nullable": true,
+             "type": "array",
+             "x-go-name": "Projects"
+           },
+           "ref": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Ref"
+           },
+           "state": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "State"
+           },
+@@ -5638,6 +5775,7 @@
+             "x-go-name": "Title"
+           },
+           "unset_due_date": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "RemoveDeadline"
+           }
+@@ -5650,26 +5788,31 @@
+         "properties": {
+           "color": {
+             "example": "#00aabb",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Color"
+           },
+           "description": {
+             "description": "Description provides additional context about the label's purpose",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Description"
+           },
+           "exclusive": {
+             "example": false,
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "Exclusive"
+           },
+           "is_archived": {
+             "example": false,
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "IsArchived"
+           },
+           "name": {
+             "description": "Name is the new display name for the label",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Name"
+           }
+@@ -5682,12 +5825,14 @@
+         "properties": {
+           "description": {
+             "description": "Description provides updated details about the milestone",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Description"
+           },
+           "due_on": {
+             "description": "Deadline is the updated due date for the milestone",
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+@@ -5713,26 +5858,31 @@
+         "properties": {
+           "description": {
+             "description": "The description of the organization",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Description"
+           },
+           "email": {
+             "description": "The email address of the organization; use empty string to clear",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Email"
+           },
+           "full_name": {
+             "description": "The full display name of the organization",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "FullName"
+           },
+           "location": {
+             "description": "The location of the organization",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Location"
+           },
+           "repo_admin_change_team_access": {
+             "description": "Whether repository administrators can change team access",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "RepoAdminChangeTeamAccess"
+           },
+@@ -5746,6 +5896,7 @@
+           },
+           "website": {
+             "description": "The website URL of the organization",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Website"
+           }
+@@ -5803,6 +5954,7 @@
+         "properties": {
+           "allow_maintainer_edit": {
+             "description": "Whether to allow maintainer edits",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "AllowMaintainerEdit"
+           },
+@@ -5826,17 +5978,20 @@
+           },
+           "body": {
+             "description": "The new description body for the pull request",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Body"
+           },
+           "content_version": {
+             "description": "The current version of the pull request content to detect conflicts during editing",
+             "format": "int64",
++            "nullable": true,
+             "type": "integer",
+             "x-go-name": "ContentVersion"
+           },
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+@@ -5857,6 +6012,7 @@
+           },
+           "state": {
+             "description": "The new state for the pull request",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "State"
+           },
+@@ -5867,6 +6023,7 @@
+           },
+           "unset_due_date": {
+             "description": "Whether to remove the current deadline",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "RemoveDeadline"
+           }
+@@ -5896,6 +6053,7 @@
+           },
+           "draft": {
+             "description": "Whether to change the draft status",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "IsDraft"
+           },
+@@ -5906,6 +6064,7 @@
+           },
+           "prerelease": {
+             "description": "Whether to change the prerelease status",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "IsPrerelease"
+           },
+@@ -6120,6 +6279,7 @@
+         "properties": {
+           "name_pattern": {
+             "description": "The pattern to match tag names for protection",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "NamePattern"
+           },
+@@ -6148,16 +6308,19 @@
+         "properties": {
+           "can_create_org_repo": {
+             "description": "Whether the team can create repositories in the organization",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "CanCreateOrgRepo"
+           },
+           "description": {
+             "description": "The description of the team",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Description"
+           },
+           "includes_all_repositories": {
+             "description": "Whether the team has access to all repositories in the organization",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "IncludesAllRepositories"
+           },
+@@ -6230,63 +6393,75 @@
+         "properties": {
+           "active": {
+             "description": "Whether the user account is active",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "Active"
+           },
+           "admin": {
+             "description": "Whether the user has administrator privileges",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "Admin"
+           },
+           "allow_create_organization": {
+             "description": "Whether the user can create organizations",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "AllowCreateOrganization"
+           },
+           "allow_git_hook": {
+             "description": "Whether the user can use Git hooks",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "AllowGitHook"
+           },
+           "allow_import_local": {
+             "description": "Whether the user can import local repositories",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "AllowImportLocal"
+           },
+           "description": {
+             "description": "The user's personal description or bio",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Description"
+           },
+           "email": {
+             "description": "The email address of the user",
+             "format": "email",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Email"
+           },
+           "full_name": {
+             "description": "The full display name of the user",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "FullName"
+           },
+           "location": {
+             "description": "The user's location or address",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Location"
+           },
+           "login_name": {
+             "description": "identifier of the user, provided by the external authenticator (if configured)",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "LoginName"
+           },
+           "max_repo_creation": {
+             "description": "Maximum number of repositories the user can create",
+             "format": "int64",
++            "nullable": true,
+             "type": "integer",
+             "x-go-name": "MaxRepoCreation"
+           },
+           "must_change_password": {
+             "description": "Whether the user must change password on next login",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "MustChangePassword"
+           },
+@@ -6297,11 +6472,13 @@
+           },
+           "prohibit_login": {
+             "description": "Whether the user is prohibited from logging in",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "ProhibitLogin"
+           },
+           "restricted": {
+             "description": "Whether the user has restricted access privileges",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "Restricted"
+           },
+@@ -6329,6 +6506,7 @@
+           },
+           "website": {
+             "description": "The user's personal website URL",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Website"
+           }
+@@ -6417,10 +6595,20 @@
+       "FileCommitResponse": {
+         "properties": {
+           "author": {
+-            "$ref": "#/components/schemas/CommitUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitUser"
++              }
++            ],
++            "nullable": true
+           },
+           "committer": {
+-            "$ref": "#/components/schemas/CommitUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitUser"
++              }
++            ],
++            "nullable": true
+           },
+           "created": {
+             "description": "Created is the time when the commit was created",
+@@ -6453,7 +6641,12 @@
+             "x-go-name": "SHA"
+           },
+           "tree": {
+-            "$ref": "#/components/schemas/CommitMeta"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitMeta"
++              }
++            ],
++            "nullable": true
+           },
+           "url": {
+             "description": "URL is the API URL for the commit",
+@@ -6470,14 +6663,24 @@
+         "description": "FileDeleteResponse contains information about a repo's file that was deleted",
+         "properties": {
+           "commit": {
+-            "$ref": "#/components/schemas/FileCommitResponse"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/FileCommitResponse"
++              }
++            ],
++            "nullable": true
+           },
+           "content": {
+             "description": "Content is always null for delete operations",
+             "x-go-name": "Content"
+           },
+           "verification": {
+-            "$ref": "#/components/schemas/PayloadCommitVerification"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadCommitVerification"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -6488,16 +6691,19 @@
+         "properties": {
+           "git": {
+             "description": "GitURL is the Git API URL for this file",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "GitURL"
+           },
+           "html": {
+             "description": "HTMLURL is the web URL for this file",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "HTMLURL"
+           },
+           "self": {
+             "description": "Self is the API URL for this file",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Self"
+           }
+@@ -6509,13 +6715,28 @@
+         "description": "FileResponse contains information about a repo's file",
+         "properties": {
+           "commit": {
+-            "$ref": "#/components/schemas/FileCommitResponse"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/FileCommitResponse"
++              }
++            ],
++            "nullable": true
+           },
+           "content": {
+-            "$ref": "#/components/schemas/ContentsResponse"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/ContentsResponse"
++              }
++            ],
++            "nullable": true
+           },
+           "verification": {
+-            "$ref": "#/components/schemas/PayloadCommitVerification"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadCommitVerification"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -6525,7 +6746,12 @@
+         "description": "FilesResponse contains information about multiple files from a repo",
+         "properties": {
+           "commit": {
+-            "$ref": "#/components/schemas/FileCommitResponse"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/FileCommitResponse"
++              }
++            ],
++            "nullable": true
+           },
+           "files": {
+             "description": "Files contains the list of file contents and metadata",
+@@ -6536,7 +6762,12 @@
+             "x-go-name": "Files"
+           },
+           "verification": {
+-            "$ref": "#/components/schemas/PayloadCommitVerification"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadCommitVerification"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -6862,11 +7093,13 @@
+         "properties": {
+           "content": {
+             "description": "The content of the git blob (may be base64 encoded)",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Content"
+           },
+           "encoding": {
+             "description": "The encoding used for the content (e.g., \"base64\")",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Encoding"
+           },
+@@ -7163,7 +7396,12 @@
+             "x-go-name": "Attachments"
+           },
+           "assignee": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "assignees": {
+             "items": {
+@@ -7178,6 +7416,7 @@
+           },
+           "closed_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Closed"
+           },
+@@ -7199,6 +7438,7 @@
+           },
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+@@ -7224,7 +7464,12 @@
+             "x-go-name": "Labels"
+           },
+           "milestone": {
+-            "$ref": "#/components/schemas/Milestone"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Milestone"
++              }
++            ],
++            "nullable": true
+           },
+           "number": {
+             "format": "int64",
+@@ -7253,14 +7498,24 @@
+             "x-go-name": "Projects"
+           },
+           "pull_request": {
+-            "$ref": "#/components/schemas/PullRequestMeta"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PullRequestMeta"
++              }
++            ],
++            "nullable": true
+           },
+           "ref": {
+             "type": "string",
+             "x-go-name": "Ref"
+           },
+           "repository": {
+-            "$ref": "#/components/schemas/RepositoryMeta"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/RepositoryMeta"
++              }
++            ],
++            "nullable": true
+           },
+           "state": {
+             "$ref": "#/components/schemas/StateType"
+@@ -7285,7 +7540,12 @@
+             "x-go-name": "URL"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -7360,6 +7620,7 @@
+         "properties": {
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           }
+@@ -7881,6 +8142,7 @@
+         "properties": {
+           "closed_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Closed"
+           },
+@@ -7902,6 +8164,7 @@
+           },
+           "due_on": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+@@ -7932,6 +8195,7 @@
+           },
+           "updated_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Updated"
+           }
+@@ -7999,7 +8263,12 @@
+         "description": "Note contains information related to a git note",
+         "properties": {
+           "commit": {
+-            "$ref": "#/components/schemas/Commit"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Commit"
++              }
++            ],
++            "nullable": true
+           },
+           "message": {
+             "description": "The content message of the git note",
+@@ -8097,10 +8366,20 @@
+             "x-go-name": "Pinned"
+           },
+           "repository": {
+-            "$ref": "#/components/schemas/Repository"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Repository"
++              }
++            ],
++            "nullable": true
+           },
+           "subject": {
+-            "$ref": "#/components/schemas/NotificationSubject"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/NotificationSubject"
++              }
++            ],
++            "nullable": true
+           },
+           "unread": {
+             "description": "Unread indicates if the notification has been read",
+@@ -8296,7 +8575,12 @@
+             "x-go-name": "Ref"
+           },
+           "repo": {
+-            "$ref": "#/components/schemas/Repository"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Repository"
++              }
++            ],
++            "nullable": true
+           },
+           "repo_id": {
+             "description": "The unique identifier of the repository",
+@@ -8323,7 +8607,12 @@
+             "x-go-name": "CreatedAt"
+           },
+           "creator": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "html_url": {
+             "description": "The HTML URL to view the package",
+@@ -8343,10 +8632,20 @@
+             "x-go-name": "Name"
+           },
+           "owner": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "repository": {
+-            "$ref": "#/components/schemas/Repository"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Repository"
++              }
++            ],
++            "nullable": true
+           },
+           "type": {
+             "description": "The type of the package (e.g., npm, maven, docker)",
+@@ -8418,10 +8717,20 @@
+             "x-go-name": "Added"
+           },
+           "author": {
+-            "$ref": "#/components/schemas/PayloadUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadUser"
++              }
++            ],
++            "nullable": true
+           },
+           "committer": {
+-            "$ref": "#/components/schemas/PayloadUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadUser"
++              }
++            ],
++            "nullable": true
+           },
+           "id": {
+             "description": "sha1 hash of the commit",
+@@ -8462,7 +8771,12 @@
+             "x-go-name": "URL"
+           },
+           "verification": {
+-            "$ref": "#/components/schemas/PayloadCommitVerification"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadCommitVerification"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -8487,7 +8801,12 @@
+             "x-go-name": "Signature"
+           },
+           "signer": {
+-            "$ref": "#/components/schemas/PayloadUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadUser"
++              }
++            ],
++            "nullable": true
+           },
+           "verified": {
+             "description": "Whether the commit signature is verified",
+@@ -8764,7 +9083,12 @@
+             "x-go-name": "AllowMaintainerEdit"
+           },
+           "assignee": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "assignees": {
+             "description": "The list of users assigned to the pull request",
+@@ -8775,7 +9099,12 @@
+             "x-go-name": "Assignees"
+           },
+           "base": {
+-            "$ref": "#/components/schemas/PRBranchInfo"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PRBranchInfo"
++              }
++            ],
++            "nullable": true
+           },
+           "body": {
+             "description": "The description body of the pull request",
+@@ -8790,6 +9119,7 @@
+           },
+           "closed_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Closed"
+           },
+@@ -8807,6 +9137,7 @@
+           },
+           "created_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Created"
+           },
+@@ -8829,11 +9160,17 @@
+           },
+           "due_date": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Deadline"
+           },
+           "head": {
+-            "$ref": "#/components/schemas/PRBranchInfo"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PRBranchInfo"
++              }
++            ],
++            "nullable": true
+           },
+           "html_url": {
+             "description": "The HTML URL to view the pull request",
+@@ -8867,6 +9204,7 @@
+           },
+           "merge_commit_sha": {
+             "description": "The SHA of the merge commit",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "MergedCommitID"
+           },
+@@ -8882,14 +9220,25 @@
+           },
+           "merged_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Merged"
+           },
+           "merged_by": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "milestone": {
+-            "$ref": "#/components/schemas/Milestone"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Milestone"
++              }
++            ],
++            "nullable": true
+           },
+           "number": {
+             "description": "The pull request number",
+@@ -8946,6 +9295,7 @@
+           },
+           "updated_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Updated"
+           },
+@@ -8956,7 +9306,12 @@
+             "x-go-name": "URL"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -8980,6 +9335,7 @@
+           },
+           "merged_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Merged"
+           }
+@@ -9108,7 +9464,12 @@
+             "x-go-name": "Submitted"
+           },
+           "team": {
+-            "$ref": "#/components/schemas/Team"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Team"
++              }
++            ],
++            "nullable": true
+           },
+           "updated_at": {
+             "format": "date-time",
+@@ -9116,7 +9477,12 @@
+             "x-go-name": "Updated"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -9181,7 +9547,12 @@
+             "x-go-name": "HTMLPullURL"
+           },
+           "resolver": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "updated_at": {
+             "format": "date-time",
+@@ -9189,7 +9560,12 @@
+             "x-go-name": "Updated"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -9236,6 +9612,7 @@
+           },
+           "last_update": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "LastUpdateUnix"
+           },
+@@ -9278,7 +9655,12 @@
+             "x-go-name": "Created"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -9287,7 +9669,12 @@
+       "Reference": {
+         "properties": {
+           "object": {
+-            "$ref": "#/components/schemas/GitObject"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/GitObject"
++              }
++            ],
++            "nullable": true
+           },
+           "ref": {
+             "description": "The name of the Git reference (e.g., refs/heads/main)",
+@@ -9317,7 +9704,12 @@
+             "x-go-name": "Attachments"
+           },
+           "author": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "body": {
+             "description": "The release notes or description",
+@@ -9358,6 +9750,7 @@
+           },
+           "published_at": {
+             "format": "date-time",
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "PublishedAt"
+           },
+@@ -9464,7 +9857,12 @@
+             "x-go-name": "RoleName"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -9473,10 +9871,20 @@
+       "RepoCommit": {
+         "properties": {
+           "author": {
+-            "$ref": "#/components/schemas/CommitUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitUser"
++              }
++            ],
++            "nullable": true
+           },
+           "committer": {
+-            "$ref": "#/components/schemas/CommitUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitUser"
++              }
++            ],
++            "nullable": true
+           },
+           "message": {
+             "description": "Message is the commit message",
+@@ -9484,7 +9892,12 @@
+             "x-go-name": "Message"
+           },
+           "tree": {
+-            "$ref": "#/components/schemas/CommitMeta"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitMeta"
++              }
++            ],
++            "nullable": true
+           },
+           "url": {
+             "description": "URL is the API URL for the commit",
+@@ -9493,7 +9906,12 @@
+             "x-go-name": "URL"
+           },
+           "verification": {
+-            "$ref": "#/components/schemas/PayloadCommitVerification"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/PayloadCommitVerification"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "title": "RepoCommit contains information of a commit in the context of a repository.",
+@@ -9519,10 +9937,20 @@
+         "description": "RepoTransfer represents a pending repo transfer",
+         "properties": {
+           "doer": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "recipient": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "teams": {
+             "items": {
+@@ -9781,7 +10209,12 @@
+             "x-go-name": "OriginalURL"
+           },
+           "owner": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "parent": {
+             "$ref": "#/components/schemas/Repository"
+@@ -10034,7 +10467,12 @@
+         "description": "Tag represents a repository tag",
+         "properties": {
+           "commit": {
+-            "$ref": "#/components/schemas/CommitMeta"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitMeta"
++              }
++            ],
++            "nullable": true
+           },
+           "id": {
+             "description": "The ID (SHA) of the tag",
+@@ -10143,7 +10581,12 @@
+             "x-go-name": "Name"
+           },
+           "organization": {
+-            "$ref": "#/components/schemas/Organization"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Organization"
++              }
++            ],
++            "nullable": true
+           },
+           "permission": {
+             "$ref": "#/components/schemas/AccessLevelName"
+@@ -10215,10 +10658,20 @@
+         "description": "TimelineComment represents a timeline comment (comment of any type) on a commit or issue",
+         "properties": {
+           "assignee": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "assignee_team": {
+-            "$ref": "#/components/schemas/Team"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Team"
++              }
++            ],
++            "nullable": true
+           },
+           "body": {
+             "description": "Body contains the timeline event content",
+@@ -10231,7 +10684,12 @@
+             "x-go-name": "Created"
+           },
+           "dependent_issue": {
+-            "$ref": "#/components/schemas/Issue"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Issue"
++              }
++            ],
++            "nullable": true
+           },
+           "html_url": {
+             "description": "HTMLURL is the web URL for viewing the comment",
+@@ -10252,10 +10710,20 @@
+             "x-go-name": "IssueURL"
+           },
+           "label": {
+-            "$ref": "#/components/schemas/Label"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Label"
++              }
++            ],
++            "nullable": true
+           },
+           "milestone": {
+-            "$ref": "#/components/schemas/Milestone"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Milestone"
++              }
++            ],
++            "nullable": true
+           },
+           "new_ref": {
+             "type": "string",
+@@ -10266,7 +10734,12 @@
+             "x-go-name": "NewTitle"
+           },
+           "old_milestone": {
+-            "$ref": "#/components/schemas/Milestone"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Milestone"
++              }
++            ],
++            "nullable": true
+           },
+           "old_project_id": {
+             "format": "int64",
+@@ -10297,7 +10770,12 @@
+             "x-go-name": "RefAction"
+           },
+           "ref_comment": {
+-            "$ref": "#/components/schemas/Comment"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Comment"
++              }
++            ],
++            "nullable": true
+           },
+           "ref_commit_sha": {
+             "description": "commit SHA where issue/PR was referenced",
+@@ -10305,7 +10783,12 @@
+             "x-go-name": "RefCommitSHA"
+           },
+           "ref_issue": {
+-            "$ref": "#/components/schemas/Issue"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Issue"
++              }
++            ],
++            "nullable": true
+           },
+           "removed_assignee": {
+             "description": "whether the assignees were removed or added",
+@@ -10313,7 +10796,12 @@
+             "x-go-name": "RemovedAssignee"
+           },
+           "resolve_doer": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           },
+           "review_id": {
+             "format": "int64",
+@@ -10321,7 +10809,12 @@
+             "x-go-name": "ReviewID"
+           },
+           "tracked_time": {
+-            "$ref": "#/components/schemas/TrackedTime"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/TrackedTime"
++              }
++            ],
++            "nullable": true
+           },
+           "type": {
+             "description": "Type indicates the type of timeline event",
+@@ -10334,7 +10827,12 @@
+             "x-go-name": "Updated"
+           },
+           "user": {
+-            "$ref": "#/components/schemas/User"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/User"
++              }
++            ],
++            "nullable": true
+           }
+         },
+         "type": "object",
+@@ -10420,7 +10918,12 @@
+             "x-go-name": "ID"
+           },
+           "issue": {
+-            "$ref": "#/components/schemas/Issue"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/Issue"
++              }
++            ],
++            "nullable": true
+           },
+           "issue_id": {
+             "deprecated": true,
+@@ -10464,6 +10967,7 @@
+               "format": "int64",
+               "type": "integer"
+             },
++            "nullable": true,
+             "type": "array",
+             "x-go-name": "TeamIDs"
+           }
+@@ -10854,39 +11358,48 @@
+         "description": "UserSettingsOptions represents options to change user settings",
+         "properties": {
+           "description": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Description"
+           },
+           "diff_view_style": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "DiffViewStyle"
+           },
+           "full_name": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "FullName"
+           },
+           "hide_activity": {
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "HideActivity"
+           },
+           "hide_email": {
+             "description": "Privacy",
++            "nullable": true,
+             "type": "boolean",
+             "x-go-name": "HideEmail"
+           },
+           "language": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Language"
+           },
+           "location": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Location"
+           },
+           "theme": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Theme"
+           },
+           "website": {
++            "nullable": true,
+             "type": "string",
+             "x-go-name": "Website"
+           }
+@@ -10953,10 +11466,20 @@
+         "description": "WikiCommit page commit/revision",
+         "properties": {
+           "author": {
+-            "$ref": "#/components/schemas/CommitUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitUser"
++              }
++            ],
++            "nullable": true
+           },
+           "commiter": {
+-            "$ref": "#/components/schemas/CommitUser"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/CommitUser"
++              }
++            ],
++            "nullable": true
+           },
+           "message": {
+             "description": "The commit message",
+@@ -11019,7 +11542,12 @@
+             "x-go-name": "HTMLURL"
+           },
+           "last_commit": {
+-            "$ref": "#/components/schemas/WikiCommit"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/WikiCommit"
++              }
++            ],
++            "nullable": true
+           },
+           "sidebar": {
+             "description": "The sidebar content for the wiki page",
+@@ -11051,7 +11579,12 @@
+             "x-go-name": "HTMLURL"
+           },
+           "last_commit": {
+-            "$ref": "#/components/schemas/WikiCommit"
++            "allOf": [
++              {
++                "$ref": "#/components/schemas/WikiCommit"
++              }
++            ],
++            "nullable": true
+           },
+           "sub_url": {
+             "description": "The sub URL path for the wiki page",
+diff --git a/templates/swagger/v1-swagger.generated.json b/templates/swagger/v1-swagger.generated.json
+index c7b4b65..f3ac335 100644
+--- a/templates/swagger/v1-swagger.generated.json
++++ b/templates/swagger/v1-swagger.generated.json
+@@ -24967,6 +24967,7 @@
+           "x-go-name": "URL"
+         },
+         "workflow_run": {
++          "x-nullable": true,
+           "$ref": "#/definitions/ActionWorkflowRun"
+         }
+       },
+@@ -25457,7 +25458,8 @@
+         "previous_attempt_url": {
+           "description": "PreviousAttemptURL is the API URL of the previous attempt of this run, e.g. \".../actions/runs/{run_id}/attempts/{attempt-1}\".\nIt is set only when the current attempt is \u003e 1 (i.e. a rerun). For the first attempt, or for legacy runs that pre-date ActionRunAttempt, it is null.",
+           "type": "string",
+-          "x-go-name": "PreviousAttemptURL"
++          "x-go-name": "PreviousAttemptURL",
++          "x-nullable": true
+         },
+         "pull_requests": {
+           "type": "array",
+@@ -25570,6 +25572,7 @@
+       "type": "object",
+       "properties": {
+         "act_user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "act_user_id": {
+@@ -25579,6 +25582,7 @@
+           "x-go-name": "ActUserID"
+         },
+         "comment": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Comment"
+         },
+         "comment_id": {
+@@ -25649,6 +25653,7 @@
+           "x-go-name": "RefName"
+         },
+         "repo": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Repository"
+         },
+         "repo_id": {
+@@ -25679,7 +25684,8 @@
+             "admin"
+           ],
+           "x-go-enum-desc": "read RepoWritePermissionRead\nwrite RepoWritePermissionWrite\nadmin RepoWritePermissionAdmin",
+-          "x-go-name": "Permission"
++          "x-go-name": "Permission",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -25720,6 +25726,7 @@
+           "x-go-name": "Message"
+         },
+         "object": {
++          "x-nullable": true,
+           "$ref": "#/definitions/AnnotatedTagObject"
+         },
+         "sha": {
+@@ -25733,6 +25740,7 @@
+           "x-go-name": "Tag"
+         },
+         "tagger": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitUser"
+         },
+         "url": {
+@@ -25741,6 +25749,7 @@
+           "x-go-name": "URL"
+         },
+         "verification": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadCommitVerification"
+         }
+       },
+@@ -25891,6 +25900,7 @@
+       "type": "object",
+       "properties": {
+         "commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadCommit"
+         },
+         "effective_branch_protection_name": {
+@@ -26295,6 +26305,7 @@
+           "x-go-name": "CommitURL"
+         },
+         "repository": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Repository"
+         },
+         "sha": {
+@@ -26398,6 +26409,7 @@
+           "x-go-name": "Updated"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -26408,12 +26420,15 @@
+       "title": "Commit contains information generated from a Git commit.",
+       "properties": {
+         "author": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/RepoCommit"
+         },
+         "committer": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "created": {
+@@ -26449,6 +26464,7 @@
+           "x-go-name": "SHA"
+         },
+         "stats": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitStats"
+         },
+         "url": {
+@@ -26558,6 +26574,7 @@
+           "x-go-name": "Created"
+         },
+         "creator": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "description": {
+@@ -26667,32 +26684,38 @@
+       "type": "object",
+       "properties": {
+         "_links": {
++          "x-nullable": true,
+           "$ref": "#/definitions/FileLinksResponse"
+         },
+         "content": {
+           "description": "`content` is populated when `type` is `file`, otherwise null",
+           "type": "string",
+-          "x-go-name": "Content"
++          "x-go-name": "Content",
++          "x-nullable": true
+         },
+         "download_url": {
+           "description": "DownloadURL is the direct download URL for this file",
+           "type": "string",
+-          "x-go-name": "DownloadURL"
++          "x-go-name": "DownloadURL",
++          "x-nullable": true
+         },
+         "encoding": {
+           "description": "`encoding` is populated when `type` is `file`, otherwise null",
+           "type": "string",
+-          "x-go-name": "Encoding"
++          "x-go-name": "Encoding",
++          "x-nullable": true
+         },
+         "git_url": {
+           "description": "GitURL is the Git API URL for this blob or tree",
+           "type": "string",
+-          "x-go-name": "GitURL"
++          "x-go-name": "GitURL",
++          "x-nullable": true
+         },
+         "html_url": {
+           "description": "HTMLURL is the web URL for this file or directory",
+           "type": "string",
+-          "x-go-name": "HTMLURL"
++          "x-go-name": "HTMLURL",
++          "x-nullable": true
+         },
+         "last_author_date": {
+           "type": "string",
+@@ -26754,12 +26777,14 @@
+         "submodule_git_url": {
+           "description": "`submodule_git_url` is populated when `type` is `submodule`, otherwise null",
+           "type": "string",
+-          "x-go-name": "SubmoduleGitURL"
++          "x-go-name": "SubmoduleGitURL",
++          "x-nullable": true
+         },
+         "target": {
+           "description": "`target` is populated when `type` is `symlink`, otherwise null",
+           "type": "string",
+-          "x-go-name": "Target"
++          "x-go-name": "Target",
++          "x-nullable": true
+         },
+         "type": {
+           "description": "`type` will be `file`, `dir`, `symlink`, or `submodule`",
+@@ -26769,7 +26794,8 @@
+         "url": {
+           "description": "URL is the API URL for this file or directory",
+           "type": "string",
+-          "x-go-name": "URL"
++          "x-go-name": "URL",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -27131,12 +27157,14 @@
+         "name": {
+           "description": "name of the forked repository",
+           "type": "string",
+-          "x-go-name": "Name"
++          "x-go-name": "Name",
++          "x-nullable": true
+         },
+         "organization": {
+           "description": "organization name, if forking into an organization",
+           "type": "string",
+-          "x-go-name": "Organization"
++          "x-go-name": "Organization",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -27275,7 +27303,8 @@
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "labels": {
+           "description": "list of label ids",
+@@ -27388,7 +27417,8 @@
+           "description": "Deadline is the due date for the milestone",
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "state": {
+           "description": "State indicates the initial state of the milestone",
+@@ -27567,7 +27597,8 @@
+         "allow_maintainer_edit": {
+           "description": "Whether maintainers can edit the pull request",
+           "type": "boolean",
+-          "x-go-name": "AllowMaintainerEdit"
++          "x-go-name": "AllowMaintainerEdit",
++          "x-nullable": true
+         },
+         "assignee": {
+           "description": "The primary assignee username",
+@@ -27595,7 +27626,8 @@
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "head": {
+           "description": "The head branch for the pull request, it could be a branch name on the base repository or\na form like `\u003cusername\u003e:\u003cbranch\u003e` which refers to the user's fork repository's branch.",
+@@ -28064,7 +28096,8 @@
+           "description": "For explicitly setting the user creation timestamp. Useful when users are\nmigrated from other systems. When omitted, the user's creation timestamp\nwill be set to \"now\".",
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Created"
++          "x-go-name": "Created",
++          "x-nullable": true
+         },
+         "email": {
+           "type": "string",
+@@ -28083,7 +28116,8 @@
+         "must_change_password": {
+           "description": "Whether the user must change password on first login",
+           "type": "boolean",
+-          "x-go-name": "MustChangePassword"
++          "x-go-name": "MustChangePassword",
++          "x-nullable": true
+         },
+         "password": {
+           "description": "The plain text password for the user",
+@@ -28093,7 +28127,8 @@
+         "restricted": {
+           "description": "Whether the user has restricted access privileges",
+           "type": "boolean",
+-          "x-go-name": "Restricted"
++          "x-go-name": "Restricted",
++          "x-nullable": true
+         },
+         "send_notify": {
+           "description": "Whether to send welcome notification email to the user",
+@@ -28238,6 +28273,7 @@
+           "x-go-name": "Scopes"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/UserMeta"
+         }
+       },
+@@ -28397,7 +28433,8 @@
+       "properties": {
+         "disabled": {
+           "type": "boolean",
+-          "x-go-name": "Disabled"
++          "x-go-name": "Disabled",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -28434,23 +28471,28 @@
+         },
+         "block_admin_merge_override": {
+           "type": "boolean",
+-          "x-go-name": "BlockAdminMergeOverride"
++          "x-go-name": "BlockAdminMergeOverride",
++          "x-nullable": true
+         },
+         "block_on_codeowner_reviews": {
+           "type": "boolean",
+-          "x-go-name": "BlockOnCodeownerReviews"
++          "x-go-name": "BlockOnCodeownerReviews",
++          "x-nullable": true
+         },
+         "block_on_official_review_requests": {
+           "type": "boolean",
+-          "x-go-name": "BlockOnOfficialReviewRequests"
++          "x-go-name": "BlockOnOfficialReviewRequests",
++          "x-nullable": true
+         },
+         "block_on_outdated_branch": {
+           "type": "boolean",
+-          "x-go-name": "BlockOnOutdatedBranch"
++          "x-go-name": "BlockOnOutdatedBranch",
++          "x-nullable": true
+         },
+         "block_on_rejected_reviews": {
+           "type": "boolean",
+-          "x-go-name": "BlockOnRejectedReviews"
++          "x-go-name": "BlockOnRejectedReviews",
++          "x-nullable": true
+         },
+         "bypass_allowlist_teams": {
+           "type": "array",
+@@ -28468,43 +28510,53 @@
+         },
+         "dismiss_stale_approvals": {
+           "type": "boolean",
+-          "x-go-name": "DismissStaleApprovals"
++          "x-go-name": "DismissStaleApprovals",
++          "x-nullable": true
+         },
+         "enable_approvals_whitelist": {
+           "type": "boolean",
+-          "x-go-name": "EnableApprovalsWhitelist"
++          "x-go-name": "EnableApprovalsWhitelist",
++          "x-nullable": true
+         },
+         "enable_bypass_allowlist": {
+           "type": "boolean",
+-          "x-go-name": "EnableBypassAllowlist"
++          "x-go-name": "EnableBypassAllowlist",
++          "x-nullable": true
+         },
+         "enable_force_push": {
+           "type": "boolean",
+-          "x-go-name": "EnableForcePush"
++          "x-go-name": "EnableForcePush",
++          "x-nullable": true
+         },
+         "enable_force_push_allowlist": {
+           "type": "boolean",
+-          "x-go-name": "EnableForcePushAllowlist"
++          "x-go-name": "EnableForcePushAllowlist",
++          "x-nullable": true
+         },
+         "enable_merge_whitelist": {
+           "type": "boolean",
+-          "x-go-name": "EnableMergeWhitelist"
++          "x-go-name": "EnableMergeWhitelist",
++          "x-nullable": true
+         },
+         "enable_push": {
+           "type": "boolean",
+-          "x-go-name": "EnablePush"
++          "x-go-name": "EnablePush",
++          "x-nullable": true
+         },
+         "enable_push_whitelist": {
+           "type": "boolean",
+-          "x-go-name": "EnablePushWhitelist"
++          "x-go-name": "EnablePushWhitelist",
++          "x-nullable": true
+         },
+         "enable_status_check": {
+           "type": "boolean",
+-          "x-go-name": "EnableStatusCheck"
++          "x-go-name": "EnableStatusCheck",
++          "x-nullable": true
+         },
+         "force_push_allowlist_deploy_keys": {
+           "type": "boolean",
+-          "x-go-name": "ForcePushAllowlistDeployKeys"
++          "x-go-name": "ForcePushAllowlistDeployKeys",
++          "x-nullable": true
+         },
+         "force_push_allowlist_teams": {
+           "type": "array",
+@@ -28522,7 +28574,8 @@
+         },
+         "ignore_stale_approvals": {
+           "type": "boolean",
+-          "x-go-name": "IgnoreStaleApprovals"
++          "x-go-name": "IgnoreStaleApprovals",
++          "x-nullable": true
+         },
+         "merge_whitelist_teams": {
+           "type": "array",
+@@ -28541,15 +28594,18 @@
+         "priority": {
+           "type": "integer",
+           "format": "int64",
+-          "x-go-name": "Priority"
++          "x-go-name": "Priority",
++          "x-nullable": true
+         },
+         "protected_file_patterns": {
+           "type": "string",
+-          "x-go-name": "ProtectedFilePatterns"
++          "x-go-name": "ProtectedFilePatterns",
++          "x-nullable": true
+         },
+         "push_whitelist_deploy_keys": {
+           "type": "boolean",
+-          "x-go-name": "PushWhitelistDeployKeys"
++          "x-go-name": "PushWhitelistDeployKeys",
++          "x-nullable": true
+         },
+         "push_whitelist_teams": {
+           "type": "array",
+@@ -28567,12 +28623,14 @@
+         },
+         "require_signed_commits": {
+           "type": "boolean",
+-          "x-go-name": "RequireSignedCommits"
++          "x-go-name": "RequireSignedCommits",
++          "x-nullable": true
+         },
+         "required_approvals": {
+           "type": "integer",
+           "format": "int64",
+-          "x-go-name": "RequiredApprovals"
++          "x-go-name": "RequiredApprovals",
++          "x-nullable": true
+         },
+         "status_check_contexts": {
+           "type": "array",
+@@ -28583,7 +28641,8 @@
+         },
+         "unprotected_file_patterns": {
+           "type": "string",
+-          "x-go-name": "UnprotectedFilePatterns"
++          "x-go-name": "UnprotectedFilePatterns",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -28598,7 +28657,8 @@
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -28622,7 +28682,8 @@
+         "active": {
+           "description": "Whether the webhook is active and will be triggered",
+           "type": "boolean",
+-          "x-go-name": "Active"
++          "x-go-name": "Active",
++          "x-nullable": true
+         },
+         "authorization_header": {
+           "description": "Authorization header to include in webhook requests",
+@@ -28653,7 +28714,8 @@
+         "name": {
+           "description": "Optional human-readable name",
+           "type": "string",
+-          "x-go-name": "Name"
++          "x-go-name": "Name",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -28680,7 +28742,8 @@
+         "assignee": {
+           "description": "deprecated",
+           "type": "string",
+-          "x-go-name": "Assignee"
++          "x-go-name": "Assignee",
++          "x-nullable": true
+         },
+         "assignees": {
+           "type": "array",
+@@ -28691,23 +28754,27 @@
+         },
+         "body": {
+           "type": "string",
+-          "x-go-name": "Body"
++          "x-go-name": "Body",
++          "x-nullable": true
+         },
+         "content_version": {
+           "description": "The current version of the issue content to detect conflicts during editing",
+           "type": "integer",
+           "format": "int64",
+-          "x-go-name": "ContentVersion"
++          "x-go-name": "ContentVersion",
++          "x-nullable": true
+         },
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "milestone": {
+           "type": "integer",
+           "format": "int64",
+-          "x-go-name": "Milestone"
++          "x-go-name": "Milestone",
++          "x-nullable": true
+         },
+         "projects": {
+           "description": "list of project ids to set (replaces existing projects)",
+@@ -28716,15 +28783,18 @@
+             "type": "integer",
+             "format": "int64"
+           },
+-          "x-go-name": "Projects"
++          "x-go-name": "Projects",
++          "x-nullable": true
+         },
+         "ref": {
+           "type": "string",
+-          "x-go-name": "Ref"
++          "x-go-name": "Ref",
++          "x-nullable": true
+         },
+         "state": {
+           "type": "string",
+-          "x-go-name": "State"
++          "x-go-name": "State",
++          "x-nullable": true
+         },
+         "title": {
+           "type": "string",
+@@ -28732,7 +28802,8 @@
+         },
+         "unset_due_date": {
+           "type": "boolean",
+-          "x-go-name": "RemoveDeadline"
++          "x-go-name": "RemoveDeadline",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -28744,27 +28815,32 @@
+         "color": {
+           "type": "string",
+           "x-go-name": "Color",
++          "x-nullable": true,
+           "example": "#00aabb"
+         },
+         "description": {
+           "description": "Description provides additional context about the label's purpose",
+           "type": "string",
+-          "x-go-name": "Description"
++          "x-go-name": "Description",
++          "x-nullable": true
+         },
+         "exclusive": {
+           "type": "boolean",
+           "x-go-name": "Exclusive",
++          "x-nullable": true,
+           "example": false
+         },
+         "is_archived": {
+           "type": "boolean",
+           "x-go-name": "IsArchived",
++          "x-nullable": true,
+           "example": false
+         },
+         "name": {
+           "description": "Name is the new display name for the label",
+           "type": "string",
+-          "x-go-name": "Name"
++          "x-go-name": "Name",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -28776,13 +28852,15 @@
+         "description": {
+           "description": "Description provides updated details about the milestone",
+           "type": "string",
+-          "x-go-name": "Description"
++          "x-go-name": "Description",
++          "x-nullable": true
+         },
+         "due_on": {
+           "description": "Deadline is the updated due date for the milestone",
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "state": {
+           "description": "State indicates the updated state of the milestone",
+@@ -28791,7 +28869,8 @@
+             "open",
+             "closed"
+           ],
+-          "x-go-name": "State"
++          "x-go-name": "State",
++          "x-nullable": true
+         },
+         "title": {
+           "description": "Title is the updated title of the milestone",
+@@ -28808,27 +28887,32 @@
+         "description": {
+           "description": "The description of the organization",
+           "type": "string",
+-          "x-go-name": "Description"
++          "x-go-name": "Description",
++          "x-nullable": true
+         },
+         "email": {
+           "description": "The email address of the organization; use empty string to clear",
+           "type": "string",
+-          "x-go-name": "Email"
++          "x-go-name": "Email",
++          "x-nullable": true
+         },
+         "full_name": {
+           "description": "The full display name of the organization",
+           "type": "string",
+-          "x-go-name": "FullName"
++          "x-go-name": "FullName",
++          "x-nullable": true
+         },
+         "location": {
+           "description": "The location of the organization",
+           "type": "string",
+-          "x-go-name": "Location"
++          "x-go-name": "Location",
++          "x-nullable": true
+         },
+         "repo_admin_change_team_access": {
+           "description": "Whether repository administrators can change team access",
+           "type": "boolean",
+-          "x-go-name": "RepoAdminChangeTeamAccess"
++          "x-go-name": "RepoAdminChangeTeamAccess",
++          "x-nullable": true
+         },
+         "visibility": {
+           "description": "possible values are `public`, `limited` or `private`",
+@@ -28839,12 +28923,14 @@
+             "private"
+           ],
+           "x-go-enum-desc": "public VisibilityStringPublic\nlimited VisibilityStringLimited\nprivate VisibilityStringPrivate",
+-          "x-go-name": "Visibility"
++          "x-go-name": "Visibility",
++          "x-nullable": true
+         },
+         "website": {
+           "description": "The website URL of the organization",
+           "type": "string",
+-          "x-go-name": "Website"
++          "x-go-name": "Website",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -28907,7 +28993,8 @@
+         "allow_maintainer_edit": {
+           "description": "Whether to allow maintainer edits",
+           "type": "boolean",
+-          "x-go-name": "AllowMaintainerEdit"
++          "x-go-name": "AllowMaintainerEdit",
++          "x-nullable": true
+         },
+         "assignee": {
+           "description": "The new primary assignee username",
+@@ -28930,18 +29017,21 @@
+         "body": {
+           "description": "The new description body for the pull request",
+           "type": "string",
+-          "x-go-name": "Body"
++          "x-go-name": "Body",
++          "x-nullable": true
+         },
+         "content_version": {
+           "description": "The current version of the pull request content to detect conflicts during editing",
+           "type": "integer",
+           "format": "int64",
+-          "x-go-name": "ContentVersion"
++          "x-go-name": "ContentVersion",
++          "x-nullable": true
+         },
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "labels": {
+           "description": "The new list of label IDs for the pull request",
+@@ -28961,7 +29051,8 @@
+         "state": {
+           "description": "The new state for the pull request",
+           "type": "string",
+-          "x-go-name": "State"
++          "x-go-name": "State",
++          "x-nullable": true
+         },
+         "title": {
+           "description": "The new title for the pull request",
+@@ -28971,7 +29062,8 @@
+         "unset_due_date": {
+           "description": "Whether to remove the current deadline",
+           "type": "boolean",
+-          "x-go-name": "RemoveDeadline"
++          "x-go-name": "RemoveDeadline",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -29000,7 +29092,8 @@
+         "draft": {
+           "description": "Whether to change the draft status",
+           "type": "boolean",
+-          "x-go-name": "IsDraft"
++          "x-go-name": "IsDraft",
++          "x-nullable": true
+         },
+         "name": {
+           "description": "The new display title of the release",
+@@ -29010,7 +29103,8 @@
+         "prerelease": {
+           "description": "Whether to change the prerelease status",
+           "type": "boolean",
+-          "x-go-name": "IsPrerelease"
++          "x-go-name": "IsPrerelease",
++          "x-nullable": true
+         },
+         "tag_name": {
+           "description": "The new name of the git tag",
+@@ -29224,7 +29318,8 @@
+         "name_pattern": {
+           "description": "The pattern to match tag names for protection",
+           "type": "string",
+-          "x-go-name": "NamePattern"
++          "x-go-name": "NamePattern",
++          "x-nullable": true
+         },
+         "whitelist_teams": {
+           "description": "List of team names allowed to create/delete protected tags",
+@@ -29255,17 +29350,20 @@
+         "can_create_org_repo": {
+           "description": "Whether the team can create repositories in the organization",
+           "type": "boolean",
+-          "x-go-name": "CanCreateOrgRepo"
++          "x-go-name": "CanCreateOrgRepo",
++          "x-nullable": true
+         },
+         "description": {
+           "description": "The description of the team",
+           "type": "string",
+-          "x-go-name": "Description"
++          "x-go-name": "Description",
++          "x-nullable": true
+         },
+         "includes_all_repositories": {
+           "description": "Whether the team has access to all repositories in the organization",
+           "type": "boolean",
+-          "x-go-name": "IncludesAllRepositories"
++          "x-go-name": "IncludesAllRepositories",
++          "x-nullable": true
+         },
+         "name": {
+           "type": "string",
+@@ -29327,7 +29425,8 @@
+             "private"
+           ],
+           "x-go-enum-desc": "public TeamVisibilityPublic\nlimited TeamVisibilityLimited\nprivate TeamVisibilityPrivate",
+-          "x-go-name": "Visibility"
++          "x-go-name": "Visibility",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -29342,64 +29441,76 @@
+         "active": {
+           "description": "Whether the user account is active",
+           "type": "boolean",
+-          "x-go-name": "Active"
++          "x-go-name": "Active",
++          "x-nullable": true
+         },
+         "admin": {
+           "description": "Whether the user has administrator privileges",
+           "type": "boolean",
+-          "x-go-name": "Admin"
++          "x-go-name": "Admin",
++          "x-nullable": true
+         },
+         "allow_create_organization": {
+           "description": "Whether the user can create organizations",
+           "type": "boolean",
+-          "x-go-name": "AllowCreateOrganization"
++          "x-go-name": "AllowCreateOrganization",
++          "x-nullable": true
+         },
+         "allow_git_hook": {
+           "description": "Whether the user can use Git hooks",
+           "type": "boolean",
+-          "x-go-name": "AllowGitHook"
++          "x-go-name": "AllowGitHook",
++          "x-nullable": true
+         },
+         "allow_import_local": {
+           "description": "Whether the user can import local repositories",
+           "type": "boolean",
+-          "x-go-name": "AllowImportLocal"
++          "x-go-name": "AllowImportLocal",
++          "x-nullable": true
+         },
+         "description": {
+           "description": "The user's personal description or bio",
+           "type": "string",
+-          "x-go-name": "Description"
++          "x-go-name": "Description",
++          "x-nullable": true
+         },
+         "email": {
+           "description": "The email address of the user",
+           "type": "string",
+           "format": "email",
+-          "x-go-name": "Email"
++          "x-go-name": "Email",
++          "x-nullable": true
+         },
+         "full_name": {
+           "description": "The full display name of the user",
+           "type": "string",
+-          "x-go-name": "FullName"
++          "x-go-name": "FullName",
++          "x-nullable": true
+         },
+         "location": {
+           "description": "The user's location or address",
+           "type": "string",
+-          "x-go-name": "Location"
++          "x-go-name": "Location",
++          "x-nullable": true
+         },
+         "login_name": {
+           "description": "identifier of the user, provided by the external authenticator (if configured)",
+           "type": "string",
+-          "x-go-name": "LoginName"
++          "x-go-name": "LoginName",
++          "x-nullable": true
+         },
+         "max_repo_creation": {
+           "description": "Maximum number of repositories the user can create",
+           "type": "integer",
+           "format": "int64",
+-          "x-go-name": "MaxRepoCreation"
++          "x-go-name": "MaxRepoCreation",
++          "x-nullable": true
+         },
+         "must_change_password": {
+           "description": "Whether the user must change password on next login",
+           "type": "boolean",
+-          "x-go-name": "MustChangePassword"
++          "x-go-name": "MustChangePassword",
++          "x-nullable": true
+         },
+         "password": {
+           "description": "The plain text password for the user",
+@@ -29409,12 +29520,14 @@
+         "prohibit_login": {
+           "description": "Whether the user is prohibited from logging in",
+           "type": "boolean",
+-          "x-go-name": "ProhibitLogin"
++          "x-go-name": "ProhibitLogin",
++          "x-nullable": true
+         },
+         "restricted": {
+           "description": "Whether the user has restricted access privileges",
+           "type": "boolean",
+-          "x-go-name": "Restricted"
++          "x-go-name": "Restricted",
++          "x-nullable": true
+         },
+         "source_id": {
+           "description": "The authentication source ID to associate with the user",
+@@ -29447,7 +29560,8 @@
+         "website": {
+           "description": "The user's personal website URL",
+           "type": "string",
+-          "x-go-name": "Website"
++          "x-go-name": "Website",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -29530,9 +29644,11 @@
+       "title": "FileCommitResponse contains information generated from a Git commit for a repo's file.",
+       "properties": {
+         "author": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitUser"
+         },
+         "committer": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitUser"
+         },
+         "created": {
+@@ -29565,6 +29681,7 @@
+           "x-go-name": "SHA"
+         },
+         "tree": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitMeta"
+         },
+         "url": {
+@@ -29580,6 +29697,7 @@
+       "type": "object",
+       "properties": {
+         "commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/FileCommitResponse"
+         },
+         "content": {
+@@ -29587,6 +29705,7 @@
+           "x-go-name": "Content"
+         },
+         "verification": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadCommitVerification"
+         }
+       },
+@@ -29599,17 +29718,20 @@
+         "git": {
+           "description": "GitURL is the Git API URL for this file",
+           "type": "string",
+-          "x-go-name": "GitURL"
++          "x-go-name": "GitURL",
++          "x-nullable": true
+         },
+         "html": {
+           "description": "HTMLURL is the web URL for this file",
+           "type": "string",
+-          "x-go-name": "HTMLURL"
++          "x-go-name": "HTMLURL",
++          "x-nullable": true
+         },
+         "self": {
+           "description": "Self is the API URL for this file",
+           "type": "string",
+-          "x-go-name": "Self"
++          "x-go-name": "Self",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -29619,12 +29741,15 @@
+       "type": "object",
+       "properties": {
+         "commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/FileCommitResponse"
+         },
+         "content": {
++          "x-nullable": true,
+           "$ref": "#/definitions/ContentsResponse"
+         },
+         "verification": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadCommitVerification"
+         }
+       },
+@@ -29635,6 +29760,7 @@
+       "type": "object",
+       "properties": {
+         "commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/FileCommitResponse"
+         },
+         "files": {
+@@ -29646,6 +29772,7 @@
+           "x-go-name": "Files"
+         },
+         "verification": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadCommitVerification"
+         }
+       },
+@@ -29973,12 +30100,14 @@
+         "content": {
+           "description": "The content of the git blob (may be base64 encoded)",
+           "type": "string",
+-          "x-go-name": "Content"
++          "x-go-name": "Content",
++          "x-nullable": true
+         },
+         "encoding": {
+           "description": "The encoding used for the content (e.g., \"base64\")",
+           "type": "string",
+-          "x-go-name": "Encoding"
++          "x-go-name": "Encoding",
++          "x-nullable": true
+         },
+         "lfs_oid": {
+           "description": "The LFS object ID if this blob is stored in LFS",
+@@ -30269,6 +30398,7 @@
+           "x-go-name": "Attachments"
+         },
+         "assignee": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "assignees": {
+@@ -30285,7 +30415,8 @@
+         "closed_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Closed"
++          "x-go-name": "Closed",
++          "x-nullable": true
+         },
+         "comments": {
+           "type": "integer",
+@@ -30306,7 +30437,8 @@
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "html_url": {
+           "type": "string",
+@@ -30329,6 +30461,7 @@
+           "x-go-name": "Labels"
+         },
+         "milestone": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Milestone"
+         },
+         "number": {
+@@ -30358,6 +30491,7 @@
+           "x-go-name": "Projects"
+         },
+         "pull_request": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PullRequestMeta"
+         },
+         "ref": {
+@@ -30365,6 +30499,7 @@
+           "x-go-name": "Ref"
+         },
+         "repository": {
++          "x-nullable": true,
+           "$ref": "#/definitions/RepositoryMeta"
+         },
+         "state": {
+@@ -30395,6 +30530,7 @@
+           "x-go-name": "URL"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -30470,7 +30606,8 @@
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -30987,7 +31124,8 @@
+         "closed_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Closed"
++          "x-go-name": "Closed",
++          "x-nullable": true
+         },
+         "closed_issues": {
+           "description": "ClosedIssues is the number of closed issues in this milestone",
+@@ -31008,7 +31146,8 @@
+         "due_on": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "id": {
+           "description": "ID is the unique identifier for the milestone",
+@@ -31040,7 +31179,8 @@
+         "updated_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Updated"
++          "x-go-name": "Updated",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -31106,6 +31246,7 @@
+       "type": "object",
+       "properties": {
+         "commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Commit"
+         },
+         "message": {
+@@ -31200,9 +31341,11 @@
+           "x-go-name": "Pinned"
+         },
+         "repository": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Repository"
+         },
+         "subject": {
++          "x-nullable": true,
+           "$ref": "#/definitions/NotificationSubject"
+         },
+         "unread": {
+@@ -31392,6 +31535,7 @@
+           "x-go-name": "Ref"
+         },
+         "repo": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Repository"
+         },
+         "repo_id": {
+@@ -31419,6 +31563,7 @@
+           "x-go-name": "CreatedAt"
+         },
+         "creator": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "html_url": {
+@@ -31438,9 +31583,11 @@
+           "x-go-name": "Name"
+         },
+         "owner": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "repository": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Repository"
+         },
+         "type": {
+@@ -31513,9 +31660,11 @@
+           "x-go-name": "Added"
+         },
+         "author": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadUser"
+         },
+         "committer": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadUser"
+         },
+         "id": {
+@@ -31556,6 +31705,7 @@
+           "x-go-name": "URL"
+         },
+         "verification": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadCommitVerification"
+         }
+       },
+@@ -31581,6 +31731,7 @@
+           "x-go-name": "Signature"
+         },
+         "signer": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadUser"
+         },
+         "verified": {
+@@ -31860,6 +32011,7 @@
+           "x-go-name": "AllowMaintainerEdit"
+         },
+         "assignee": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "assignees": {
+@@ -31871,6 +32023,7 @@
+           "x-go-name": "Assignees"
+         },
+         "base": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PRBranchInfo"
+         },
+         "body": {
+@@ -31887,7 +32040,8 @@
+         "closed_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Closed"
++          "x-go-name": "Closed",
++          "x-nullable": true
+         },
+         "comments": {
+           "description": "The number of comments on the pull request",
+@@ -31904,7 +32058,8 @@
+         "created_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Created"
++          "x-go-name": "Created",
++          "x-nullable": true
+         },
+         "deletions": {
+           "description": "The number of lines deleted in the pull request",
+@@ -31925,9 +32080,11 @@
+         "due_date": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Deadline"
++          "x-go-name": "Deadline",
++          "x-nullable": true
+         },
+         "head": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PRBranchInfo"
+         },
+         "html_url": {
+@@ -31962,7 +32119,8 @@
+         "merge_commit_sha": {
+           "description": "The SHA of the merge commit",
+           "type": "string",
+-          "x-go-name": "MergedCommitID"
++          "x-go-name": "MergedCommitID",
++          "x-nullable": true
+         },
+         "mergeable": {
+           "description": "Whether the pull request can be merged",
+@@ -31977,12 +32135,15 @@
+         "merged_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Merged"
++          "x-go-name": "Merged",
++          "x-nullable": true
+         },
+         "merged_by": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "milestone": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Milestone"
+         },
+         "number": {
+@@ -32042,7 +32203,8 @@
+         "updated_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Updated"
++          "x-go-name": "Updated",
++          "x-nullable": true
+         },
+         "url": {
+           "description": "The API URL of the pull request",
+@@ -32050,6 +32212,7 @@
+           "x-go-name": "URL"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -32074,7 +32237,8 @@
+         "merged_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "Merged"
++          "x-go-name": "Merged",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -32206,6 +32370,7 @@
+           "x-go-name": "Submitted"
+         },
+         "team": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Team"
+         },
+         "updated_at": {
+@@ -32214,6 +32379,7 @@
+           "x-go-name": "Updated"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -32277,6 +32443,7 @@
+           "x-go-name": "HTMLPullURL"
+         },
+         "resolver": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "updated_at": {
+@@ -32285,6 +32452,7 @@
+           "x-go-name": "Updated"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -32333,7 +32501,8 @@
+         "last_update": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "LastUpdateUnix"
++          "x-go-name": "LastUpdateUnix",
++          "x-nullable": true
+         },
+         "remote_address": {
+           "description": "The remote repository URL being mirrored to",
+@@ -32374,6 +32543,7 @@
+           "x-go-name": "Created"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -32384,6 +32554,7 @@
+       "title": "Reference represents a Git reference.",
+       "properties": {
+         "object": {
++          "x-nullable": true,
+           "$ref": "#/definitions/GitObject"
+         },
+         "ref": {
+@@ -32412,6 +32583,7 @@
+           "x-go-name": "Attachments"
+         },
+         "author": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "body": {
+@@ -32453,7 +32625,8 @@
+         "published_at": {
+           "type": "string",
+           "format": "date-time",
+-          "x-go-name": "PublishedAt"
++          "x-go-name": "PublishedAt",
++          "x-nullable": true
+         },
+         "tag_name": {
+           "description": "The name of the git tag associated with the release",
+@@ -32559,6 +32732,7 @@
+           "x-go-name": "RoleName"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -32569,9 +32743,11 @@
+       "title": "RepoCommit contains information of a commit in the context of a repository.",
+       "properties": {
+         "author": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitUser"
+         },
+         "committer": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitUser"
+         },
+         "message": {
+@@ -32580,6 +32756,7 @@
+           "x-go-name": "Message"
+         },
+         "tree": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitMeta"
+         },
+         "url": {
+@@ -32588,6 +32765,7 @@
+           "x-go-name": "URL"
+         },
+         "verification": {
++          "x-nullable": true,
+           "$ref": "#/definitions/PayloadCommitVerification"
+         }
+       },
+@@ -32613,9 +32791,11 @@
+       "type": "object",
+       "properties": {
+         "doer": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "recipient": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "teams": {
+@@ -32864,6 +33044,7 @@
+           "x-go-name": "OriginalURL"
+         },
+         "owner": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "parent": {
+@@ -33105,6 +33286,7 @@
+       "type": "object",
+       "properties": {
+         "commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitMeta"
+         },
+         "id": {
+@@ -33212,6 +33394,7 @@
+           "x-go-name": "Name"
+         },
+         "organization": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Organization"
+         },
+         "permission": {
+@@ -33287,9 +33470,11 @@
+       "type": "object",
+       "properties": {
+         "assignee": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "assignee_team": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Team"
+         },
+         "body": {
+@@ -33303,6 +33488,7 @@
+           "x-go-name": "Created"
+         },
+         "dependent_issue": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Issue"
+         },
+         "html_url": {
+@@ -33322,9 +33508,11 @@
+           "x-go-name": "IssueURL"
+         },
+         "label": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Label"
+         },
+         "milestone": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Milestone"
+         },
+         "new_ref": {
+@@ -33336,6 +33524,7 @@
+           "x-go-name": "NewTitle"
+         },
+         "old_milestone": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Milestone"
+         },
+         "old_project_id": {
+@@ -33366,6 +33555,7 @@
+           "x-go-name": "RefAction"
+         },
+         "ref_comment": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Comment"
+         },
+         "ref_commit_sha": {
+@@ -33374,6 +33564,7 @@
+           "x-go-name": "RefCommitSHA"
+         },
+         "ref_issue": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Issue"
+         },
+         "removed_assignee": {
+@@ -33382,6 +33573,7 @@
+           "x-go-name": "RemovedAssignee"
+         },
+         "resolve_doer": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         },
+         "review_id": {
+@@ -33390,6 +33582,7 @@
+           "x-go-name": "ReviewID"
+         },
+         "tracked_time": {
++          "x-nullable": true,
+           "$ref": "#/definitions/TrackedTime"
+         },
+         "type": {
+@@ -33403,6 +33596,7 @@
+           "x-go-name": "Updated"
+         },
+         "user": {
++          "x-nullable": true,
+           "$ref": "#/definitions/User"
+         }
+       },
+@@ -33489,6 +33683,7 @@
+           "x-go-name": "ID"
+         },
+         "issue": {
++          "x-nullable": true,
+           "$ref": "#/definitions/Issue"
+         },
+         "issue_id": {
+@@ -33535,7 +33730,8 @@
+             "type": "integer",
+             "format": "int64"
+           },
+-          "x-go-name": "TeamIDs"
++          "x-go-name": "TeamIDs",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -33926,40 +34122,49 @@
+       "properties": {
+         "description": {
+           "type": "string",
+-          "x-go-name": "Description"
++          "x-go-name": "Description",
++          "x-nullable": true
+         },
+         "diff_view_style": {
+           "type": "string",
+-          "x-go-name": "DiffViewStyle"
++          "x-go-name": "DiffViewStyle",
++          "x-nullable": true
+         },
+         "full_name": {
+           "type": "string",
+-          "x-go-name": "FullName"
++          "x-go-name": "FullName",
++          "x-nullable": true
+         },
+         "hide_activity": {
+           "type": "boolean",
+-          "x-go-name": "HideActivity"
++          "x-go-name": "HideActivity",
++          "x-nullable": true
+         },
+         "hide_email": {
+           "description": "Privacy",
+           "type": "boolean",
+-          "x-go-name": "HideEmail"
++          "x-go-name": "HideEmail",
++          "x-nullable": true
+         },
+         "language": {
+           "type": "string",
+-          "x-go-name": "Language"
++          "x-go-name": "Language",
++          "x-nullable": true
+         },
+         "location": {
+           "type": "string",
+-          "x-go-name": "Location"
++          "x-go-name": "Location",
++          "x-nullable": true
+         },
+         "theme": {
+           "type": "string",
+-          "x-go-name": "Theme"
++          "x-go-name": "Theme",
++          "x-nullable": true
+         },
+         "website": {
+           "type": "string",
+-          "x-go-name": "Website"
++          "x-go-name": "Website",
++          "x-nullable": true
+         }
+       },
+       "x-go-package": "gitea.dev/modules/structs"
+@@ -34006,9 +34211,11 @@
+       "type": "object",
+       "properties": {
+         "author": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitUser"
+         },
+         "commiter": {
++          "x-nullable": true,
+           "$ref": "#/definitions/CommitUser"
+         },
+         "message": {
+@@ -34071,6 +34278,7 @@
+           "x-go-name": "HTMLURL"
+         },
+         "last_commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/WikiCommit"
+         },
+         "sidebar": {
+@@ -34101,6 +34309,7 @@
+           "x-go-name": "HTMLURL"
+         },
+         "last_commit": {
++          "x-nullable": true,
+           "$ref": "#/definitions/WikiCommit"
+         },
+         "sub_url": {
+-- 
+2.53.0.windows.1
+

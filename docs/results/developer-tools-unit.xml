@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="59" failures="0" errors="0" time="0.1012461">
+    <testsuite name="tests/unit/developer-tools.test.ts" timestamp="2026-10-22T15:53:23.576Z" hostname="NAJIB-PC" tests="27" failures="0" errors="0" skipped="0" time="0.081457">
+        <testcase classname="tests/unit/developer-tools.test.ts" name="uses the browser-facing Host for same-origin requests behind Next" time="0.003169">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 127.0.0.1" time="0.0008046">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 10.1.2.3" time="0.0008037">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 169.254.169.254" time="0.0004926">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 172.16.1.1" time="0.0002669">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 192.168.1.1" time="0.0003346">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 0.0.0.0" time="0.0003377">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks ::1" time="0.0063677">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks ::ffff:127.0.0.1" time="0.0011347">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 2001:0db8::1" time="0.0004036">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks fe80::1" time="0.0003478">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks fc00::1" time="0.0002482">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; blocks 2001::1" time="0.0008402">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; permits global address 8.8.8.8" time="0.0001709">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; permits global address 1.1.1.1" time="0.0001454">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="API network boundary &gt; permits global address 2606:4700:4700::1111" time="0.0002338">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="real HTTP assertion runner &gt; records a pass, a failed contract and a real negative-auth result" time="0.0484944">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="real HTTP assertion runner &gt; does not follow redirects to a private target" time="0.0041301">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="real HTTP assertion runner &gt; rejects writes without opt-in" time="0.0003477">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="contract import and execution budgets &gt; inlines shared OpenAPI response schemas and skips parameterized paths" time="0.0012582">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="contract import and execution budgets &gt; rejects unsafe or costly schema features before validation" time="0.001372">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="PHP advisory assessment &gt; identifies CLI evidence limitations and relevant configuration without claiming exploitation" time="0.0003301">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="PHP advisory assessment &gt; classifies the release boundary for 8.2.35" time="0.0002984">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="PHP advisory assessment &gt; classifies the release boundary for 8.3.36" time="0.0000854">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="PHP advisory assessment &gt; classifies the release boundary for 8.4.27" time="0.000077">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="PHP advisory assessment &gt; classifies the release boundary for 8.5.12" time="0.0000846">
+        </testcase>
+        <testcase classname="tests/unit/developer-tools.test.ts" name="PHP advisory assessment &gt; keeps header, package and unknown evidence inconclusive" time="0.0002007">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/scoring.test.ts" timestamp="2026-10-22T15:53:23.587Z" hostname="NAJIB-PC" tests="14" failures="0" errors="0" skipped="0" time="0.0068696">
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; latency 0 yields 100" time="0.0016997">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; latency 2500 yields 100" time="0.0003021">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; latency 2501 yields 70" time="0.0001444">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; latency 4500 yields 70" time="0.0002515">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; latency 4501 yields 35" time="0.0001439">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; clamps and rounds -20 to 0" time="0.0002164">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; clamps and rounds 101 to 100" time="0.0001894">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; clamps and rounds 84.6 to 85" time="0.0001408">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; penalises serious accessibility violations" time="0.0005895">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; caps heavy accessibility penalties at zero" time="0.0003812">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; rewards a complete SEO baseline" time="0.0002728">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; penalises missing metadata and broken requests" time="0.000125">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; gives a healthy secure page full best-practice score" time="0.0001315">
+        </testcase>
+        <testcase classname="tests/unit/scoring.test.ts" name="score boundaries &gt; does not let runtime penalties reduce category weights below zero" time="0.0001189">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/validation.test.ts" timestamp="2026-10-22T15:53:23.590Z" hostname="NAJIB-PC" tests="18" failures="0" errors="0" skipped="0" time="0.0129195">
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; normalises example.com" time="0.0031244">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; normalises  localhost:4173 " time="0.000536">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; normalises 127.0.0.1:4173" time="0.0001744">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; rejects invalid URL " time="0.0015886">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; rejects invalid URL    " time="0.000209">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; rejects invalid URL http://[" time="0.0004723">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; rejects invalid URL ftp://example.com" time="0.0002333">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; rejects invalid URL https://user:password@example.com" time="0.0001968">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; creates stable project keys" time="0.0006544">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="URL parsing and validation &gt; sanitises filenames" time="0.0003064">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; trims title and defaults status" time="0.0013134">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; rejects invalid field {&quot;title&quot;:&quot; &quot;}" time="0.0004441">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; rejects invalid field {&quot;severity&quot;:&quot;urgent&quot;}" time="0.0001911">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; rejects invalid field {&quot;title&quot;:&quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;}" time="0.0002105">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; rejects invalid field {&quot;description&quot;:&quot;&quot;}" time="0.0001143">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; rejects invalid field {&quot;owner&quot;:&quot;unexpected&quot;}" time="0.0001264">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; rejects empty patches" time="0.0003536">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="defect validation &gt; accepts a status-only patch without resetting other fields" time="0.0002565">
+        </testcase>
+    </testsuite>
+</testsuites>

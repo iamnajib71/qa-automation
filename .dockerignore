@@ -12,8 +12,5 @@ data
 public/generated
 cypress/videos
 cypress/screenshots
-CLAUDE.md
-AGENTS.md
-.codex
 .agents
 .aws

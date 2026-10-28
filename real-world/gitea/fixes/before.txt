@@ -1,0 +1,149 @@
+go: downloading github.com/getkin/kin-openapi v0.149.0
+go: downloading github.com/oasdiff/yaml v0.1.1
+go: downloading github.com/go-openapi/jsonpointer v0.23.1
+go: downloading github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
+go: downloading github.com/oasdiff/yaml3 v0.0.14
+go: downloading github.com/go-openapi/swag/jsonname v0.26.1
+go: downloading golang.org/x/text v0.42.0
+--- FAIL: TestIssueContractAcceptsAbsentAssociations (0.12s)
+    issue_contract_test.go:25: ordinary issue with no associated PR, milestone or assignee must match its response contract: Error at "/assignee": Value is not nullable
+        Schema:
+          {
+            "description": "User represents a user",
+            "properties": {
+              "active": {
+                "description": "Is user active",
+                "type": "boolean",
+                "x-go-name": "IsActive"
+              },
+              "avatar_url": {
+                "description": "URL to the user's avatar",
+                "format": "uri",
+                "type": "string",
+                "x-go-name": "AvatarURL"
+              },
+              "created": {
+                "format": "date-time",
+                "type": "string",
+                "x-go-name": "Created"
+              },
+              "description": {
+                "description": "the user's description",
+                "type": "string",
+                "x-go-name": "Description"
+              },
+              "email": {
+                "format": "email",
+                "type": "string",
+                "x-go-name": "Email"
+              },
+              "followers_count": {
+                "description": "user counts",
+                "format": "int64",
+                "type": "integer",
+                "x-go-name": "Followers"
+              },
+              "following_count": {
+                "format": "int64",
+                "type": "integer",
+                "x-go-name": "Following"
+              },
+              "full_name": {
+                "description": "the user's full name",
+                "type": "string",
+                "x-go-name": "FullName"
+              },
+              "html_url": {
+                "description": "URL to the user's gitea page",
+                "format": "uri",
+                "type": "string",
+                "x-go-name": "HTMLURL"
+              },
+              "id": {
+                "description": "the user's id",
+                "format": "int64",
+                "type": "integer",
+                "x-go-name": "ID"
+              },
+              "is_admin": {
+                "description": "Is the user an administrator",
+                "type": "boolean",
+                "x-go-name": "IsAdmin"
+              },
+              "language": {
+                "description": "User locale",
+                "type": "string",
+                "x-go-name": "Language"
+              },
+              "last_login": {
+                "format": "date-time",
+                "type": "string",
+                "x-go-name": "LastLogin"
+              },
+              "location": {
+                "description": "the user's location",
+                "type": "string",
+                "x-go-name": "Location"
+              },
+              "login": {
+                "description": "login of the user, same as `username`",
+                "type": "string",
+                "x-go-name": "UserName"
+              },
+              "login_name": {
+                "description": "identifier of the user, provided by the external authenticator (if configured)",
+                "type": "string",
+                "x-go-name": "LoginName"
+              },
+              "prohibit_login": {
+                "description": "Is user login prohibited",
+                "type": "boolean",
+                "x-go-name": "ProhibitLogin"
+              },
+              "restricted": {
+                "description": "Is user restricted",
+                "type": "boolean",
+                "x-go-name": "Restricted"
+              },
+              "source_id": {
+                "description": "The ID of the user's Authentication Source",
+                "format": "int64",
+                "type": "integer",
+                "x-go-name": "SourceID"
+              },
+              "starred_repos_count": {
+                "format": "int64",
+                "type": "integer",
+                "x-go-name": "StarredRepos"
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UserTypeString"
+                  }
+                ],
+                "description": "the user type"
+              },
+              "visibility": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/VisibilityString"
+                  }
+                ],
+                "description": "User visibility level option: public, limited, private"
+              },
+              "website": {
+                "description": "the user's website",
+                "type": "string",
+                "x-go-name": "Website"
+              }
+            },
+            "type": "object",
+            "x-go-package": "gitea.dev/modules/structs"
+          }
+        
+        Value:
+          null
+FAIL
+FAIL	gitea.dev/build/openapi3gen	0.124s
+FAIL

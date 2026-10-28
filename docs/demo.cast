@@ -1,7 +1,7 @@
 {"version": 2, "width": 110, "height": 34, "timestamp": 1791472210, "env": {"SHELL": "/bin/bash", "TERM": "xterm-256color"}, "title": "QA Portal — real API, scanner and unit tests"}
 [1.328758, "o", "\u001b[6n"]
 [1.329609, "o", "\u001b[?9001h\u001b[?1004h"]
-[1.329805, "o", "\u001b[m\u001b]0;C:\\Users\\Nazmul\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe\u0007\u001b[?25h"]
+[1.329805, "o", "\u001b[m\u001b]0;PowerShell\\native\\powershell\\pwsh.exe\u0007\u001b[?25h"]
 [1.620585, "o", "\u001b[?25l\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\u001b[H\u001b[?25h"]
 [1.623707, "o", "\u001b[?25l\u001b[3J\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\r\n\u001b[K\u001b[H\u001b[?25h"]
 [1.639464, "o", "\u001b[?25lQA PORTAL | NAZMUL HASSAN\r\nReal Next.js app + local JSON | synthetic test data only\u001b[4;1H\u001b[?25h"]
@@ -30,6 +30,6 @@
 [26.054471, "o", "\u001b[?2026l"]
 [26.07323, "o", "\u001b[?2026h\u001b[?2026l"]
 [26.075596, "o", "\u001b[23;1H ✓ tests/unit/scoring.test.ts (14 tests) 7ms\u001b[K\r\n ✓ tests/unit/validation.test.ts (18 tests) 11ms\u001b[K\r\n\u001b[K\r\n Test Files  2 passed (2)\u001b[K\r\n      Tests  32 passed (32)\u001b[K\r\n   Start at  02:10:36\u001b[K\r\n   Duration  489ms (transform 50%, import 32%, tests 11%, worker 6%)\u001b[K\r\n\u001b[K\r\nJSON report written to H:/My Projects - IT/qa-portal/reports/unit/results.json\r\nJUNIT report written to H:/My Projects - IT/qa-portal/reports/unit/junit.xml\r\n\u001b[?25h"]
-[26.122996, "o", "\u001b]0;C:\\Users\\Nazmul\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe\u0007"]
+[26.122996, "o", "\u001b]0;PowerShell\\native\\powershell\\pwsh.exe\u0007"]
 [30.202345, "o", "Inspect the browser reports and full test evidence in the README.\r\n"]
 [33.260153, "o", "\u001b[?9001l\u001b[?1004l"]

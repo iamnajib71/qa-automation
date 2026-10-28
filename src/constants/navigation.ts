@@ -19,6 +19,8 @@ export type NavigationItem = {
 };
 
 export const mainNavigation: NavigationItem[] = [
+  { href: "/api-testing", label: "API Testing", icon: Globe, description: "Run configurable API assertions and export test evidence." },
+  { href: "/php-security", label: "PHP Diagnostics", icon: ClipboardCheck, description: "Assess published PHP vulnerabilities and verify patch evidence." },
   {
     href: "/dashboard",
     label: "Dashboard",

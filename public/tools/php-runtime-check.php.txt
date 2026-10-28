@@ -1,0 +1,14 @@
+<?php
+// Run in your own serving environment. Remove any temporary web endpoint after collecting evidence.
+header('Content-Type: application/json');
+header('Cache-Control: no-store');
+echo json_encode([
+    'php_version' => PHP_VERSION,
+    'sapi' => PHP_SAPI,
+    'memory_limit' => ini_get('memory_limit'),
+    'post_max_size' => ini_get('post_max_size'),
+    'upload_max_filesize' => ini_get('upload_max_filesize'),
+    'session_upload_progress_enabled' => ini_get('session.upload_progress.enabled'),
+    'fatal_error_backtraces' => ini_get('fatal_error_backtraces'),
+    'collected_at_utc' => gmdate('c'),
+], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

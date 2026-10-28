@@ -1,0 +1,719 @@
+[
+  {
+    "file": "gitea-aria-search.json",
+    "recorded_at_utc": "2026-10-22T10:54:37.343564+00:00",
+    "results": [
+      {
+        "number": 31873,
+        "state": "open",
+        "title": "Emojis within links (commit messages etc.) aren\u2019t clickable",
+        "url": "https://github.com/go-gitea/gitea/issues/31873"
+      },
+      {
+        "number": 29849,
+        "state": "open",
+        "title": "Fomantic UI replacements via web components",
+        "url": "https://github.com/go-gitea/gitea/issues/29849"
+      },
+      {
+        "number": 31210,
+        "state": "closed",
+        "title": "Error 1061 (42000): Duplicate key name issues when using MySQL Aria storage engine",
+        "url": "https://github.com/go-gitea/gitea/issues/31210"
+      },
+      {
+        "number": 39414,
+        "state": "closed",
+        "title": "CODEOWNERS: team-based review request renders as \"Ghost\" instead of the team name",
+        "url": "https://github.com/go-gitea/gitea/issues/39414"
+      },
+      {
+        "number": 21065,
+        "state": "closed",
+        "title": "Please add option to disable auto TOC in the wiki.",
+        "url": "https://github.com/go-gitea/gitea/issues/21065"
+      },
+      {
+        "number": 22565,
+        "state": "closed",
+        "title": "Wiki Page menu Accessibility",
+        "url": "https://github.com/go-gitea/gitea/issues/22565"
+      },
+      {
+        "number": 21742,
+        "state": "closed",
+        "title": "The add reaction button and the comment options button are not accessible in the web view of an issue",
+        "url": "https://github.com/go-gitea/gitea/issues/21742"
+      },
+      {
+        "number": 20606,
+        "state": "closed",
+        "title": "Many images don't have an alt attribute",
+        "url": "https://github.com/go-gitea/gitea/issues/20606"
+      },
+      {
+        "number": 32897,
+        "state": "closed",
+        "title": "Panic in createIssueComment()",
+        "url": "https://github.com/go-gitea/gitea/issues/32897"
+      },
+      {
+        "number": 33261,
+        "state": "closed",
+        "title": "Inconsistent Link Rendering in Frontend UI on Gitea `v1.23.x`",
+        "url": "https://github.com/go-gitea/gitea/issues/33261"
+      },
+      {
+        "number": 31656,
+        "state": "closed",
+        "title": "Usage of appropriate html tags instead of divs",
+        "url": "https://github.com/go-gitea/gitea/issues/31656"
+      },
+      {
+        "number": 31228,
+        "state": "closed",
+        "title": "After Update to 1.22.0 LDAP Login is not working anymore",
+        "url": "https://github.com/go-gitea/gitea/issues/31228"
+      },
+      {
+        "number": 29218,
+        "state": "closed",
+        "title": "500 while creating users",
+        "url": "https://github.com/go-gitea/gitea/issues/29218"
+      },
+      {
+        "number": 29080,
+        "state": "closed",
+        "title": "Javascript error: same origin policy",
+        "url": "https://github.com/go-gitea/gitea/issues/29080"
+      },
+      {
+        "number": 30731,
+        "state": "closed",
+        "title": "Release: Publish Gitea 1.22",
+        "url": "https://github.com/go-gitea/gitea/issues/30731"
+      },
+      {
+        "number": 27191,
+        "state": "closed",
+        "title": "Database settings invalid: sync database struct error: Error 1286 (42000): Unknown storage engine 'InnoDB'",
+        "url": "https://github.com/go-gitea/gitea/issues/27191"
+      },
+      {
+        "number": 23345,
+        "state": "closed",
+        "title": "[Proposal] Improve the dropdown step by step",
+        "url": "https://github.com/go-gitea/gitea/issues/23345"
+      },
+      {
+        "number": 26572,
+        "state": "closed",
+        "title": "Cannot display branch/tags list ",
+        "url": "https://github.com/go-gitea/gitea/issues/26572"
+      },
+      {
+        "number": 25249,
+        "state": "closed",
+        "title": "No padding in issue preview on hover",
+        "url": "https://github.com/go-gitea/gitea/issues/25249"
+      },
+      {
+        "number": 19950,
+        "state": "closed",
+        "title": "Ask for Changing alt Property of Logo img Element",
+        "url": "https://github.com/go-gitea/gitea/issues/19950"
+      },
+      {
+        "number": 23645,
+        "state": "closed",
+        "title": "[A11Y] Interactive time tooltip are not accessible",
+        "url": "https://github.com/go-gitea/gitea/issues/23645"
+      },
+      {
+        "number": 16581,
+        "state": "closed",
+        "title": "Reintegrate the dropdown patch using fomantic hooks and template changes",
+        "url": "https://github.com/go-gitea/gitea/issues/16581"
+      },
+      {
+        "number": 22075,
+        "state": "closed",
+        "title": "Quoting diff comments doesn't work at first",
+        "url": "https://github.com/go-gitea/gitea/issues/22075"
+      },
+      {
+        "number": 27564,
+        "state": "closed",
+        "title": "Failure to render PR comments",
+        "url": "https://github.com/go-gitea/gitea/issues/27564"
+      },
+      {
+        "number": 22788,
+        "state": "closed",
+        "title": "Global webhook",
+        "url": "https://github.com/go-gitea/gitea/issues/22788"
+      },
+      {
+        "number": 13053,
+        "state": "closed",
+        "title": "401 when attempting to unfold hidden code in diffs",
+        "url": "https://github.com/go-gitea/gitea/issues/13053"
+      },
+      {
+        "number": 16699,
+        "state": "closed",
+        "title": "Proposal: Remove the Dashboard/Home button from the navigation bar",
+        "url": "https://github.com/go-gitea/gitea/issues/16699"
+      },
+      {
+        "number": 10672,
+        "state": "closed",
+        "title": "Remove/Replace custom version of semantic dropdown",
+        "url": "https://github.com/go-gitea/gitea/issues/10672"
+      },
+      {
+        "number": 7057,
+        "state": "closed",
+        "title": "Screenreaders unable to read Gitea's various dropdowns",
+        "url": "https://github.com/go-gitea/gitea/issues/7057"
+      },
+      {
+        "number": 1263,
+        "state": "closed",
+        "title": "accessibility issues",
+        "url": "https://github.com/go-gitea/gitea/issues/1263"
+      },
+      {
+        "number": 8971,
+        "state": "closed",
+        "title": "Minify semantic.dropdown.custom.js",
+        "url": "https://github.com/go-gitea/gitea/issues/8971"
+      },
+      {
+        "number": 8919,
+        "state": "closed",
+        "title": "Can't tab away from selectable dropdown menus",
+        "url": "https://github.com/go-gitea/gitea/issues/8919"
+      },
+      {
+        "number": 9182,
+        "state": "closed",
+        "title": "Replace emojify.js with openmoji set",
+        "url": "https://github.com/go-gitea/gitea/issues/9182"
+      }
+    ]
+  },
+  {
+    "file": "gitea-contrast-search.json",
+    "recorded_at_utc": "2026-10-22T15:00:30.847563+00:00",
+    "results": []
+  },
+  {
+    "file": "gitea-dropdown-pr-search.json",
+    "recorded_at_utc": "2026-10-22T15:00:37.300472+00:00",
+    "results": []
+  },
+  {
+    "file": "gitea-name-search.json",
+    "recorded_at_utc": "2026-10-22T15:00:33.678471+00:00",
+    "results": []
+  },
+  {
+    "file": "gitea-swagger-search.json",
+    "recorded_at_utc": "2026-10-22T10:54:35.728467+00:00",
+    "results": [
+      {
+        "number": 34841,
+        "state": "open",
+        "title": "Swap swagger ui to scalar",
+        "url": "https://github.com/go-gitea/gitea/issues/34841"
+      },
+      {
+        "number": 33685,
+        "state": "open",
+        "title": "Replace go-swagger with huma",
+        "url": "https://github.com/go-gitea/gitea/issues/33685"
+      },
+      {
+        "number": 37307,
+        "state": "open",
+        "title": "Inconsistent swagger documentation of middleware-origin responses (401/403)",
+        "url": "https://github.com/go-gitea/gitea/issues/37307"
+      },
+      {
+        "number": 30597,
+        "state": "open",
+        "title": "Package upload APIs should be included in swagger docs",
+        "url": "https://github.com/go-gitea/gitea/issues/30597"
+      },
+      {
+        "number": 32862,
+        "state": "open",
+        "title": "Enhancing Actions Autoscaling Capabilities",
+        "url": "https://github.com/go-gitea/gitea/issues/32862"
+      },
+      {
+        "number": 19013,
+        "state": "open",
+        "title": "Some API endpoints do not follow HTTP specifications",
+        "url": "https://github.com/go-gitea/gitea/issues/19013"
+      },
+      {
+        "number": 37531,
+        "state": "open",
+        "title": "Dependency Dashboard",
+        "url": "https://github.com/go-gitea/gitea/issues/37531"
+      },
+      {
+        "number": 35331,
+        "state": "open",
+        "title": "API docs should show required unit permissions per endpoint",
+        "url": "https://github.com/go-gitea/gitea/issues/35331"
+      },
+      {
+        "number": 20150,
+        "state": "open",
+        "title": "FR: Fire webhook from API endpoint",
+        "url": "https://github.com/go-gitea/gitea/issues/20150"
+      },
+      {
+        "number": 18082,
+        "state": "open",
+        "title": "Add pagination to list API endpoints that do not have it yet",
+        "url": "https://github.com/go-gitea/gitea/issues/18082"
+      },
+      {
+        "number": 37160,
+        "state": "open",
+        "title": "[Generic Package Registry] GET requests should not require authentication for public repositories",
+        "url": "https://github.com/go-gitea/gitea/issues/37160"
+      },
+      {
+        "number": 1872,
+        "state": "open",
+        "title": "Subgroups in Gitea",
+        "url": "https://github.com/go-gitea/gitea/issues/1872"
+      },
+      {
+        "number": 31681,
+        "state": "open",
+        "title": "label and milestone endpoints on swagger-ui should be place at repository level, not at issue level",
+        "url": "https://github.com/go-gitea/gitea/issues/31681"
+      },
+      {
+        "number": 6132,
+        "state": "open",
+        "title": "Feature Request: add pagination and sort on Issue Comments API",
+        "url": "https://github.com/go-gitea/gitea/issues/6132"
+      },
+      {
+        "number": 26403,
+        "state": "open",
+        "title": "Manage actions cache in Gitea",
+        "url": "https://github.com/go-gitea/gitea/issues/26403"
+      },
+      {
+        "number": 29616,
+        "state": "open",
+        "title": "Add API for getting actions secrets",
+        "url": "https://github.com/go-gitea/gitea/issues/29616"
+      },
+      {
+        "number": 33883,
+        "state": "open",
+        "title": "Edit head_branch of a PR",
+        "url": "https://github.com/go-gitea/gitea/issues/33883"
+      },
+      {
+        "number": 34969,
+        "state": "open",
+        "title": "Migrate gitea from/to other git providers with projects API support",
+        "url": "https://github.com/go-gitea/gitea/issues/34969"
+      },
+      {
+        "number": 7895,
+        "state": "open",
+        "title": "API: Allow setting timestamps when creating issues and comments",
+        "url": "https://github.com/go-gitea/gitea/issues/7895"
+      },
+      {
+        "number": 18777,
+        "state": "open",
+        "title": "Add general statistics in API",
+        "url": "https://github.com/go-gitea/gitea/issues/18777"
+      },
+      {
+        "number": 34937,
+        "state": "open",
+        "title": "Support using label names for personal repos via API",
+        "url": "https://github.com/go-gitea/gitea/issues/34937"
+      },
+      {
+        "number": 39732,
+        "state": "open",
+        "title": "Proposal: separate service container logs from job logs in Gitea Actions",
+        "url": "https://github.com/go-gitea/gitea/issues/39732"
+      },
+      {
+        "number": 28124,
+        "state": "open",
+        "title": "Tokens API (and maybe others) requires auth even when I am authorized (auth seems to not be working)",
+        "url": "https://github.com/go-gitea/gitea/issues/28124"
+      },
+      {
+        "number": 28634,
+        "state": "open",
+        "title": "Increase Repo Name Limit from 100 to 255?",
+        "url": "https://github.com/go-gitea/gitea/issues/28634"
+      },
+      {
+        "number": 15945,
+        "state": "open",
+        "title": "Migrate issues/wiki/PRs from Gitee",
+        "url": "https://github.com/go-gitea/gitea/issues/15945"
+      },
+      {
+        "number": 9638,
+        "state": "open",
+        "title": "Missing features in the API",
+        "url": "https://github.com/go-gitea/gitea/issues/9638"
+      },
+      {
+        "number": 35408,
+        "state": "open",
+        "title": "Organization name cannot end with dash (`-`) symbol",
+        "url": "https://github.com/go-gitea/gitea/issues/35408"
+      },
+      {
+        "number": 9912,
+        "state": "open",
+        "title": "[Feature] store/link attachments externaly",
+        "url": "https://github.com/go-gitea/gitea/issues/9912"
+      },
+      {
+        "number": 24574,
+        "state": "open",
+        "title": "Some API parameter parsing error",
+        "url": "https://github.com/go-gitea/gitea/issues/24574"
+      },
+      {
+        "number": 36952,
+        "state": "open",
+        "title": "Missing Source Repository URL in Migration Status (API vs UI)",
+        "url": "https://github.com/go-gitea/gitea/issues/36952"
+      },
+      {
+        "number": 11320,
+        "state": "open",
+        "title": "API returns 201 even though not all data from the request has been processed due to the sudo user not beeing an andministrator",
+        "url": "https://github.com/go-gitea/gitea/issues/11320"
+      },
+      {
+        "number": 21997,
+        "state": "open",
+        "title": "API validationError response is invalid, content_type for repoGetRawFile & repoGetArchive",
+        "url": "https://github.com/go-gitea/gitea/issues/21997"
+      },
+      {
+        "number": 38581,
+        "state": "closed",
+        "title": "API: GET /user/settings and GET /topics/search return an object but the spec declares an array",
+        "url": "https://github.com/go-gitea/gitea/issues/38581"
+      },
+      {
+        "number": 35217,
+        "state": "open",
+        "title": "Add sorting to the Pull request by Base Head API",
+        "url": "https://github.com/go-gitea/gitea/issues/35217"
+      },
+      {
+        "number": 24160,
+        "state": "open",
+        "title": "API 401 responses don't have a WWW-Authenticate header",
+        "url": "https://github.com/go-gitea/gitea/issues/24160"
+      },
+      {
+        "number": 22828,
+        "state": "closed",
+        "title": "gitea sdk Missing GetPullRequestFiles",
+        "url": "https://github.com/go-gitea/gitea/issues/22828"
+      },
+      {
+        "number": 20126,
+        "state": "open",
+        "title": "Plugin Mechanism",
+        "url": "https://github.com/go-gitea/gitea/issues/20126"
+      },
+      {
+        "number": 19270,
+        "state": "open",
+        "title": "Package Registry related ToDo list",
+        "url": "https://github.com/go-gitea/gitea/issues/19270"
+      },
+      {
+        "number": 13642,
+        "state": "closed",
+        "title": "Hierarchical issue tracking",
+        "url": "https://github.com/go-gitea/gitea/issues/13642"
+      },
+      {
+        "number": 25572,
+        "state": "closed",
+        "title": "Add API routes to manage Actions",
+        "url": "https://github.com/go-gitea/gitea/issues/25572"
+      },
+      {
+        "number": 12508,
+        "state": "closed",
+        "title": "`make swagger-validate` warnings",
+        "url": "https://github.com/go-gitea/gitea/issues/12508"
+      },
+      {
+        "number": 37523,
+        "state": "closed",
+        "title": "500 Error when trying to disable workflows",
+        "url": "https://github.com/go-gitea/gitea/issues/37523"
+      },
+      {
+        "number": 36824,
+        "state": "closed",
+        "title": "feat: REST API for repository project boards",
+        "url": "https://github.com/go-gitea/gitea/issues/36824"
+      },
+      {
+        "number": 36927,
+        "state": "closed",
+        "title": "Labels API is not listed in swagger",
+        "url": "https://github.com/go-gitea/gitea/issues/36927"
+      },
+      {
+        "number": 23382,
+        "state": "closed",
+        "title": "Provide a way to access Gitea API through external authentication source",
+        "url": "https://github.com/go-gitea/gitea/issues/23382"
+      },
+      {
+        "number": 37830,
+        "state": "closed",
+        "title": "/api/swagger returns HTTP 500 Error in dev mode: Failed to locate local path for managed asset URI: css/swagger.css",
+        "url": "https://github.com/go-gitea/gitea/issues/37830"
+      },
+      {
+        "number": 35701,
+        "state": "closed",
+        "title": "Workflow Run Status via API",
+        "url": "https://github.com/go-gitea/gitea/issues/35701"
+      },
+      {
+        "number": 22048,
+        "state": "closed",
+        "title": "API - repoGetPullRequestCommits->CommitList invalid header variable name X-Count",
+        "url": "https://github.com/go-gitea/gitea/issues/22048"
+      },
+      {
+        "number": 35134,
+        "state": "closed",
+        "title": "`/actions/tasks` API endpoint doesn't show workflows that are \u201cWaiting\u201d",
+        "url": "https://github.com/go-gitea/gitea/issues/35134"
+      },
+      {
+        "number": 34567,
+        "state": "closed",
+        "title": "pre-receive hook declined when pushing to a protected branch from actions",
+        "url": "https://github.com/go-gitea/gitea/issues/34567"
+      },
+      {
+        "number": 37168,
+        "state": "closed",
+        "title": "GITEA API repository compare result in ISE 500",
+        "url": "https://github.com/go-gitea/gitea/issues/37168"
+      },
+      {
+        "number": 7197,
+        "state": "closed",
+        "title": "Enhance data retrived through API call on /users/{username}",
+        "url": "https://github.com/go-gitea/gitea/issues/7197"
+      },
+      {
+        "number": 18702,
+        "state": "closed",
+        "title": "Download Release Attachment via API",
+        "url": "https://github.com/go-gitea/gitea/issues/18702"
+      },
+      {
+        "number": 33943,
+        "state": "closed",
+        "title": "Support \"^\" character is compare API to designate previous commits",
+        "url": "https://github.com/go-gitea/gitea/issues/33943"
+      },
+      {
+        "number": 37011,
+        "state": "closed",
+        "title": "DELETE /api/v1/repos/{owner}/{repo}/issues/{index}/labels/{id} returns 500 when using Gitea Actions token",
+        "url": "https://github.com/go-gitea/gitea/issues/37011"
+      },
+      {
+        "number": 9637,
+        "state": "closed",
+        "title": "API documentation inconsistencies",
+        "url": "https://github.com/go-gitea/gitea/issues/9637"
+      },
+      {
+        "number": 35886,
+        "state": "closed",
+        "title": "API /commits returns incorrect X-Total-Count when using since/until filters (v1.25)",
+        "url": "https://github.com/go-gitea/gitea/issues/35886"
+      },
+      {
+        "number": 36300,
+        "state": "closed",
+        "title": "API Support for making PR diff line-level comments",
+        "url": "https://github.com/go-gitea/gitea/issues/36300"
+      },
+      {
+        "number": 20852,
+        "state": "closed",
+        "title": "OpenAPI Viewer",
+        "url": "https://github.com/go-gitea/gitea/issues/20852"
+      },
+      {
+        "number": 36497,
+        "state": "closed",
+        "title": "Actions: failure checkout a different repo",
+        "url": "https://github.com/go-gitea/gitea/issues/36497"
+      },
+      {
+        "number": 36745,
+        "state": "closed",
+        "title": "ARM64 binary from dl.gitea.com missing Debian package backend (no backend initialization, routes 404)",
+        "url": "https://github.com/go-gitea/gitea/issues/36745"
+      },
+      {
+        "number": 37257,
+        "state": "closed",
+        "title": "Content-Security-Policy CSP regressions: `.cast`, `.pdf`",
+        "url": "https://github.com/go-gitea/gitea/issues/37257"
+      },
+      {
+        "number": 36466,
+        "state": "closed",
+        "title": "\"default_delete_branch_after_merge\"cannot be updated via API",
+        "url": "https://github.com/go-gitea/gitea/issues/36466"
+      },
+      {
+        "number": 27695,
+        "state": "closed",
+        "title": "New user cannot be created using curl and Swagger API: user does not exist [uid: 0, name: , keyid: 0]",
+        "url": "https://github.com/go-gitea/gitea/issues/27695"
+      },
+      {
+        "number": 36253,
+        "state": "closed",
+        "title": "/repos/{owner}/{repo}/commits/{ref}/statuses returns 400 when / is in branch name",
+        "url": "https://github.com/go-gitea/gitea/issues/36253"
+      },
+      {
+        "number": 36859,
+        "state": "closed",
+        "title": "`Test_MigrateFromGiteaToGitea` fails when gitea.com is unavailable",
+        "url": "https://github.com/go-gitea/gitea/issues/36859"
+      },
+      {
+        "number": 37438,
+        "state": "closed",
+        "title": "Dependency Dashboard",
+        "url": "https://github.com/go-gitea/gitea/issues/37438"
+      },
+      {
+        "number": 33750,
+        "state": "closed",
+        "title": "API to remove runners",
+        "url": "https://github.com/go-gitea/gitea/issues/33750"
+      },
+      {
+        "number": 36326,
+        "state": "closed",
+        "title": "Unable to build gitea 1.25.3 to create Mageia packages",
+        "url": "https://github.com/go-gitea/gitea/issues/36326"
+      },
+      {
+        "number": 36116,
+        "state": "closed",
+        "title": "unable to create a pull request from fork's fork",
+        "url": "https://github.com/go-gitea/gitea/issues/36116"
+      },
+      {
+        "number": 35912,
+        "state": "closed",
+        "title": "Unable to get commit comparasion data via API when Pull Request feature is disabled",
+        "url": "https://github.com/go-gitea/gitea/issues/35912"
+      },
+      {
+        "number": 35964,
+        "state": "closed",
+        "title": "docs: missing Gitea API versions",
+        "url": "https://github.com/go-gitea/gitea/issues/35964"
+      },
+      {
+        "number": 30681,
+        "state": "closed",
+        "title": "Consider relaxing access constraints on `/api/users/{username}/keys`",
+        "url": "https://github.com/go-gitea/gitea/issues/30681"
+      },
+      {
+        "number": 35984,
+        "state": "closed",
+        "title": "User enumeration still possible through login error messages in Gitea 1.25.1",
+        "url": "https://github.com/go-gitea/gitea/issues/35984"
+      },
+      {
+        "number": 35813,
+        "state": "closed",
+        "title": "Clarify API base path /api/v1 in documentation",
+        "url": "https://github.com/go-gitea/gitea/issues/35813"
+      },
+      {
+        "number": 19008,
+        "state": "closed",
+        "title": "Merge the `create a file in a repository` API and the `update a file in a repository` API",
+        "url": "https://github.com/go-gitea/gitea/issues/19008"
+      },
+      {
+        "number": 35454,
+        "state": "closed",
+        "title": "Create branch via API, error says the old branch doesn't exists",
+        "url": "https://github.com/go-gitea/gitea/issues/35454"
+      },
+      {
+        "number": 33731,
+        "state": "closed",
+        "title": "can not get the commit's combined status by non-main branch/tag/commit",
+        "url": "https://github.com/go-gitea/gitea/issues/33731"
+      },
+      {
+        "number": 35319,
+        "state": "closed",
+        "title": "401 reposonse has wrong HTTP headers",
+        "url": "https://github.com/go-gitea/gitea/issues/35319"
+      },
+      {
+        "number": 34820,
+        "state": "closed",
+        "title": "repoGetContents returns different types causing JSON deserialization errors in generated Swagger SDKs",
+        "url": "https://github.com/go-gitea/gitea/issues/34820"
+      }
+    ]
+  },
+  {
+    "file": "gitea-switch-search.json",
+    "recorded_at_utc": "2026-10-22T15:00:35.618242+00:00",
+    "results": [
+      {
+        "number": 38187,
+        "state": "closed",
+        "title": "feat(ui): add repository switcher dropdown in repository header",
+        "url": "https://github.com/go-gitea/gitea/issues/38187"
+      }
+    ]
+  }
+]

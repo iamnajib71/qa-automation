@@ -1,0 +1,9 @@
+{
+  "version": {
+    "version": "28.2.0"
+  },
+  "image_digests": [
+    "docker.gitea.com/gitea@sha256:30777c91280d973fa02be48b1ade735bd6859e8f6f7af3b4444d519437852504"
+  ],
+  "base_url": "http://127.0.0.1:43210"
+}

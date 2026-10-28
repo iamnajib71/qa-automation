@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.verification
+.tools
+reports
+test-results
+real-world
+cypress
+tests
+.github
+.env*

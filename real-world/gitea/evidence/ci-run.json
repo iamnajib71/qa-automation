@@ -1,0 +1,28 @@
+{
+  "url": "https://github.com/iamnajib71/qa-automation/actions/runs/39808735895",
+  "status": "completed",
+  "conclusion": "failure",
+  "headSha": "6e937e29029cada752fcb733c715b1dfe5a39142",
+  "results": {
+    "source": "JUnit files in real-world/gitea/reports",
+    "junit_files": 3,
+    "reported_testcases": 31,
+    "automated_executions": 31,
+    "passed": 25,
+    "failed": 6,
+    "skipped": 0,
+    "manual": {
+      "authored": 30,
+      "completed_passed": 12,
+      "partial_or_inconclusive": 5,
+      "not_run": 13
+    }
+  },
+  "jobs": [
+    {
+      "name": "gitea",
+      "conclusion": "failure",
+      "url": "https://github.com/iamnajib71/qa-automation/actions/runs/39808735895/job/119928892472"
+    }
+  ]
+}

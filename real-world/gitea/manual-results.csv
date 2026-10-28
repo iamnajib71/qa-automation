@@ -1,0 +1,31 @@
+ID,result,evidence,actual
+GT-001,passed,exploratory/session-01.md,Home title and navigation rendered
+GT-002,passed,exploratory/session-01.md,Fixture credentials reached dashboard
+GT-003,passed,exploratory/session-01.md,Wrong password left anonymous login with generic error
+GT-004,passed,exploratory/session-01.md,Unknown account did not establish a session
+GT-005,passed,exploratory/session-01.md,Required-field validation focused username
+GT-006,inconclusive,exploratory/session-03.md,Menu opened but tool timed out targeting Sign Out
+GT-007,not run,,Covered by automation but not completed as a manual case
+GT-008,passed,exploratory/session-01.md,Anonymous private URL showed 404 without repository contents
+GT-009,passed,exploratory/session-03.md,Owner saw private badge and README
+GT-010,not run,,Not manually executed
+GT-011,not run,,Not manually executed
+GT-012,not run,,Not manually executed
+GT-013,not run,,Not manually executed
+GT-014,not run,,Not manually executed
+GT-015,not run,,Not manually executed
+GT-016,not run,,Not manually executed
+GT-017,partial,exploratory/session-02.md,Seed issue appeared in list; detail step not completed
+GT-018,passed,exploratory/session-02.md,Issue 3 saved Unicode title and body; later reload retained them
+GT-019,passed,exploratory/session-02.md,Empty title prompted required-field validation
+GT-020,not run,,Not manually executed
+GT-021,passed,exploratory/session-03.md,Closed state survived reload
+GT-022,passed,exploratory/session-03.md,Reopened state survived reload
+GT-023,passed,exploratory/session-02.md,Unicode and Markdown rendered in saved issue
+GT-024,not run,,Not manually executed
+GT-025,partial,exploratory/session-03.md,Owner search worked; anonymous private-search portion not executed
+GT-026,partial,exploratory/session-03.md,Keyboard activations worked; complete focus-order and visible-focus audit not performed
+GT-027,partial,exploratory/session-03.md,390x844 layout inspected; 200 percent zoom not performed
+GT-028,not run,,Automated auth checks only
+GT-029,not run,,Automated malformed-JSON check only
+GT-030,not run,,Automated contract validation only

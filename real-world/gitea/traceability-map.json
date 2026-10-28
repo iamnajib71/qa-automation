@@ -1,0 +1,157 @@
+[
+  {
+    "journey": "View public home",
+    "case": "GT-001",
+    "automated_test": ""
+  },
+  {
+    "journey": "Successful login",
+    "case": "GT-002",
+    "automated_test": "test_login"
+  },
+  {
+    "journey": "Reject wrong password",
+    "case": "GT-003",
+    "automated_test": "test_invalid_login"
+  },
+  {
+    "journey": "Reject unknown user",
+    "case": "GT-004",
+    "automated_test": ""
+  },
+  {
+    "journey": "Required login fields",
+    "case": "GT-005",
+    "automated_test": ""
+  },
+  {
+    "journey": "Logout revokes UI session",
+    "case": "GT-006",
+    "automated_test": ""
+  },
+  {
+    "journey": "Public repository visible",
+    "case": "GT-007",
+    "automated_test": "test_public_repository"
+  },
+  {
+    "journey": "Private repository hidden",
+    "case": "GT-008",
+    "automated_test": "private repository hidden"
+  },
+  {
+    "journey": "Owner opens private repository",
+    "case": "GT-009",
+    "automated_test": ""
+  },
+  {
+    "journey": "Create public repository",
+    "case": "GT-010",
+    "automated_test": "test_repository_lifecycle"
+  },
+  {
+    "journey": "Create private repository",
+    "case": "GT-011",
+    "automated_test": "test_repository_lifecycle"
+  },
+  {
+    "journey": "Reject duplicate repository",
+    "case": "GT-012",
+    "automated_test": "test_duplicate_repository"
+  },
+  {
+    "journey": "Reject empty repository name",
+    "case": "GT-013",
+    "automated_test": "test_invalid_repository"
+  },
+  {
+    "journey": "Reject path-like repository name",
+    "case": "GT-014",
+    "automated_test": "test_invalid_repository"
+  },
+  {
+    "journey": "Edit repository description",
+    "case": "GT-015",
+    "automated_test": "test_repository_lifecycle"
+  },
+  {
+    "journey": "Delete disposable repository",
+    "case": "GT-016",
+    "automated_test": "test_repository_lifecycle"
+  },
+  {
+    "journey": "View issue list",
+    "case": "GT-017",
+    "automated_test": "test_issue_visible"
+  },
+  {
+    "journey": "Create issue",
+    "case": "GT-018",
+    "automated_test": "create and close issue through UI"
+  },
+  {
+    "journey": "Reject empty issue title",
+    "case": "GT-019",
+    "automated_test": ""
+  },
+  {
+    "journey": "Edit issue content",
+    "case": "GT-020",
+    "automated_test": "test_issue_lifecycle"
+  },
+  {
+    "journey": "Close issue",
+    "case": "GT-021",
+    "automated_test": "test_issue_lifecycle"
+  },
+  {
+    "journey": "Reopen issue",
+    "case": "GT-022",
+    "automated_test": ""
+  },
+  {
+    "journey": "Markdown and Unicode issue body",
+    "case": "GT-023",
+    "automated_test": ""
+  },
+  {
+    "journey": "Anonymous issue write boundary",
+    "case": "GT-024",
+    "automated_test": ""
+  },
+  {
+    "journey": "Explore repository search",
+    "case": "GT-025",
+    "automated_test": ""
+  },
+  {
+    "journey": "Keyboard login",
+    "case": "GT-026",
+    "automated_test": ""
+  },
+  {
+    "journey": "Zoom and narrow layout",
+    "case": "GT-027",
+    "automated_test": ""
+  },
+  {
+    "journey": "API authentication errors",
+    "case": "GT-028",
+    "automated_test": "test_auth_required"
+  },
+  {
+    "journey": "API malformed JSON",
+    "case": "GT-029",
+    "automated_test": "test_malformed_json"
+  },
+  {
+    "journey": "API Swagger response contract",
+    "case": "GT-030",
+    "automated_test": "test_contract"
+  },
+  {
+    "journey": "Accessible main pages (automated WCAG checks)",
+    "case": "GT-026/GT-027",
+    "automated_test": "axe "
+  }
+]
