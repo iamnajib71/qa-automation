@@ -15,7 +15,6 @@ I tested a working defect-management portal across its API, browser journeys and
 | **Results** | [32 unit tests, 44 Newman assertions, 22 Playwright API tests, 7 E2E/accessibility tests and 6 Cypress tests passed with zero failures](docs/results/ci-summary.json). [Three recorded defects have regression retests](docs/testing/traceability.md). |
 | **Skills shown** | Functional testing, regression testing, API testing, Playwright, Cypress, Postman, Newman, Vitest, TypeScript, accessibility testing, k6 and GitHub Actions. |
 | **Relevant roles** | QA Analyst, Test Analyst, Junior Test Automation Engineer, Software Tester. |
-| **How it was built** | Designed, specified and reviewed by me; built with Codex as my coding agent (vibe coding). Verification and its limits are linked below. |
 | **Try it / evidence** | [Demo](docs/demo.gif) · [Test strategy](docs/testing/test-strategy.md) · [CI evidence](docs/results/ci-summary.json) · [Quick start](#quick-start--windows-powershell) |
 
 ## What I did, step by step
